@@ -1,9 +1,7 @@
 ---
 title: "Lifecycle Core"
-description: "Shows how the DALP control plane unifies channels, APIs, data, and infrastructure so every lifecycle event runs on one authoritative runtime."
+description: "Fragmentation is the default state of today’s tokenization stack: issuance wizards, compliance databases, custody portals, trading adapters, and settlement workarounds stitched together by spreadsheets and project chats. The DALP turns that sprawl into one control plane, so every lifecycle event—issuance, onboarding, transfers, servicing, settlement, reporting—runs through a programmable core instead of brittle handoffs."
 ---
-
-Fragmentation is the default state of today’s tokenization stack: issuance wizards, compliance databases, custody portals, trading adapters, and settlement workarounds stitched together by spreadsheets and project chats. The DALP turns that sprawl into one control plane, so every lifecycle event—issuance, onboarding, transfers, servicing, settlement, reporting—runs through a programmable core instead of brittle handoffs.
 
 ## Why fragmentation kills institutional deals
 
@@ -12,6 +10,50 @@ Fragmented programs stall for the same reasons cited in Chapter 1. Integrations
 ## The DALP integration blueprint
 
 The Asset Tokenization Kit already models the control plane we need. Its layered architecture (frontend → ORPC API → business services → data → blockchain → infrastructure) replaces point integrations with orchestrated services:
+
+<Mermaid
+  chart={`
+flowchart LR
+  subgraph Experience
+    web["Issuer & investor UIs"]
+    admin["Operator console"]
+    dev["Developer portal"]
+  end
+  subgraph API["ORPC & API layer"]
+    orpc["ORPC router"]
+    webhooks["Webhooks & SDKs"]
+  end
+  subgraph Services["Business services"]
+    asset["Asset lifecycle"]
+    compliance["Compliance & identity"]
+    custody["Custody & settlement"]
+    reporting["Reporting & telemetry"]
+  end
+  subgraph Data["Data plane"]
+    postgres["Postgres/Redis"]
+    storage["Docs & metadata store"]
+  end
+  subgraph Chain["Blockchain & indexers"]
+    contracts["ERC-3643 contracts"]
+    indexers["TheGraph indexers"]
+  end
+  subgraph Ops["Deployment & observability"]
+    helm["Helm/Kubernetes pipeline"]
+    otel["OpenTelemetry/Prom/Loki"]
+  end
+
+  Experience --> API --> Services --> Data
+  Services --> Chain
+  Chain --> Data
+  Ops --> Experience
+  Ops --> API
+  Ops --> Services
+  Services --> externalKYC["External KYC & identity partners"]
+  Services --> banking["Banking & payment rails"]
+  Services --> custodians["Custodian APIs"]
+  Ops --> siem["Client SIEM / SOC"]
+`}
+/>
 
 - **Experience layer (web, mobile, admin, developer portals)** guides issuers, investors, and operators through lifecycle actions while reusing shared component libraries.
 - **API & business logic** run type-safe ORPC procedures that route every request through asset, compliance, identity, and notification services—removing one-off integrations and enforcing policy centrally.

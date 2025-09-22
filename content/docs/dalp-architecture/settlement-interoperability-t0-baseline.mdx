@@ -9,6 +9,35 @@ The tokenization industry has a fundamental problem with settlement. Traditional
 
 The XvP Settlement addon ships the escrow, validation, and atomic swap engines needed to remove settlement gaps. Whether you are exchanging tokens for fiat (DvP), token-for-token, or coordinating a multi-party hand-off, the workflow is the same: both sides meet their obligations or the trade unwinds automatically. Escrow contracts hold assets, settlement validators check approvals, limits, and payment confirmations, and the atomic engine releases everything in one committed step.
 
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant PartyA as "Party A"
+  participant PartyB as "Party B"
+  participant Escrow as "Escrow contracts"
+  participant Validator as "Settlement validator"
+  participant Bank as "Bank/payment rail"
+  participant Audit
+
+  PartyA->>Escrow: Lock asset leg
+  PartyB->>Escrow: Lock cash/token leg
+  Escrow->>Validator: Both legs ready
+  Validator->>Validator: Policy & limit checks
+  Validator->>Bank: Send ISO 20022 instruction
+  Bank-->>Validator: Confirmation or timeout
+  Validator->>Escrow: Release both legs
+  Escrow-->>PartyA: Deliver counter-asset
+  Escrow-->>PartyB: Deliver counter-asset
+  Validator->>Audit: Final settlement log
+
+  alt Timeout or failure
+    Validator->>Escrow: Revert legs & notify
+    Escrow-->>PartyA: Return original asset
+    Escrow-->>PartyB: Return original asset
+  end
+`}
+/>
+
 When both legs live on-chain, finality is truly T+0. When cash remains on bank rails, the platform coordinates near-simultaneous settlement by submitting ISO 20022-aligned payment instructions through the Payment Rails architecture and watching for confirmation before releasing the token leg. The goal is always the same: no partial deliveries, no manual reconciliation queues, and a clear audit trail for every matched instruction.
 
 ## Payment networks and ISO 20022 alignment

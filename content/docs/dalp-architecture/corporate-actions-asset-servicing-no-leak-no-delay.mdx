@@ -21,9 +21,32 @@ Every entitlement checks the same whitelists and rules as transfers. Ineligible 
 
 ## The execution path
 
-Corporate actions follow a five‑step execution path that eliminates the manual coordination that creates errors in traditional systems. The process starts when the issuer declares the action by setting parameters like payment amounts, record dates, and eligibility criteria. The system validates these against legal thresholds and regulatory notice requirements before proceeding.
+Corporate actions follow a five-step execution path that eliminates the manual coordination that creates errors in traditional systems. The process starts when the issuer declares the action by setting parameters like payment amounts, record dates, and eligibility criteria. The system validates these against legal thresholds and regulatory notice requirements before proceeding.
 
-Next comes the record‑date snapshot that captures eligible holders at a specific point in time. The system can optionally implement a temporary transfer lock to prevent ownership changes that would complicate the distribution. This snapshot becomes the immutable basis for all subsequent calculations.
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Issuer
+  participant Compliance
+  participant Snapshot
+  participant Compute
+  participant Rails as "Payment rails"
+  participant Audit
+
+  Issuer->>Compliance: Declare action parameters
+  Compliance->>Issuer: Approve or pause until filings
+  Compliance->>Snapshot: Start record-date snapshot
+  Snapshot-->Snapshot: Optional transfer lock window
+  Snapshot->>Compute: Eligible holder list
+  Compute->>Rails: Send payout instructions (token & fiat)
+  Rails->>Audit: Receipts & confirmations
+  Compute->>Audit: Entitlement & tax reports
+  Rails-->>Issuer: Settlement status updates
+  Note over Rails,Audit: Stablecoin legs attach reserve proof packets
+`}
+/>
+
+Next comes the record-date snapshot that captures eligible holders at a specific point in time. The system can optionally implement a temporary transfer lock to prevent ownership changes that would complicate the distribution. This snapshot becomes the immutable basis for all subsequent calculations.
 
 The computation step handles pro‑rata calculations and tax withholding automatically. The system checks eligibility for each holder based on their jurisdiction, investor status, and any asset‑specific restrictions. This prevents payments to ineligible recipients that would create compliance violations.
 

@@ -23,6 +23,31 @@ Each authenticated user can be mapped to an OnchainID identity via the bundled r
 
 The platform recognises three operational personas. Human users sign in through the dApp, complete onboarding, and receive the permissions assigned to their role. Automation uses API keys that inherit explicit scopes and rate limits, so background jobs or treasury bots have just enough access to do their work. Smart-contract compliance modules act as the third guardrail: even if a session is valid, a transfer still fails unless the holder’s OnchainID claims satisfy the token’s rules.
 
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant User
+  participant Auth as "Better Auth"
+  participant Roles as "Role engine"
+  participant APIKey as "Automation key"
+  participant OnchainID
+  participant Service as "Asset service"
+  participant Audit
+
+  User->>Auth: Sign in (password/passkey/TOTP)
+  Auth->>Roles: Evaluate statements
+  Roles-->>Auth: Session scopes
+  User->>Service: Request lifecycle action
+  Service->>Roles: Permission check
+  Service->>OnchainID: Verify claims & jurisdiction
+  OnchainID-->>Service: Claims valid/blocked
+  Service-->>User: Approve or deny action
+  Auth->>APIKey: Mint scoped API key
+  APIKey->>Service: Automation call (rate limited)
+  Service->>Audit: Log & forward to SIEM
+`}
+/>
+
 Roles are managed through Better Auth’s access-control statements. The starter roles look like this:
 
 ```
@@ -67,4 +92,3 @@ Metrics stay lightweight but concrete:
 - Compliance guardrails: report how often compliance modules such as transfer approvals or allowlists block actions—steady, explainable numbers reassure auditors that the rules fire as intended.
 
 These indicators keep security, compliance, and product teams aligned on whether controls are being used, not just configured.
-

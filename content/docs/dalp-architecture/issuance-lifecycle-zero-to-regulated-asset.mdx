@@ -31,7 +31,19 @@ Issuance gates distribution through KYC/KYB, accreditation, and on‑chain white
 
 The architecture centers around four core components that work together to eliminate manual processes. The token factory and template system deploys smart contracts with compliance controllers already attached. Each deployment gets parameterized based on asset class and jurisdiction, ensuring the right legal framework gets baked into the contract from day one.
 
-A subgraph‑backed indexer continuously subscribes to Transfer, Mint, and Burn events across all deployed assets. It reconciles positions instantly and exposes query endpoints—surfaced in the Asset Manager UI and via GraphQL—that give issuers real‑time visibility into ownership, eligibility, and lifecycle status. This eliminates the weeks‑long reconciliation cycles that plague traditional capital markets.
+<Mermaid
+  chart={`
+flowchart LR
+  designer["Asset Designer wizard"] --> factory["Token factory + compliance controllers"]
+  factory --> indexer["Subgraph + cap table indexer"]
+  factory --> docs["Document & claim store"]
+  indexer --> engine["Distribution engine"]
+  docs --> surfaces["Asset Manager UI & API surfaces"]
+  engine --> surfaces
+`}
+/>
+
+A subgraph-backed indexer continuously subscribes to Transfer, Mint, and Burn events across all deployed assets. It reconciles positions instantly and exposes query endpoints—surfaced in the Asset Manager UI and via GraphQL—that give issuers real-time visibility into ownership, eligibility, and lifecycle status. This eliminates the weeks-long reconciliation cycles that plague traditional capital markets.
 
 Document hashes, prospectus references, and base‑price claims live alongside the asset’s on‑chain identity, so legal artefacts and pricing attestations remain auditable from launch through redemption.
 

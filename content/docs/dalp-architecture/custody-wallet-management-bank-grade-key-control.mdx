@@ -39,7 +39,33 @@ Operational visibility comes through Asset Manager dashboards that surface walle
 
 Custody integrations start with a provider handshake—connecting Fireblocks, Metaco, Luna HSMs, or internal vaults via secure credential exchange—and mapping accounts to issuers. Once a provider is registered, the orchestrator can trigger notarised movements without bypassing the custodian’s own policy stack.
 
-Policy management lives in the Asset Manager dashboards and oRPC routes: teams configure spending limits, approval thresholds, velocity caps, and destination allowlists per account type. Routine movements clear automatically; outliers route to multi‑sig approval queues so nothing slips past segregation of duties.
+<Mermaid
+  chart={`
+flowchart LR
+  subgraph Integrations
+    handshake["Provider handshake"]
+    policies["Policy engine configuration"]
+  end
+  subgraph Execution
+    queue["Approval queue (multi-sig)"]
+    signer["Custody signer service"]
+    rails["Custodian APIs & payment rails"]
+  end
+  subgraph Transparency
+    attest["Omnibus attestations"]
+    cap["Cap-table indexer"]
+    compliance["Compliance engine"]
+  end
+
+  handshake --> policies --> queue --> signer --> rails
+  rails --> notifier["Asset Manager dashboards"]
+  rails --> audit["Audit logs & SLA metrics"]
+  rails --> attest --> cap --> compliance
+  compliance --> queue
+`}
+/>
+
+Policy management lives in the Asset Manager dashboards and oRPC routes: teams configure spending limits, approval thresholds, velocity caps, and destination allowlists per account type. Routine movements clear automatically; outliers route to multi-sig approval queues so nothing slips past segregation of duties.
 
 Transaction execution follows a proposal → validation → approval → broadcast loop. Proposals enter the queue, the policy engine and multi‑sig validators review them, and only then are transactions dispatched to the blockchain or payment rail.
 
