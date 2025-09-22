@@ -1,0 +1,16 @@
+{
+  "title": "Asset Tokenization Kit",
+  "description": "How the SettleMint Asset Tokenization Kit operationalizes the architecture mandates.",
+  "icon": "Building2",
+  "pages": [
+    "issuance-lifecycle-zero-to-regulated-asset",
+    "corporate-actions-asset-servicing-no-leak-no-delay",
+    "custody-wallet-management-bank-grade-key-control",
+    "settlement-interoperability-t0-baseline",
+    "deployment-white-label-your-brand-your-environment",
+    "enterprise-authentication-access-control-iam",
+    "user-developer-experience-uxdx-speed-without-chaos",
+    "regulatory-legal-framework-turn-law-into-software",
+    "data-reporting-audit-evidence-or-it-didnt-happen"
+  ]
+}

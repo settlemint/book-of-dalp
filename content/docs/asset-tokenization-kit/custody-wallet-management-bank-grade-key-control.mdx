@@ -1,0 +1,63 @@
+---
+title: "Custody Control"
+description: "The kit enforces role-separated control for keys, custodians, and operator actions without rebuilding governance."
+---
+
+## Centralized access, distributed duties
+
+ATK replaces contract-by-contract permissioning with a single Access Manager deployed by `ATKSystemFactory`. The manager exposes people roles (`ATKPeopleRoles.SYSTEM_MANAGER_ROLE`, `IDENTITY_MANAGER_ROLE`, `TOKEN_MANAGER_ROLE`, and more) and system roles (`ATKSystemRoles.SYSTEM_MODULE_ROLE`, `TOKEN_FACTORY_MODULE_ROLE`) so wallets, services, and automation scripts inherit only the capabilities they need.
+
+Tokens plug into this control plane through `SMARTTokenAccessManagedUpgradeable`. Custodian-specific operations—escrowing collateral, releasing funds, handling investor redemptions—are exclusively gated behind `SMARTCustodianUpgradeable`, while supply operations sit behind `SUPPLY_MANAGEMENT_ROLE`. This prevents the all-powerful admin wallets that plague bespoke deployments.
+
+<Mermaid
+  chart={`
+flowchart LR
+  AccessManager["ATKSystemAccessManager"] --> PeopleRoles["People roles"]
+  AccessManager --> SystemRoles["System roles"]
+  PeopleRoles --> Operators
+  SystemRoles --> Tokens
+  Tokens -->|enforce| SMARTCustodian
+  Tokens -->|enforce| SMARTTokenAccessManaged
+`}
+/>
+
+## Custodian-first token design
+
+- **Escrow discipline:** The bond contract tracks denomination assets and refuses maturity finalization unless redemption liquidity is fully funded. Withdrawal helpers ensure custodians can reclaim excess collateral without jeopardising investor payouts.
+- **Forced operations with audit:** Governance can pause, force-transfer, or freeze accounts through SMART modules, yet all such actions emit structured events consumed by the subgraph, so oversight teams review every exceptional move.
+- **Segregated vaults:** The vault addon offers segregated pools per asset or tranche, with role-gated deposit and withdrawal functions. Custodial providers integrate through Portal APIs, enabling SOC2-compliant workflows.
+
+## Identity & credential governance
+
+Identity management is tied directly to custody. When an operator is onboarded, the dApp assigns people roles and the identity registry stores their OnchainID. Trusted issuers registered at bootstrap (or later by compliance teams) can append AML/KYC claims, enabling automated credential revocation if an operator leaves the organization.
+
+The front end uses Better Auth with passkey/WebAuthn support (`kit/dapp/src/providers/auth.tsx`) for strong MFA. Portal accounts inherit the same sign-in flows—SSO, passkeys, backup codes—so custody desks use enterprise-grade authentication rather than seed phrases. Administrators can invite or disable operators, set operating hours, and review system access logs directly in the Portal interface.
+
+## Operational consoles ready out of the box
+
+SettleMint’s Portal bundles asset management, member management, and monitoring surfaces. Operators gain clear entry points for scanning holdings, initiating transfers, managing user roles, and reviewing audit trails without custom dashboards. The Asset Tokenization Kit integrates with the same backend, so the operator console reflects on-chain events in near real-time.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Admin
+  participant Portal
+  participant AccessManager
+  participant Token
+  participant Subgraph
+  Admin->>Portal: Assign custodian role
+  Portal->>AccessManager: grantRole(CUSTODIAN, wallet)
+  Custodian ->> Portal: Initiate redemption
+  Portal->>Token: redeem(holder, amount)
+  Token->>Subgraph: emit RedemptionRecorded
+  Subgraph-->>Portal: Updated custody dashboard
+`}
+/>
+
+## Safeguards for institutions
+
+- **Multi-channel approvals:** Workflows can require approvals from separate roles (e.g., treasury + compliance) before execution; the Access Manager’s batch grant/revoke helpers make multi-sig or MPC wallet integration straightforward.
+- **Gas abstraction:** ERC-2771 support lets operators act through the trusted forwarder, so actions originate from controlled service wallets while preserving the actual human approver in the logs.
+- **Observability:** Helm chart values include dedicated monitoring (Grafana, VictoriaMetrics, Loki). Custody desks get dashboards for vault balances, redemption queues, and Mint/Burn operations out of the box.
+
+ATK turns wallet governance, custody segregation, and operator oversight into configuration tasks instead of engineering projects, meeting bank-grade expectations with auditable, multi-layer controls.

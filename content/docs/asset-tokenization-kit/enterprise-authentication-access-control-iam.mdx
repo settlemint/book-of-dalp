@@ -1,0 +1,71 @@
+---
+title: "Identity & IAM"
+description: "ATK aligns smart-contract roles, Portal access, and workforce identity to keep auditors and CISOs comfortable."
+---
+
+## One control plane for smart contracts and people
+
+The Access Manager deployed by `ATKSystemFactory` becomes the IAM backbone of the system. Human operators receive `ATKPeopleRoles` (system manager, token manager, compliance manager, claim policy manager, auditor, etc.), while smart contracts and services obtain `ATKSystemRoles`. Because every contract that matters inherits from `ATKSystemAccessManaged`, the same role check modifers guard on-chain actions, ORPC procedures, and Portal APIs.
+
+Role grants and revocations happen in batches, so organisations can wire approvals into their internal workflows or multi-sig/MPC policies. Every change emits audit events, making it trivial to reconcile blockchain state with IAM records.
+
+<Mermaid
+  chart={`
+flowchart LR
+  HR["HR / IdP"] --> PortalProvisioning
+  PortalProvisioning --> AccessManager["ATKSystemAccessManager"]
+  AccessManager --> PeopleRoles
+  AccessManager --> SystemRoles
+  PeopleRoles --> Dapp
+  SystemRoles --> Contracts
+`}
+/>
+
+## Workforce identity with modern auth
+
+The dApp and Portal share a Better Auth integration with passkey/WebAuthn support (`kit/dapp/src/providers/auth.tsx`). Features include:
+
+- **Passwordless login:** Passkeys and WebAuthn, with backup codes and authenticator apps for fallbacks.
+- **Session intelligence:** TanStack Query-backed session hooks add optimistic UX without compromising security.
+- **Role-aware UI:** Authentication context propagates into TanStack Router guards, so components render only when the operator’s role set matches the required on-chain permissions.
+
+Portal extends these capabilities to customer organisations: onboarding, member management, asset access, and monitoring consoles sit behind the same identity layer, delivering consistent MFA, session control, and admin oversight.
+
+## Policy capture as code
+
+Compliance, identity, and addon modules rely on registries managed by the system contract. Policy changes—adding a new trusted issuer, tweaking a claim topic, registering a custom compliance module—translate to explicit transactions rather than undocumented operations. Compliance teams can read `ATKTopics.sol` and module registries to validate that legal requirements remain enforceable.
+
+## End-to-end IAM workflow
+
+1. **Provision:** Ops teams invite a user via Portal. The invite triggers Better Auth enrolment; once complete, ORPC routes apply requested roles by calling the Access Manager.
+2. **Operate:** When the user initiates an action (mint, whitelist, corporate event), the dApp checks both Better Auth session state and on-chain roles. ERC-2771 contexts preserve their identity even when a forwarder pays the gas.
+3. **Review:** Audit teams query Hasura or the subgraph to cross-check role assignments, transaction history, and Portal activity. `kit/subgraph/src/access-control` indexes grants, revocations, and role usage.
+4. **Deprovision:** Removing a user in Portal revokes roles on the Access Manager and invalidates sessions instantly.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Admin
+  participant Portal
+  participant Auth
+  participant AccessManager
+  participant Dapp
+  Admin->>Portal: Invite operator
+  Portal->>Auth: createEnrollment(passkey)
+  Operator->>Auth: completeEnrollment
+  Portal->>AccessManager: grantRoles(operator, [TOKEN_MANAGER])
+  Operator->>Dapp: mint request
+  Dapp->>Auth: validateSession
+  Dapp->>AccessManager: hasRole(operator, TOKEN_MANAGER)
+  AccessManager-->>Dapp: true
+  Dapp->>Blockchain: execute transaction
+`}
+/>
+
+## Governance assurances
+
+- **Least privilege:** Separation between people and system roles means automation can hold powerful capabilities while humans retain oversight, or vice versa.
+- **Audit exports:** Portal dashboards and APIs output role matrices, login histories, and transaction summaries, supporting internal audit and regulatory filings.
+- **Compliance ready:** Because trusted issuers, claim topics, and compliance modules are registries rather than hard-coded addresses, organisations can update legal policies without contract redeployments—critical when regulations shift.
+
+ATK brings enterprise IAM discipline to tokenized assets: workforce identity, contract permissions, and governance trails live in a single, observable system instead of scattered scripts.

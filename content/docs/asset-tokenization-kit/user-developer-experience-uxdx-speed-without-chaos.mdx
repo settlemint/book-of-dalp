@@ -1,0 +1,65 @@
+---
+title: "UX & DX"
+description: "ATK keeps product, engineering, and operations moving quickly without introducing chaos."
+---
+
+## A monorepo that actually helps
+
+ATK is organised as a Turbo repo with workspaces for contracts, dApp, subgraph, charts, and e2e tests. Bun powers scripts across the stack (`bun run artifacts`, `bun run test`, `bun run lint`, `bun run codegen`). Shared configuration makes cross-package changes predictable, while caching keeps CI and local workflows fast.
+
+Developers jump between packages without context loss: TypeScript paths align, lint rules match, and generated types reflect smart-contract changes the moment `bun run artifacts` runs. No more wondering which repository owns a component.
+
+## Operator-grade dApp, developer-friendly APIs
+
+- **TanStack Router + Query:** The dApp provides route-level loaders, optimistic updates, and offline resilience. Operators enjoy snappy interactions, while developers hook into proven patterns.
+- **ORPC server (`kit/dapp/src/orpc`)**: typed procedures expose contract actions, compliance operations, identity management, and analytics. Clients consume generated types, so front-end, back-end, and integration partners all speak the same language.
+- **Drizzle ORM & Hasura:** Database schemas live alongside TypeScript types (`kit/dapp/src/lib/db`). Hasura automatically tracks migrations, giving developers GraphQL APIs for dashboards and integrations without writing resolvers.
+
+<Mermaid
+  chart={`
+flowchart LR
+  Contracts -->|bun run artifacts| Types
+  Types --> Dapp
+  Types --> Subgraph
+  Dapp --> ORPC
+  ORPC --> Portal
+  Subgraph --> Hasura
+  Hasura --> Analytics
+`}
+/>
+
+## Testable from IDE to CI
+
+- **Contracts:** Foundry tests cover factory flows, compliance checks, and role management. Hardhat scripts publish artifacts to local Anvil nodes for integration testing.
+- **Front end:** Vitest exercises hooks and UI logic; Playwright (`kit/e2e/ui-tests`) runs end-to-end scenarios covering onboarding, issuance, and corporate actions.
+- **APIs:** Playwright API suites ensure ORPC routes and Portal endpoints stay backward compatible.
+
+`bun run ci` chains format, compile, codegen, lint, and test into a single command. Teams see comprehensive validation before merges, which keeps mainline stable.
+
+## User tooling that hides complexity
+
+The Asset Manager UI guides non-technical staff through onboarding, asset creation, compliance configuration, monitoring, and servicing. Components like `system-addons`, `asset-designer`, and `compliance` give contextual help, while data tables and charts draw from the subgraph for real-time insight.
+
+Portal mirrors these capabilities for client organisations, exposing member management, activity feeds, API keys, and monitoring dashboards. Because Portal and the dApp share artifacts and ORPC contracts, brand teams can create cohesive experiences without duplicating logic.
+
+## Automation-ready from day zero
+
+Typed SDKs, GraphQL endpoints, and ORPC procedures equip partners to integrate quickly. Whether banks embed issuance in existing portals or custodians automate reconciliation, they inherit the same safeguards (compliance modules, access control, audit logs) as the first-party UI.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Dev
+  participant CLI
+  participant Tests
+  participant Portal
+  participant Ops
+  Dev->>CLI: bun run artifacts
+  CLI->>Tests: bun run ci
+  Tests-->>Dev: pass
+  Dev->>Repo: merge
+  Ops->>Portal: monitor rollout dashboards
+`}
+/>
+
+ATK stops teams from choosing between velocity and control. Developers iterate confidently, operators enjoy polished tooling, and partners integrate through stable, typed APIs—without reinventing the stack each time.

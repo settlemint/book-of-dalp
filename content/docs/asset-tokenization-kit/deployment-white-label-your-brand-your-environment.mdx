@@ -1,0 +1,59 @@
+---
+title: "Deployment"
+description: "From local sandboxes to regulated clusters, ATK packages the full environment so ops teams avoid snowflake stacks."
+---
+
+## Turnkey environments
+
+ATK provides two fully supported deployment paths:
+
+1. **Local compose stack (`docker-compose.yml`)**: spins up Anvil, TxSigner, Portal, Graph Node, Hasura, Postgres, Redis, MinIO, and Blockscout with pre-generated artifacts. Developers run `bun run artifacts && bun run dev:up` to regenerate genesis files, ABIs, database snapshots, and subgraph deployments before launching the stack.
+2. **Kubernetes Helm chart (`kit/charts/atk`)**: ships environment-specific values for vanilla Kubernetes and OpenShift. The chart composes subcharts for the dApp, network, Portal, txsigner, Graph Node, Hasura, observability (Grafana, Loki, VictoriaMetrics, Tempo), ingress, and support services. Operators simply override connection strings and ingress hosts to land the kit in their cluster.
+
+<Mermaid
+  chart={`
+flowchart TD
+  Artifacts["bun run artifacts"] --> Compose["docker-compose"]
+  Artifacts --> Helm["Helm chart"]
+  Compose --> LocalSandbox
+  Helm --> Cluster["Kubernetes/OpenShift"]
+  Cluster --> Observability["Grafana/Loki/Tempo"]
+`}
+/>
+
+## White-label UX in minutes
+
+The dApp exposes theming and terminology controls in `kit/dapp/src/components/platform-settings` and Tailwind design tokens. Teams customise logos, color palettes, copy, onboarding flows, and even navigation by editing config files or environment variables—no fork required. Because the UI consumes typed ORPC endpoints, whitelabeling does not break backend compatibility.
+
+Portal exposes the same white-label surface: change customer-facing branding, domain names, and email templates through configuration while relying on the same asset management, identity, and analytics capabilities.
+
+## Infrastructure baked in
+
+- **Secrets & config management:** Helm values split credentials for Portal, Graph Node, Hasura, txsigner, and addons so ops teams route to external PostgreSQL/Redis clusters or managed services effortlessly.
+- **Scaling guidance:** Each subchart exposes resource requests/limits. Network nodes, eRPC, and subgraph workloads support horizontal scaling, while observability defaults to production-ready storage classes.
+- **Upgrade safe:** Implementation addresses are managed centrally in `ATKSystemImplementation`, so contract upgrades follow a controlled process. Docker images for Portal, dApp, Graph Node, and txsigner are versioned (e.g., `2.0.0-alpha.7`) for predictable rollouts.
+
+## CI/CD ready signals
+
+Turbo tasks and Bun scripts encapsulate linting, testing, code generation, and build artefacts. Combine them in CI pipelines (`bun run ci`) to validate smart contracts, dApp, and subgraph before shipping Helm releases. Artifact jobs output predeployed addresses and ABIs, which the chart then mounts automatically.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Dev
+  participant CI
+  participant Registry
+  participant Cluster
+  Dev->>CI: push main
+  CI->>CI: bun run ci
+  CI->>Registry: publish artifacts & images
+  Ops->>Cluster: helm upgrade --install atk
+  Cluster->>Ops: Portal + dApp ready
+`}
+/>
+
+## Operational comfort for enterprises
+
+Observability is not an afterthought. Grafana dashboards surface network health, tx signer load, Portal API latencies, and Graph Node indexing status out of the box. Logs land in Loki, metrics in VictoriaMetrics, and traces in Tempo, meeting enterprise monitoring baselines without extra wiring.
+
+Whether teams run a local proof-of-concept, a regulated pilot, or a multi-region rollout, ATK delivers a repeatable deployment story with white-labeled interfaces that stay in lockstep with the underlying smart-contract architecture.

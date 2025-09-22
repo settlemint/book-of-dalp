@@ -1,0 +1,59 @@
+---
+title: "Data & Audit"
+description: "Every ATK move is indexed, queryable, and exportable—no more reconciliation fire drills."
+---
+
+## Unified data layer
+
+ATK’s subgraph (`kit/subgraph`) tracks system events, asset deployments, transfers, compliance outcomes, claims, collateral balances, and corporate actions. Entities in `stats/`, `token/`, and `identity/` directories transform raw events into business-friendly aggregates—holder counts by jurisdiction, outstanding principals by asset class, compliance exceptions, and addon execution history.
+
+Hasura sits on top of the same PostgreSQL backing the dApp, exposing GraphQL and SQL APIs for dashboards, BI tools, and automated reporting. Because migrations are generated (`bun run db:generate`) and versioned with the codebase, analytics never drift from contract reality.
+
+<Mermaid
+  chart={`
+flowchart LR
+  Blockchain --> Subgraph
+  Subgraph --> Postgres
+  Postgres --> Hasura
+  Hasura --> BI["BI tools"]
+  Postgres --> PortalReports["Portal analytics"]
+  Postgres --> DappDashboards["Asset Manager dashboards"]
+`}
+/>
+
+## Operational telemetry out of the box
+
+- **Portal dashboards** surface asset-specific analytics: top holders, investor onboarding funnel, compliance blocks, corporate action histories, and API usage.
+- **Asset Manager visualisations** pull from the subgraph and Hasura to give treasury, compliance, and operations teams instant insight—no exports required.
+- **Observability stack** (Grafana, Loki, VictoriaMetrics, Tempo) monitors infrastructure health and provides event traces, making it easy to correlate user actions with on-chain events.
+- **Blockscout explorer** adds transaction-level transparency and API access for partners.
+
+## Evidence for regulators and auditors
+
+Every compliance check emits typed events stored by the subgraph (`compliance.ts`). Identity claim changes, role grants, and addon executions get the same treatment. Teams export CSVs or feed data warehouses by consuming Hasura endpoints or the GraphQL API exposed by the Graph Node.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Auditor
+  participant Portal
+  participant Hasura
+  participant Subgraph
+  Auditor->>Portal: Request compliance report
+  Portal->>Hasura: query compliance_events(issuer, asset)
+  Hasura-->>Portal: dataset
+  Portal->>Auditor: export (CSV/PDF/API)
+  Auditor->>Subgraph: verify events via GraphQL
+  Subgraph-->>Auditor: on-chain proof references
+`}
+/>
+
+## Near real-time insights
+
+`kit/subgraph/src/stats/token-distribution-stats.ts` maintains running totals for supply, redemptions, yield payouts, and holder segments. `account-stats.ts` tracks investor onboarding velocity, while `system-stats.ts` reports registry changes and addon activations. These feeds power:
+
+- **Compliance alerts:** Immediately flag transfers blocked by policy, claim expirations, or bypass list changes.
+- **Treasury dashboards:** Monitor collateralization, outstanding redemption liability, and coupon coverage.
+- **Investor relations metrics:** Shareholder concentration, geographic exposure, and voting power snapshots.
+
+With ATK, reporting is intrinsic to the platform. The same mechanisms that enforce policy also publish the evidence everyone needs—regulators, auditors, partners, and internal teams alike.

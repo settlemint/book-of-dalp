@@ -1,0 +1,64 @@
+---
+title: "Regulation"
+description: "ATK encodes law as configurable modules so compliance evolves without redeploying the stack."
+---
+
+## Compliance as first-class modules
+
+ATK’s compliance contract (`ATKComplianceImplementation`) orchestrates both token-level and global modules. During bootstrap, the system registers an identity verification module so every asset inherits KYC enforcement. Compliance managers can add, update, or remove global modules—think jurisdiction blocklists, concentration caps, investor eligibility—without touching token code. Tokens can add their own modules for asset-specific policies.
+
+Modules receive hook calls on `created`, `transferred`, and `destroyed` events, guaranteeing that every lifecycle action obeys policy. Global bypass lists exist, but only compliance, system, or addon managers can alter them, and every change is logged.
+
+## Identity governance baked in
+
+The identity stack—identity factory, identity registry, identity registry storage, trusted issuers, topic scheme registry—ships with the system. Claim topics defined in `ATKTopics.sol` (e.g., KYC/AML, accredited investor, contract identity) ensure consistent semantics across issuers. Trusted issuers register once and gain authority, via claim authorizers, to append claims directly to identities.
+
+Contract identities can issue claims themselves (`issueClaimTo`), enabling products like whitelisted DeFi integrations or automated corporate attestations. Claim issuance is tracked end-to-end: the identity factory gives itself a contract identity, registers as a trusted issuer, and delivers initial claims automatically.
+
+<Mermaid
+  chart={`
+flowchart LR
+  TrustedIssuer --> TopicRegistry
+  TrustedIssuer --> IdentityRegistry
+  IdentityFactory --> IdentityRegistry
+  IdentityRegistry --> Compliance
+  Compliance --> Token
+  Token --> Compliance
+`}
+/>
+
+## Regulatory agility
+
+- **Jurisdiction templates:** Compliance modules encapsulate jurisdiction-specific logic (e.g., EU prospectus thresholds, US accreditation checks). Teams can deploy new modules as regulations evolve and register them via the module registry.
+- **Attestation lineage:** Claims store issuer, topic, issuance proof, and optional URI, giving auditors a cryptographically linked trail from asset action back to documentation.
+- **Policy versioning:** Implementation managers update module or identity implementations centrally. Tokens inherit upgrades through the system proxies, so if a regulator updates guidance, teams roll out the new module once.
+
+## Enforcement workflow
+
+1. **Investor onboarding:** Portal collects KYC/KYB evidence, then a trusted issuer mints claims onto the investor’s identity. The identity registry publishes status to tokens and compliance modules.
+2. **Policy evaluation:** Before a transfer, compliance queries token-specific modules, then global modules; if any fail, the transaction reverts, preventing regulatory breaches.
+3. **Audit:** Subgraph mappings (`kit/subgraph/src/identity`, `.../compliance`) record claims, issuers, modules, and evaluation results. Hasura exposes the same information for reporting, with filters by jurisdiction, issuer, asset, and time window.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Portal
+  participant Issuer
+  participant Identity
+  participant Compliance
+  participant Token
+  Portal->>Issuer: requestClaim(wallet, topic)
+  Issuer->>Identity: addClaim(topic, proof)
+  Identity-->>Portal: claimIssued
+  Token->>Compliance: canTransfer(from, to, amount)
+  Compliance->>Identity: verifyClaims(to, topic)
+  Identity-->>Compliance: valid
+  Compliance-->>Token: allowed
+`}
+/>
+
+## Reporting ready for regulators
+
+Hasura and Portal build compliance reports from subgraph data: who holds what, which claims back their eligibility, and which modules permitted or blocked transactions. Teams export audit artifacts on demand instead of manually stitching evidence later.
+
+By encoding law as registries, claims, and modules, ATK lets compliance stay ahead of regulation without sacrificing programmability or speed.

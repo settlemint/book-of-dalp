@@ -1,0 +1,68 @@
+---
+title: "Settlement"
+description: "How ATK executes deterministic settlement flows and plugs into external rails without bespoke glue."
+---
+
+## Deterministic settlement on day one
+
+ATK assets embed transfer checks inside SMART compliance modules. Before every movement, tokens call both token-level and global modules via the `ATKComplianceImplementation` contract. This ensures KYC/KYB, jurisdiction limits, and blocklists gate settlement at the consensus layer—no asynchronous reconciliation required.
+
+Lifecycle-sensitive flows (forced transfers, pauses, redemptions) use the same hooks, so settlement logic stays consistent whether the trigger is voluntary or supervisory. `SMARTCustodianUpgradeable` guarantees denomination coverage on redemptions, preventing partial settlements that erode trust.
+
+## Real-time rails across services
+
+- **Meta-transaction routing:** `ATKForwarder.sol` and ERC-2771 contexts allow orchestrators—dApps, Portal, or automation bots—to sponsor gas, so settlement instructions can be executed from secure service infrastructure while retaining the operator’s signature trail.
+- **eRPC layer:** The Helm chart’s `erpc` component front-loads reliable JSON-RPC access with redis-backed caching, smoothing load when multiple desks settle simultaneously.
+- **Network bootstrapper:** Besu-based networks spin up via Docker or Helm with predeployed contracts, signers, subgraph, and explorer support. This shortens time-to-first-settlement in new environments or sandboxes.
+- **Cross-integration addons:** The XvP addon manages delivery-versus-payment workflows, while vault connectors let teams route cash legs through custodial accounts or off-chain ledgers.
+
+<Mermaid
+  chart={`
+flowchart LR
+  Portal["Portal / API"] -->|Submit settlement| Forwarder["Trusted forwarder"]
+  Forwarder --> Token["SMART token"]
+  Token --> Compliance["Compliance + global modules"]
+  Token --> Custody["Custodian vault"]
+  Token --> Subgraph["Settlement indexers"]
+  Subgraph --> Analytics["Ops dashboards"]
+`}
+/>
+
+## Bridging on- and off-chain legs
+
+The addon registry gives settlement teams modular building blocks:
+
+- **Vault addon:** Configures settlement wallets and collateral accounts, splitting flows between on-chain and off-chain legs while emitting settlement receipts.
+- **xVP addon:** Encodes atomic atomic swaps between token legs and external payments, ensuring that cash and token legs succeed or revert together.
+- **Token sale addon:** Supports primary or secondary offerings without bypassing compliance, enabling book builds or batch settlements with full audit trails.
+
+`kit/subgraph/src/token-extensions/collateral` and `.../fixed-yield-schedule` keep continuous state on pledged collateral, outstanding principals, and disbursement dates so counterparties obtain instant settlement status.
+
+## Observability and assurance
+
+Blockscout, Graph Node, Hasura, and observability stacks deploy alongside the network. Settlement endpoints stream to dashboards with per-asset metrics—pending vs. completed settlements, cross-ledger reconciliation status, and anomaly flags. Logs feed into Loki for SIEM ingestion.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Desk
+  participant Portal
+  participant Addon
+  participant Token
+  participant Vault
+  participant GraphNode
+  Desk->>Portal: Initiate DvP(settlementId)
+  Portal->>Addon: executeDvP(settlementId)
+  Addon->>Token: transferTokens()
+  Addon->>Vault: releaseFiat()
+  Token->>GraphNode: emit Transfer
+  Vault-->>GraphNode: emit VaultRelease
+  GraphNode-->>Portal: Settlement status update
+`}
+/>
+
+## Interoperability ready for partners
+
+SettleMint’s Portal exposes REST and GraphQL APIs so banks, brokers, and transfer agents can integrate with their core systems. Combined with the typed ORPC server, partners get deterministic settlement endpoints (initiateDvP, settleRedemption, batchDistribute) without generating client SDKs themselves. Because every module is registered in centralized registries, teams can plug in bespoke payment bridges or reporting connectors without modifying asset contracts.
+
+With ATK, settlement is more than clearing tokens on-chain: it synchronizes compliance, custody, payments, and monitoring so T+0 becomes the default operating mode rather than an aspirational target.

@@ -1,0 +1,72 @@
+---
+title: "Servicing"
+description: "ATK handles coupons, redemptions, distributions, and vault events without spreadsheet choreography."
+---
+
+## Built-in corporate action primitives
+
+Every ATK asset is assembled from SMART extensions that encode servicing logic at the contract level:
+
+- `SMARTYieldUpgradeable` manages coupon schedules, interest accrual, and historical yield snapshots so payout calculations never depend on off-chain spreadsheets.
+- `SMARTRedeemableUpgradeable` and `SMARTCustodianUpgradeable` pair to automate redemption and custody flows—redemption windows, denomination-asset escrow, and post-maturity withdrawal paths are enforced on-chain.
+- `SMARTHistoricalBalancesUpgradeable` keeps immutable ledgers of holder balances at configurable checkpoints, powering pro-rata events without external reconciliation.
+
+The bond implementation (`ATKBondImplementation.sol`) illustrates how these modules wired together safeguard servicing: it validates maturity dates, tracks denomination assets for investor payouts, and blocks transfers post-maturity until obligations are met. Equity and fund factories apply the same pattern with share-class voting, distribution locks, and NAV hooks.
+
+## Addon ecosystem for structured actions
+
+ATK’s addon registry unlocks templated corporate actions:
+
+- **Yield addon (`contracts/addons/yield`)** distributes coupons or dividends to qualified holders, referencing historical balances and compliance modules to avoid paying blocked accounts.
+- **Vault addon (`contracts/addons/vault`)** segregates collateral and supports waterfall distributions, ideal for securitized debt or revenue-share instruments.
+- **Token sale & airdrop addons** execute secondary distributions, treasury grants, and incentive programs with role-gated execution.
+
+<Mermaid
+  chart={`
+flowchart TD
+  scheduler["Corporate action scheduler"] --> addonRegistry["Addon registry"]
+  addonRegistry --> yieldAddon["Yield addon"]
+  addonRegistry --> vaultAddon["Vault addon"]
+  yieldAddon --> token["SMART token"]
+  vaultAddon --> token
+  token --> compliance["Compliance contract"]
+  token --> serviceIndex["Servicing subgraph"]
+  serviceIndex --> reports["Ops dashboards & reports"]
+`}
+/>
+
+## Zero-leak servicing workflow
+
+1. **Event planning:** Operators define a payout or redemption in the Asset Manager. The UI collects parameters—record date, pay date, source wallet, whitelist overrides—and validates them against token roles (`ATKAssetRoles.GOVERNANCE_ROLE`, `SUPPLY_MANAGEMENT_ROLE`).
+2. **Snapshot confirmation:** Historical balance modules and subgraph projections confirm eligible balances and produce preview reports directly in the UI. Compliance modules run checks on the target population before any transfer occurs.
+3. **Execution via addons:** The relevant addon or token function executes in a single transaction batch. Denomination assets are debited from the custodian vault, bond holders’ `bondRedeemed` counters update, and yield events emit for subgraph indexing.
+4. **Post-event analytics:** `kit/subgraph/src/stats/token-distribution-stats.ts` aggregates per-holder payouts, cumulative distribution amounts, and outstanding obligations. Hasura exposes the same data to BI teams.
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant Operator
+  participant AssetManager
+  participant Addon
+  participant Token
+  participant Compliance
+  participant Subgraph
+  Operator->>AssetManager: Schedule coupon
+  AssetManager->>Compliance: validateRecipients(recordDate)
+  Compliance-->>AssetManager: ok
+  AssetManager->>Addon: triggerPayout(spec)
+  Addon->>Token: distributeYield()
+  Token->>Compliance: postTransferChecks()
+  Token->>Subgraph: emit YieldPaid events
+  Subgraph-->>Operator: Updated payout ledger
+`}
+/>
+
+## Operational controls and audit
+
+- **Bypass governance:** Governance, emergency, custodian, and supply roles are split at the access manager, letting operations, treasury, and compliance act independently while still requiring dual-control for sensitive actions.
+- **Meta-transaction support:** ERC-2771 integration across system and asset contracts enables gas-sponsored servicing, so operators can schedule events from secure consoles without relying on personal wallets.
+- **Immutable audit trails:** Every addon execution emits typed events; subgraph entities store input parameters, execution hashes, and per-investor outcomes to satisfy audit and regulator demands.
+- **API parity:** Portal APIs offer REST and GraphQL mutations that mirror the Asset Manager flows, allowing custodians or transfer agents to integrate their upstream systems with automated execution.
+
+With ATK, servicing is no longer an afterthought bolted onto issuance. Coupons land on time, redemptions enforce denomination coverage automatically, and every action leaves a verifiable footprint.
