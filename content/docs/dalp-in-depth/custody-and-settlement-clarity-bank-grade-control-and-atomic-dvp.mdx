@@ -1,20 +1,15 @@
 ---
-title: "Custody and Settlement Clarity (Bank-Grade Control & Atomic DvP)"
-description: "Shows how the DALP couples bank-grade custody with atomic delivery-versus-payment to remove settlement risk."
-icon: "Handshake"
+title: "Custody & Settlement"
+description: "Details the custody governance, servicing automation, and atomic payment rails that keep cash and tokens in lockstep."
 ---
 
 Custody and settlement define whether institutions can trust tokenized assets. The DALP treats them as a single control surface: keys, policies, liquidity, and payments run on the same runtime that enforces compliance, so cash and tokens never drift apart.
 
----
-
-## 5.1 Why custody and settlement break under fragmentation
+## Why custody and settlement break under fragmentation
 
 Retail-style custody and legacy settlement workflows fail institutional review. Single keys, omnibus ledgers, and ad hoc approval chains leave regulators staring at operational risk. Meanwhile, token legs clear on-chain while cash crawls through ACH or SWIFT batches, forcing reconciliation teams to chase exposure. Without a shared runtime, eligibility updates, policy changes, and cash instructions diverge, driving cap-table drift, settlement risk, and painful audits.
 
----
-
-## 5.2 Custody architecture inside the DALP
+## Custody architecture inside the DALP
 
 SettleMint’s custody blueprint gives the DALP bank-grade depth:
 
@@ -32,9 +27,7 @@ SettleMint’s custody blueprint gives the DALP bank-grade depth:
 | Reporting accuracy | 100 % | 99.98 % | Automated reconciliation |
 | System availability | >99.9 % | 99.95 % | Multi-zone deployments |
 
----
-
-## 5.3 Asset servicing without spreadsheets
+## Asset servicing without spreadsheets
 
 Corporate actions, income, and proxy voting follow deterministic workflows:
 
@@ -45,9 +38,7 @@ Corporate actions, income, and proxy voting follow deterministic workflows:
 
 Automation levels already reach 80–95 % across servicing categories, freeing operations teams to focus on exceptions instead of bulk processing.
 
----
-
-## 5.4 Multi-signature policy fabric
+## Multi-signature policy fabric
 
 The DALP standardizes signature tiers so governance is predictable:
 
@@ -58,9 +49,7 @@ The DALP standardizes signature tiers so governance is predictable:
 
 Signature collection, transaction execution, and audit packaging are instrumented (typical execution \<3 min, audit documentation ~45 s), keeping both regulators and internal risk satisfied.
 
----
-
-## 5.5 Settlement stack: atomic by default
+## Settlement stack: atomic by default
 
 The payment-rails architecture coordinates cash and tokens simultaneously:
 
@@ -71,18 +60,14 @@ The payment-rails architecture coordinates cash and tokens simultaneously:
 
 Failure paths are deterministic: if a rail rejects payment, the token leg aborts and reconciliation artifacts generate automatically. Success keeps cash and tokens perfectly synchronized.
 
----
-
-## 5.6 Operating model and stakeholder outcomes
+## Operating model and stakeholder outcomes
 
 - **Institutions** document fiduciary control with HSM evidence, policy logs, servicing receipts, and settlement proofs regulators can inspect in real time.
 - **Operations teams** manage approvals, settlement queues, liquidity, and exceptions from one console instead of toggling between bank portals and blockchain explorers.
 - **Investors** receive near-instant proceeds and transparent corporate-action timelines because servicing, custody, and settlement share the same data model.
 - **Developers** automate issuance, secondary trades, redemptions, and servicing with consistent APIs, SDKs, and webhooks that expose custody state, settlement status, and audit events.
 
----
-
-## 5.7 Guardrails that keep both legs in sync
+## Guardrails that keep both legs in sync
 
 1. Keys, policies, cash instructions, and compliance logic stay in one runtime; adapters connect to banks and custodians but never own business rules.
 2. Wallet tiers (hot/warm/cold) and approval matrices are automated and observable, with disaster-recovery drills rehearsed on the same pipelines that run production.

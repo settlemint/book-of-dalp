@@ -1,47 +1,34 @@
 ---
-title: "Developer and Operator Instrumentation"
-description: "Highlights the tooling, APIs, and observability the DALP provides to keep lifecycle operations deterministic."
-icon: "Wrench"
+title: "Ops & Instrumentation"
+description: "Highlights the telemetry, automation, and developer surfaces that keep lifecycle servicing observable and programmable."
 ---
 
 Developer and operator instrumentation is how the DALP keeps lifecycle operations—especially corporate actions and reporting—deterministic. When servicing, custody, and settlement share the same telemetry and automation, institutions see one coherent platform instead of a black box.
 
----
-
-## 7.1 Why tooling and servicing depth matter
+## Why tooling and servicing depth matter
 
 Tokenization programs collapse when servicing lives in spreadsheets or when engineers fly blind. Without typed APIs, reproducible environments, and actionable telemetry, integration teams stall, operations improvise, and regulators assume the worst. Instrumentation ties lifecycle accuracy to hard evidence so the DALP can scale safely.
 
----
-
-## 7.2 Asset servicing inside the DALP
+## Asset servicing inside the DALP
 
 Corporate actions, distributions, and reporting run as first-class workflows. Record dates, entitlement logic, approvals, and notifications are encoded alongside token logic and identity data. Workflow engines trigger servicing events, collect authorization, and generate receipts. Access control, audit logging, and compliance checks mirror transfer and settlement flows, ensuring eligibility rules fire before any action executes. Reporting engines compile position, transaction, and performance views from shared PostgreSQL and Subgraph stores, producing regulator-ready exports without manual reformatting.
 
----
-
-## 7.3 Operator control room: observability and automation
+## Operator control room: observability and automation
 
 Operations teams monitor settlement latency, approval queue depth, servicing SLAs, wallet balances, and API health from a single console. Structured logs and traces feed SIEM/SOC pipelines, while alerting policies invoke runbooks for custody incidents, compliance breaches, or payment failures. Automated reconciliation compares on-chain state, custody records, and investor statements so discrepancies trigger alerts immediately. Exceptions (missed payments, failed notices, disputed votes) re-enter the workflow with audit trails intact.
 
----
-
-## 7.4 Developer surface: APIs, SDKs, and sandboxes
+## Developer surface: APIs, SDKs, and sandboxes
 
 The Asset Tokenization Kit ships with ORPC APIs, GraphQL subgraphs, and versioned SDKs so builders compose lifecycle flows rather than hack around them. Schema validation via Zod, typed responses, and contract ABIs live in shared packages to keep frontends, backends, and integrations aligned. Sandbox environments mirror production topologies, seeded with sample assets and rule libraries, letting teams test servicing scenarios, compliance edge cases, and payment adapters before promotions.
 
----
-
-## 7.5 Stakeholder leverage
+## Stakeholder leverage
 
 - **Developers** automate issuance, servicing, reporting, and settlement through well-documented APIs, webhooks, and CLI tooling.
 - **Operations teams** correlate business metrics with infrastructure signals, rehearse failovers, and resolve exceptions through guided workflows instead of ad hoc spreadsheets.
 - **Compliance and risk teams** consume real-time dashboards and export evidence packs that trace every decision path.
 - **Partners and clients** receive consistent artifacts—API docs, SDKs, test harnesses—that shorten onboarding cycles.
 
----
-
-## 7.6 Instrumentation invariants
+## Instrumentation invariants
 
 1. Every capability ships with an API, schema, and example workflows; undocumented functionality is treated as a defect.
 2. Telemetry spans business and technical signals and feeds both customer and internal observability stacks by default.

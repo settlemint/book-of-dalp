@@ -1,14 +1,9 @@
 ---
-title: "Corporate Actions & Asset Servicing: No Leak, No Delay"
+title: "Corporate Actions"
 description: "Post‑issuance servicing is where trust is won or lost. Spreadsheets, missed record dates, and cash leaks kill institutional confidence. Our Corporate Actions module orchestrates dividends, coupons, votes, redemptions, splits, mergers, tax handling, notifications, and receipts with record‑date discipline, multi‑rail payouts, and end‑to‑end audit trails so every action lands on time and matches the ledger."
-icon: "CalendarCheck"
 ---
 
-**Conclusion:** Post‑issuance servicing is where trust is won or lost. Spreadsheets, missed record dates, and cash leaks kill institutional confidence. Our Corporate Actions module orchestrates dividends, coupons, votes, redemptions, splits, mergers, tax handling, notifications, and receipts with **record‑date discipline**, multi‑rail payouts, and end‑to‑end audit trails so every action lands on time and matches the ledger.
-
----
-
-## 2.1 What it automates
+## What it automates
 
 The Corporate Actions module replaces the spreadsheet choreography that slows down dividends, coupons, and governance. Declarations start in guided wizards that align to regulatory notice periods, then flow into automated pro‑rata calculations and payout orchestration. Payouts can settle on‑chain or through connected ACH, SEPA, SWIFT, or RTGS rails, producing receipts for issuers and holders without manual exports.
 
@@ -20,16 +15,11 @@ Corporate events such as splits, mergers, conversions, and rights offerings foll
 
 Fund administration hooks handle NAV ingestion, periodic issuances/redemptions at current NAV, and yield schedules set once in the ORPC/API Portal (e.g., `token.set-yield-schedule`). Once configured, income distributions ride the same servicing rails as dividends.
 
-
----
-
-## 2.2 Compliance never “falls off”
+## Compliance never “falls off”
 
 Every entitlement checks the same whitelists and rules as transfers. Ineligible holders don’t receive distributions; conversions inherit target‑asset rules; record‑date locks prevent disputes. When a jurisdiction imposes disclosure windows or notice periods, the declaration wizard encodes them and the runtime enforces them; if thresholds flip a filing obligation mid‑action, the system raises a legal alert and pauses the payout until the filing is acknowledged. The outcome is simple: the legal position cannot drift out of sync with servicing operations.
 
----
-
-## 2.3 The execution path
+## The execution path
 
 Corporate actions follow a five‑step execution path that eliminates the manual coordination that creates errors in traditional systems. The process starts when the issuer declares the action by setting parameters like payment amounts, record dates, and eligibility criteria. The system validates these against legal thresholds and regulatory notice requirements before proceeding.
 
@@ -43,10 +33,7 @@ When stablecoin or deposit tokens drive payouts, disclosure packs and analytics 
 
 Finally, the audit step creates an immutable record of every action with human‑readable reports. The outputs reconcile cash, tokens, and withheld amounts so discrepancies surface immediately instead of weeks later. This audit trail satisfies regulatory requirements without requiring additional manual compilation.
 
-
----
-
-## 2.4 What "good" looks like
+## What "good" looks like
 
 Success gets measured through specific performance targets that demonstrate system reliability. Corporate actions complete within their service windows—dividends inside 24 hours, income runs inside four, and reporting inside an hour—so issuers can depend on predictable settlement.
 
@@ -56,18 +43,12 @@ Automation rates north of 80% on corporate action processing (and 95% for income
 
 Digital voting surfaces stay available and easy to use, lifting participation well above the paper baseline and giving governance teams current data without mailing campaigns.
 
-
----
-
-## 2.5 Interfaces that matter
+## Interfaces that matter
 
 The developer surface stays minimal while handling complex workflows behind the scenes. Yield and distribution schedules are configured via API Portal or ORPC procedures (see `fixed‑yield‑schedule.*` and `token.set‑yield‑schedule` in [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index)). Payment instructions can be triggered through the same surface regardless of whether the payout uses stablecoins, domestic ACH, or cross‑border SWIFT rails.
 
 Back‑office teams work out of the Asset Manager dashboards to monitor timelines, approve exceptions, and download ready‑to‑file reports. Redemptions and tenders follow guided flows that freeze eligible balances, compute payouts, and coordinate settlement atomically to prevent partial execution failures. Receipts and tax records are generated on demand; issuer‑level reports provide accuracy proofs and auditor packages without manual compilation.
 
-
----
-
-## 2.6 Why competitors fail here
+## Why competitors fail here
 
 Most “tokenization” products stop at mint. Servicing is left to email and Excel. We ship **record‑date locks, payout rails, tax, receipts, and audits** in one runtime. That’s the difference between a demo and infrastructure.

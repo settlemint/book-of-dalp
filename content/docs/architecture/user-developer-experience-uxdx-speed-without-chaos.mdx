@@ -1,18 +1,13 @@
 ---
-title: "User & Developer Experience (UXDX): Speed Without Chaos"
+title: "UX & Developer Experience"
 description: "Adoption follows the paths that feel fast and trustworthy. The DALP ships a guided, multilingual Next.js dApp plus typed SDKs, ORPC APIs, and automation tooling so teams can launch compliant asset workflows without rebuilding basics."
-icon: "Sparkles"
----
-
-**Conclusion:** Adoption follows the paths that feel fast and trustworthy. The DALP ships a guided, multilingual Next.js dApp plus typed SDKs, ORPC APIs, and automation tooling so teams can launch compliant asset workflows without rebuilding basics.
-
 ---
 
 Financial technology platforms often fail because they prioritize feature completeness over user experience. Complex interfaces, slow performance, and confusing workflows create adoption barriers that kill even the most technically sophisticated platforms. Users abandon systems that require extensive training or create friction in their daily operations.
 
 The stakes are particularly high in tokenization, where user interfaces must serve multiple constituencies with different skill levels and requirements. Issuers need sophisticated asset management capabilities, investors require intuitive portfolio views, and administrators demand comprehensive control panels. A single interface that tries to serve all these needs typically serves none of them well.
 
-## 7.1 UX (issuers, investors, admins)
+## UX (issuers, investors, admins)
 
 The production dApp is purpose-built for three constituencies. Issuers configure assets through multi-step wizards (`kit/dapp/src/components/asset-designer/…`) that surface only the choices relevant to the instrument they are creating, while compliance officers and operators follow a separate onboarding state machine that checks wallet security, identity claims, and system bootstrap tasks in order. Investors and relationship managers see lighter dashboards focused on portfolio health, distribution events, and pending actions.
 
@@ -22,8 +17,7 @@ Localization is not an afterthought. The repo ships complete locale bundles for 
 
 Mobile responsiveness targets the investor journeys where phones dominate: vote prompts, distribution alerts, or signature requests render as single-column workflows with the same wizard scaffolding. Toasts, contextual callouts, and action centres collect approvals, KYC follow-ups, and system notices so teams do not hunt across pages. The combination keeps task completion high and support tickets low because users always know the next best action.
 
-
-## 7.2 DX (build fast, don't re‑plumb)
+## DX (build fast, don't re‑plumb)
 
 On the developer side the kit avoids mystery glue. The ORPC router in `kit/dapp/src/orpc` exposes every asset, compliance, and system capability through a typed HTTP+OpenAPI surface; the same definitions back the React client and any external integrator. When teams need data rather than commands, they can lean on the bundled subgraph and Hasura endpoints with generated fragments (`@settlemint/sdk-thegraph`, `@settlemint/sdk-hasura`) instead of hand-written queries.
 
@@ -33,8 +27,7 @@ Developers authenticate with Better Auth just like operators, then mint API keys
 
 Because everything sits in one Turborepo, extending the platform feels familiar: add a TanStack route, expose it through ORPC, update the locale bundles, and the CLI/typegen scripts pick up the change. No one has to decipher hidden services or private SDKs before shipping a feature.
 
-
-## 7.3 What to measure weekly
+## What to measure weekly
 
 Weekly checkpoints keep both experiences healthy:
 

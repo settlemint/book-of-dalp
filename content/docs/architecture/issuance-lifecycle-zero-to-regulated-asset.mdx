@@ -1,14 +1,9 @@
 ---
-title: "Issuance & Lifecycle: From Zero to Regulated Asset"
+title: "Issuance Lifecycle"
 description: "Issuance must be fast, programmable, and compliant by default. Anything else recreates the old capital‑markets backlog. Our Issuance & Lifecycle layer takes teams from term sheet to live, RWA‑ready assets in days instead of months, combining a real‑time cap table, jurisdiction‑aware templates, and full API control to keep delivery predictable."
-icon: "Rocket"
 ---
 
-**Conclusion:** Issuance must be fast, programmable, and compliant by default. Anything else recreates the old capital‑markets backlog. Our Issuance & Lifecycle layer takes teams from term sheet to live, RWA‑ready assets in **days instead of months**, combining a **real‑time cap table**, jurisdiction‑aware templates, and full API control to keep delivery predictable.
-
----
-
-## 1.1 What the Issuance layer does
+## What the Issuance layer does
 
 The Issuance layer handles multi‑asset creation across the entire spectrum of tokenizable securities. Whether you're issuing equity, bonds, funds, or stable deposit tokens, the system ships with jurisdiction‑specific templates (Reg D, Reg S, MiCA, MAS, and more) that remove guesswork from compliance structures.
 
@@ -26,17 +21,13 @@ Every operation exposes through APIs, enabling white‑label integration. Banks 
 
 **Why it matters:** You get speed **and** legal certainty. Issuers stop copy‑pasting spreadsheets; investors stop guessing who owns what; dev teams stop rebuilding plumbing.
 
----
-
-## 1.2 Compliance controls in the primary market
+## Compliance controls in the primary market
 
 Issuance gates distribution through KYC/KYB, accreditation, and on‑chain whitelisting. Only verified wallets are eligible; jurisdictional caps, lockups, and geo rules are enforced before distribution or transfer. This is ERC‑3643‑style control in the asset path, not a sidecar. Custodial, retail, and institutional flows all exercise the same rule engine, so every allocation inherits the correct eligibility profile by construction. None of this runs after the fact; the legality decision sits in the state‑transition path.
 
 **Result:** zero non‑compliant allocations and a clean audit trail out of the box.
 
----
-
-## 1.3 How it works (architecture)
+## How it works (architecture)
 
 The architecture centers around four core components that work together to eliminate manual processes. The token factory and template system deploys smart contracts with compliance controllers already attached. Each deployment gets parameterized based on asset class and jurisdiction, ensuring the right legal framework gets baked into the contract from day one.
 
@@ -46,16 +37,11 @@ Document hashes, prospectus references, and base‑price claims live alongside t
 
 The distribution engine orchestrates everything from initial allocations to ongoing corporate actions. It powers pro‑rata lists, vesting schedules, and staged releases through the Addon framework (airdrop, token sale, yield). Every step is logged immutably for audit trails.
 
-
----
-
-## 1.4 Developer surface
+## Developer surface
 
 Issuance and lifecycle functions are available through on‑chain contracts, the Asset Tokenization Kit API Portal (REST and GraphQL), and typed ORPC procedures. ORPC routes cover token creation across asset types, supply operations (mint/burn), holder transfers (including forced transfers where enabled), compliance configuration, role management, and reads for tokens, holders, actions, events, and statistics. See [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index) for the full route map.
 
----
-
-## 1.5 Operational guardrails
+## Operational guardrails
 
 The system enforces deterministic state changes that eliminate reconciliation nightmares. Pre‑transfer checks either succeed completely or revert entirely; there's no middle state where assets get stuck in limbo. This eliminates the "fix it later" mentality that creates operational debt in traditional systems.
 
@@ -65,9 +51,7 @@ A governed Asset Manager console and API deliver on‑demand audit artefacts: al
 
 Law‑in‑the‑loop issuance means the legal template drives the parameters the contracts enforce. Stablecoin and deposit products can attach base‑price claims, and supply‑limit modules convert minted amounts against that reference currency to uphold lifetime or rolling caps. Prospectus or exemption thresholds are measured in real time, raising alerts before a limit is crossed and pausing the action until a filing is acknowledged.
 
----
-
-## 1.6 Proof the layer works (targets)
+## Proof the layer works (targets)
 
 Delivery teams routinely move from term sheet to production pilots in a matter of days, compressing typical timelines by more than **4×** thanks to templated compliance, pre‑built integrations, and automated deployment pipelines. Complex structured products still require bespoke review, but the baseline expectation is speed without shortcuts.
 
@@ -75,10 +59,7 @@ Automation keeps the canonical cap table, eligibility checks, and lifecycle acti
 
 Scale metrics track healthy issuance volume across at least five different asset types per region (equity, debt, funds, stablecoins, deposits) and the throughput of lifecycle events processed by the Addon framework. When those numbers look good, it signals the platform is operating as a single, composable system rather than a set of point solutions.
 
-
----
-
-## 1.7 Why this beats point tools
+## Why this beats point tools
 
 Issuance wizards without cap‑table truth or embedded compliance create rework and legal risk. DALP issuance ships **templated legality, cap‑table truth, and programmable lifecycle** in one system—while layering on:
 

@@ -1,14 +1,9 @@
 ---
-title: "Custody & Wallet Management: Bank Grade Key Control"
+title: "Custody Operations"
 description: "Without custody that passes a bank risk committee, nothing scales. The DALP Custody layer combines institutional multi‑sig/HSM controls, policy automation, recovery runbooks, and custodian APIs with omnibus look‑through so compliance and cap‑table truth survive real custody setups—backed by 99.9%+ availability targets and zero‑incident ambitions."
-icon: "ShieldKeyhole"
 ---
 
-**Conclusion:** Without custody that passes a bank risk committee, nothing scales. The DALP Custody layer combines **institutional multi‑sig/HSM controls, policy automation, recovery runbooks, and custodian APIs** with omnibus look‑through so compliance and cap‑table truth survive real custody setups—backed by 99.9%+ availability targets and zero‑incident ambitions.
-
----
-
-## 3.1 What this layer guarantees
+## What this layer guarantees
 
 The Custody layer supports multiple custody modes running in parallel: self‑custody, institutional sub‑custody, and third‑party vaults can coexist under the same policy umbrella. Wallet‑agnostic support spans hardware devices, MPC vaults, exchange custodians, and institutional platforms so banks don’t need to rip and replace existing vendors.
 
@@ -34,19 +29,13 @@ Recovery and disaster scenarios lean on documented runbooks—backup key materia
 
 Operational visibility comes through Asset Manager dashboards that surface wallet distributions, cold‑storage posture, policy exceptions, and real‑time notifications, giving risk managers oversight without exposing secret material.
 
-
----
-
-## 3.2 How it ties back to compliance and settlement
+## How it ties back to compliance and settlement
 
 - **Compliance continuity.** Custody enforces the same whitelists, eligibility claims, and policy engine as the transfer layer. RBAC and ABAC rules are evaluated on every method call, maker–checker approvals are required for sensitive actions, and blocked wallets simply cannot move irrespective of which vault they sit in.
 
 - **DvP‑ready.** Custody plugs into the payment and settlement rails—ACH, SEPA, SWIFT, RTGS, and on‑chain DvP—so assets and cash can close simultaneously without custody creating a bottleneck.
 
-
----
-
-## 3.3 Interfaces & flows
+## Interfaces & flows
 
 Custody integrations start with a provider handshake—connecting Fireblocks, Metaco, Luna HSMs, or internal vaults via secure credential exchange—and mapping accounts to issuers. Once a provider is registered, the orchestrator can trigger notarised movements without bypassing the custodian’s own policy stack.
 
@@ -62,10 +51,7 @@ Multi-network support is first-class: a single signer instance can service sever
 
 `eth_createUser` deterministically maps a tenant-scoped user identifier to a hardened derivation path, derives the child key in locked memory, and immediately stores or imports it under the same provider policy as primary keys. `eth_sendTransaction` intercepts unsigned payloads, runs policy and approval checks, signs with the selected engine, and forwards the result upstream as `eth_sendRawTransaction`.
 
-
----
-
-## 3.4 Security posture & SRE targets
+## Security posture & SRE targets
 
 The custody layer tracks 99.9%+ availability with redundant vault infrastructure, failover procedures, and recovery times measured in hours—not days—so custody never becomes the settlement bottleneck. Integration latency targets stay under a second versus direct wallet operations, keeping policies invisible to end users while still enforcing institutional controls.
 
@@ -73,10 +59,7 @@ Security targets aim for zero key‑loss or unauthorized access incidents. Conti
 
 Packaging and deployment mirror those ambitions: the signer ships as a hardened Bun Docker image with vendor PKCS#11 libraries preloaded, runs read-only as a non-root user, supports zero‑egress modes, and can operate in our SaaS footprint (AWS, GCP, Azure), customer-managed cloud clusters (with optional KMS/HSM integrations), or fully air-gapped OpenShift environments without external dependencies.
 
-
----
-
-## 3.5 Runbooks that actually work
+## Runbooks that actually work
 
 When key compromise gets detected, the response follows an automated sequence: immediate pause of all affected operations, freezing of compromised addresses through admin hooks, key rotation through secure channels, and automatic generation of regulator and auditor reports. This prevents further damage while ensuring proper notification of authorities.
 
@@ -84,24 +67,12 @@ Lost access situations in self‑custody arrangements trigger identity re‑veri
 
 Custodian outages get handled through failover routes that maintain transaction capabilities while primary systems recover. The system implements transaction queueing and re‑submission with idempotency controls to prevent duplicate transactions. All SLA compliance gets tracked in audit logs, providing evidence for service level discussions with custody providers.
 
-
----
-
-## 3.6 KPIs that matter
+## KPIs that matter
 
 Success gets measured through custodian participation (number of integrated platforms, AUM on the platform) and operational KPIs like policy compliance above 99%, exception rates below 1%, and availability hitting the 99.9% SLA.
 
 Wallet distribution analysis tracks the mix of self‑custody versus custodial holdings across issuers and regions. Balanced distribution signals the platform can meet different risk appetites without forcing a single custody model.
 
-
----
-
-## 3.7 Why this is different
+## Why this is different
 
 Crypto wallets weren’t built for regulated markets. DALP custody is **built for banks**: MPC/HSM, audits, policies, omnibus look‑through, and DvP integration, the boring, hard parts others skip. That’s why it scales.
-
----
-
-### What’s next
-
-- **Chapter 4 - Settlement & Interoperability:** atomic DvP, ISO 20022, cross‑chain with compliance continuity, and 24/7 finality.

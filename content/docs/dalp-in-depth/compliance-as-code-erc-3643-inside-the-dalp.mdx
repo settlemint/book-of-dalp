@@ -1,20 +1,15 @@
 ---
-title: "Compliance as Code (ERC-3643 inside the DALP)"
-description: "Explains how the DALP embeds jurisdictional rules, identity, and audit trails directly into the asset path using ERC-3643."
-icon: "ShieldCheck"
+title: "Compliance as Code"
+description: "Explains how identity, rule libraries, and SMART compliance modules enforce ex-ante policy decisions with audit-ready evidence."
 ---
 
 Compliance cannot sit in a sidecar. It must live in the asset path, identity‑bound, rule‑enforced, and auditable before any state change. The DALP makes this non‑negotiable by combining onboarding (KYC/KYB), accreditation, on‑chain whitelists, a jurisdictional rule engine, and regulator‑grade reporting into one runtime. Transfers that don't comply never execute. Full stop.
 
----
-
-## 4.1 What we’re enforcing
+## What we’re enforcing
 
 The system enforces three core requirements. Only verified investors can hold or receive assets. We link investor identities to one or more wallets and maintain a whitelisted registry. Rules execute before transfers: jurisdictional limits, holding periods, geo‑fences, and concentration caps are checked pre-transfer and blocked on-chain if violated. Every decision gets audited—allow/deny outcomes, actors, timestamps, and rule references are exportable for regulators and auditors.
 
----
-
-## 4.2 Principles and invariants
+## Principles and invariants
 
 Four principles govern the DALP’s compliance plane:
 
@@ -23,9 +18,7 @@ Four principles govern the DALP’s compliance plane:
 3. **Explainability**—every allow/deny returns machine-readable reason codes plus human evidence for audit.
 4. **Regulatory continuity**—rule libraries track EU/GCC/SG/US frameworks and drive filings or alerts automatically.
 
----
-
-## 4.3 The SMART compliance module system
+## The SMART compliance module system
 
 The SMART Protocol implements pluggable compliance modules so policy stays programmable:
 
@@ -36,9 +29,7 @@ The SMART Protocol implements pluggable compliance modules so policy stays progr
 
 This architecture lets compliance officers mix-and-match modules per instrument while guaranteeing a single on-chain enforcement point.
 
----
-
-## 4.4 Identity integration and evidence trail
+## Identity integration and evidence trail
 
 OnchainID integration ensures identity and claim data remain reusable:
 
@@ -47,9 +38,7 @@ OnchainID integration ensures identity and claim data remain reusable:
 - **Compliance engine** composes identity-derived rules with module logic, emitting allow/deny decisions, diagnostics, and immutable audit logs.
 - **Evidence bundles** package the identity snapshot, module verdicts, and transaction metadata so regulators or counterparties can verify compliance independently.
 
----
-
-## 4.5 Jurisdictional playbook
+## Jurisdictional playbook
 
 The same rule engine can express region-specific obligations:
 
@@ -59,9 +48,7 @@ The same rule engine can express region-specific obligations:
 
 Because compliance logic is code, policy updates are versioned, peer-reviewed, and deployed through the same pipelines that manage contracts and APIs.
 
----
-
-## 4.6 What to carry into the build
+## What to carry into the build
 
 1. Compliance executes ex-ante on the same control plane as the asset—no transfers bypass the policy brain.
 2. Identity, claims, and rules share a single source of truth so approvals are reusable across issuances and venues.

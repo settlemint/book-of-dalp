@@ -1,6 +1,6 @@
 ---
 title: "System Breakdown"
-description: "Exposes why fragmented tokenization stacks, bolt-on compliance, and siloed settlement keep institutions on the sidelines."
+description: "Surfaces the fragmentation, bolt-on compliance, and settlement failures stalling tokenization and sets the non-negotiables a DALP must meet."
 icon: "TriangleAlert"
 ---
 
@@ -10,9 +10,7 @@ The opportunity is both real and urgent. Real-world assets (RWAs) passed $50B on
 
 This chapter names the failures plainly, shows how they hit institutions, investors, and developers, and defines the non-negotiables any serious solution must meet.
 
----
-
-## 1) Fragmentation: five vendors for one lifecycle
+## Fragmentation: five vendors for one lifecycle
 
 A typical "tokenization project" chains together disparate components: issuance tool → KYC/KYB portal → custody wallet → bulletin board or ATS adapter → settlement workaround → reporting spreadsheet. Integration work never ends. Every handoff is a failure point.
 
@@ -22,9 +20,7 @@ The impact hits every stakeholder differently. Institutions face multi-vendor pr
 
 Even fast-moving platforms acknowledge that the landscape is fragmented and lacks a comprehensive, integrated offering from issuance through settlement and white-label deployment.
 
----
-
-## 2) Compliance as a bolt‑on (not in the asset path)
+## Compliance as a bolt‑on (not in the asset path)
 
 Current systems "check compliance" in middleware after the fact. Whitelists live in databases the token doesn't see. Jurisdictional limits, holding periods, and geo-fences are enforced by business process, not code. Edge transfers slip through while compliant transfers get blocked by false positives.
 
@@ -36,9 +32,7 @@ What "good" looks like is compliance and identity that are platform-native: inte
 
 Regulatory frameworks like MiCA reward platforms that can demonstrate identity, reporting, and asset-segregation controls in code, not just documentation.
 
----
-
-## 3) Custody isn’t bank‑grade
+## Custody isn’t bank‑grade
 
 The symptoms are everywhere: single-sig hot wallets, no segregation of duties, no policy engine. Key loss equals asset loss. Omnibus custody without look-through breaks cap-table truth.
 
@@ -48,9 +42,7 @@ Institutions won't onboard when security and audit gaps are showstoppers. Invest
 
 Bank-grade custody requires MPC/HSM key management, multi-sig governance, policy controls, recovery flows, and custodian APIs, all integrated with compliance and cap-table truth. The bar is "bank-grade security, audits, and resilience," not DeFi convenience.
 
----
-
-## 4) Cash and tokens don’t settle together
+## Cash and tokens don’t settle together
 
 The reality is T+2 settlement (or worse) hidden behind UIs that pretend to be instant. Escrow emails fly around. Manual reconciliation consumes time. Counterparty risk persists.
 
@@ -60,9 +52,7 @@ Institutions retain settlement risk and regulatory overhead. Investors wait for 
 
 Atomic Delivery-vs-Payment where token and cash move together or nothing moves, with adapters to **SWIFT/SEPA/RTGS** and next‑gen rails; ISO 20022 translation for core systems; **24/7** finality and cross-chain moves without losing compliance.
 
----
-
-## 5) Corporate actions and reporting are manual
+## Corporate actions and reporting are manual
 
 Corporate actions still depend on spreadsheets, email threads, and bespoke cron jobs. Dividends take a week of reconciliations. Votes miss record dates. Tax withholding turns into a checklist of manual approvals. When regulators request evidence, teams scramble to assemble PDFs that should have been produced programmatically from the ledger.
 
@@ -72,9 +62,7 @@ Institutions eat the operational expense and exposure: high error rates, last-mi
 
 A credible lifecycle platform automates the servicing loop end-to-end. Dividends, coupons, and redemptions should fire from on-ledger records, with record-date locks, voting workflows, tax logic, receipt issuance, and reconciliation logs generated in real time. That data needs to be queryable by auditors and regulators without another spreadsheet in sight.
 
----
-
-## 6) Enterprise requirements are ignored
+## Enterprise requirements are ignored
 
 Enterprise buyers judge infrastructure by more than feature demos. They ask about tenancy isolation, failover domains, SSO integrations, privileged-access workflows, and audit evidence that survives a regulator’s review. Too many tokenization products answer with shared SaaS, no control over data residency, and white labeling that means swapping a logo, not governing the deployment.
 
@@ -84,8 +72,6 @@ Institutions see unacceptable risk, so deals die in legal and IT review. Investo
 
 Meeting the enterprise bar means offering deployment flexibility—on-prem, bring-your-own-cloud, or a hardened SaaS option—with isolated services and clear SLAs. It requires SSO/MFA/SAML/OIDC, granular RBAC/ABAC, immutable audit logs, data residency controls, and reliability targets at or above 99.9%, all evidenced with certifications like SOC 2. Without that foundation, no amount of product polish matters.
 
----
-
 ## Why this matters now
 
 Regulatory tailwinds are blowing in the right direction. MiCA in the EU and updated guidance across Singapore, the UK, and the US are reducing ambiguity for institutional-scale digital assets. The platforms that encode compliance and reporting in code will capitalize because they can prove control rather than argue promises.
@@ -93,9 +79,6 @@ Regulatory tailwinds are blowing in the right direction. MiCA in the EU and upda
 Technology has matured as well. Layer 1 and Layer 2 throughput, custody primitives, interoperability standards, and API ecosystems no longer look like R&D toys. The components necessary to industrialize tokenization exist; the challenge is integrating them into a purpose-built lifecycle stack.
 
 Meanwhile, institutions face growing pressure to modernize post-trade operations. Capital markets desks want programmable infrastructure that reduces reconciliation friction, shortens settlement windows, and keeps governance intact. The teams that solve those lifecycle gaps first will capture the mandate.
-
-
----
 
 ## The non‑negotiable checklist for a real solution
 
@@ -115,20 +98,13 @@ If a platform misses any of these, it will not scale.
 
 7. Developers need first-class APIs and SDKs. Every capability must be programmable with clean documentation, versioned endpoints, sandboxes, and webhooks so teams build on the platform rather than around its gaps.
 
-
----
-
 ## The trap to avoid
 
 The easy mistake is to buy a slick issuance wizard or a single-purpose custody vault and assume the gaps can be filled later. Fragmentation always recreates the original mess: multi-vendor risk, brittle integrations, inconsistent compliance, and T+2 settlement hidden behind a polished interface. Institutions spot that fragility immediately.
 
----
-
 ## The bar to clear
 
 Institutions expect bank-grade security, auditable compliance, instant or near-instant settlement, and enterprise governance controls to be present on day one. Anything short of that will fail risk committees and regulators, regardless of product vision or UI quality. The lifecycle platform either clears that bar or the deal never leaves diligence.
-
----
 
 ## Where this book goes next
 

@@ -1,16 +1,11 @@
 ---
-title: "Enterprise Authentication & Access Control (IAM)"
+title: "Enterprise IAM"
 description: "Effective identity control is what earns institutional trust. The DALP combines Better Auth's multi-factor web access with OnchainID-linked compliance modules so teams get passkeys, TOTP, recovery codes, API-key automation, and role-managed governance without bolting together their own security stack."
-icon: "LockKeyhole"
----
-
-**Conclusion:** Effective identity control is what earns institutional trust. The DALP combines Better Auth's multi-factor web access with OnchainID-linked compliance modules so teams get passkeys, TOTP, recovery codes, API-key automation, and role-managed governance without bolting together their own security stack.
-
 ---
 
 Security breaches in financial technology often trace back to authentication failures. Weak passwords, inadequate access controls, and missing audit trails create the attack vectors that destroy institutional trust and trigger regulatory sanctions. The stakes are particularly high in tokenization, where authentication controls directly protect regulated assets and sensitive investor information.
 
-## 6.1 What this layer guarantees
+## What this layer guarantees
 
 Enterprise authentication in the DALP is built on two pillars: Better Auth secures every web session, while OnchainID binds those users to the identities that the compliance engine enforces on-chain. That pairing means staff sign in with familiar web UX, yet every action still maps to verifiable claims when assets move.
 
@@ -24,8 +19,7 @@ Automation flows live alongside human access. API keys are minted through the sa
 
 Each authenticated user can be mapped to an OnchainID identity via the bundled registries. When they mint assets or approve compliance actions, the same persona is enforced both in Better Auth and in the compliance modules, removing the gap between IAM and token-level controls.
 
-
-## 6.2 Access model (how permissions actually work)
+## Access model (how permissions actually work)
 
 The platform recognises three operational personas. Human users sign in through the dApp, complete onboarding, and receive the permissions assigned to their role. Automation uses API keys that inherit explicit scopes and rate limits, so background jobs or treasury bots have just enough access to do their work. Smart-contract compliance modules act as the third guardrail: even if a session is valid, a transfer still fails unless the holder’s OnchainID claims satisfy the token’s rules.
 
@@ -49,8 +43,7 @@ Because the statements sit in code, banks can introduce additional resources—t
 
 Onchain controls add attribute-style checks without overloading the web tier. Country allowlists, investor accreditation, or transfer approvals are enforced by dedicated compliance modules such as `CountryAllowListComplianceModule` and `TransferApprovalComplianceModule`. A user may have the `admin` role, but a secondary sale still needs their approved claim or a designated approver before the smart contract executes. This layered approach keeps policy decisions declarative while preserving least privilege in practice.
 
-
-## 6.3 Threat model → controls
+## Threat model → controls
 
 Most external attacks start with credential replay or phishing. Passkeys and TOTP by default for administrators remove shared secrets, while pincode and secret-code plugins add offline recovery that still records who accessed what. Login attempts funnel through global rate limits, so password spraying burns out before it reaches the business APIs.
 
@@ -62,8 +55,7 @@ Onchain compliance modules close the loop. Transfer approvals force a named appr
 
 Observability is wired into the deployment stack (Prometheus, Loki, and OpenTelemetry are included in the charts), so authentication events, role changes, and compliance rejections all surface in the same metrics and log pipelines that security teams already monitor. That makes it straightforward to forward into an existing SIEM without inventing new plumbing.
 
-
-## 6.4 KPIs that prove control
+## KPIs that prove control
 
 Metrics stay lightweight but concrete:
 

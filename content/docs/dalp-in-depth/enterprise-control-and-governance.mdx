@@ -1,20 +1,15 @@
 ---
-title: "Enterprise Control and Governance"
-description: "Covers the enterprise deployment, IAM, logging, and governance capabilities that satisfy institutional buyers."
-icon: "Building2"
+title: "Enterprise Governance"
+description: "Demonstrates how deployment topologies, change control, and security evidence let enterprises adopt the DALP without bespoke projects."
 ---
 
 Enterprise buyers judge more than product vision—they audit deployment models, identity controls, resilience, and regulatory evidence. The DALP ships with enterprise infrastructure baked in so the platform passes procurement, security, and regulatory diligence without bespoke projects.
 
----
-
-## 6.1 Why enterprise diligence blocks adoption
+## Why enterprise diligence blocks adoption
 
 Legacy tokenization stacks stumble when banks ask for tenancy isolation, SSO, data residency, uptime guarantees, or evidence of operational controls. Shared SaaS environments blur customer boundaries. Manual deployments make recovery stories unbelievable. Identity and access live in vendor silos instead of the customer’s directory. Without demonstrable governance and reliability, deals stall before pilots finish.
 
----
-
-## 6.2 Deployment topologies without rewrite
+## Deployment topologies without rewrite
 
 The DALP deploys as on-prem, bring-your-own-cloud, or dedicated SaaS without changing product logic:
 
@@ -25,9 +20,7 @@ The DALP deploys as on-prem, bring-your-own-cloud, or dedicated SaaS without cha
 
 This architecture makes isolation, scaling, and data residency configurable knobs rather than custom projects.
 
----
-
-## 6.3 CI/CD, change management, and evidence
+## CI/CD, change management, and evidence
 
 Release management is codified:
 
@@ -36,9 +29,7 @@ Release management is codified:
 - **Staged deployments** promote through automated staging, manual approval, and blue/green or rolling releases with instant rollback commands (`helm rollback`).
 - **Change evidence**—build outputs, test reports, approvals, and deployment manifests—are stored with the release, giving auditors complete lineage.
 
----
-
-## 6.4 Bank-grade integration and security posture
+## Bank-grade integration and security posture
 
 Core banking adapters and security frameworks align with enterprise expectations:
 
@@ -47,9 +38,7 @@ Core banking adapters and security frameworks align with enterprise expectations
 - **Security layers** cover network, application, data, and operational controls; MFA, biometric options, risk scoring, and privilege management are first-class.
 - **Compliance**—MiCA, SEC/FINRA, MAS, GDPR—maps into the same policy library, with audit logging and evidence export baked in.
 
----
-
-## 6.5 Procurement-ready checklist
+## Procurement-ready checklist
 
 | Diligence Item | DALP Response |
 | --- | --- |
@@ -61,9 +50,7 @@ Core banking adapters and security frameworks align with enterprise expectations
 | Change control | Signed pipeline artifacts, approval gates, audit logs, rollback automation |
 | Regulatory evidence | Compliance bundles (MiCA, SEC/FINRA, MAS) continuously generated from platform telemetry |
 
----
-
-## 6.6 Enterprise invariants
+## Enterprise invariants
 
 1. Treat identity, access, and audit as first-class modules—the DALP must plug into customer directories and emit evidence without custom middleware.
 2. Keep infrastructure as code. Environments spin up, update, and recover via declarative definitions with automated validation.
