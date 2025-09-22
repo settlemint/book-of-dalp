@@ -7,18 +7,9 @@ import {
 } from "fumadocs-ui/page";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import posthog from "posthog-js";
-import {
-  type FeedbackPayload,
-  Feedback as FeedbackWidget,
-} from "@/components/feedback";
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
-
-async function captureDocsFeedback(feedback: FeedbackPayload) {
-  await Promise.resolve(posthog.capture("on_rate_docs", feedback));
-}
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -50,15 +41,6 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
           })}
         />
       </DocsBody>
-      <FeedbackWidget
-        onRateAction={async (_url, feedback) => {
-          "use server";
-          await captureDocsFeedback(feedback);
-          return {
-            githubUrl: `https://github.com/settlemint/book-of-dalp/blob/main/content/docs/${page.path}`,
-          };
-        }}
-      />
     </DocsPage>
   );
 }
