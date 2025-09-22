@@ -1,0 +1,208 @@
+---
+title: "DALP Overview"
+description: "Introduces the DALP as a unified control plane spanning issuance, compliance, custody, settlement, and servicing."
+icon: "Workflow"
+---
+
+The fix for a fragmented, non-compliant, T+2 world is a single, programmable infrastructure that runs issuance → compliance → custody → settlement → servicing without handoffs, with compliance encoded in the asset path, and with enterprise control over deployment and identity. That is the Digital Asset Lifecycle Platform (DALP).
+
+---
+
+## 2.1 What the DALP is (and isn't)
+
+A DALP is a full-stack, compliance-native platform that collapses issuance, lifecycle servicing, compliance, custody, settlement, and operational tooling into one programmable system. It replaces the multi-vendor maze with a single control plane that keeps the cap table, rules, and records in sync.
+
+At its core, the DALP manages issuance and ongoing servicing with real-time cap tables, document management, and automated corporate actions. Compliance and identity are embedded, not bolted on, through integrated KYC/KYB, accreditation, on-chain whitelisting, and a rule engine that evaluates every transfer ex-ante. Custody meets bank standards via HSM or MPC key management, multi-sig policies, recovery workflows, and integrations with regulated custodians. Settlement and interoperability deliver atomic DvP across tokenized cash and fiat rails (SWIFT/SEPA/RTGS), ISO 20022 translation, and cross-chain continuity when assets span ledgers.
+
+The platform deploys on-prem, in a client cloud, or as hardened SaaS with dedicated services. Enterprise IAM covers SSO/MFA/SAML/OIDC, RBAC/ABAC, SIEM integration, and audit-ready logging. Developers and operators get modern UIs, APIs/SDKs, sandbox environments, webhooks, and observability hooks (see [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index)).
+
+This is not an issuance wizard, custody bolt-on, or "exchange with an API." The DALP is lifecycle infrastructure built to remove every handoff.
+
+---
+
+## 2.2 Non-negotiables ("the laws")
+
+If any of these are missing, you do not have a DALP; you have another integration project.
+
+1. **Unified lifecycle core.** Issuance, servicing, settlement, and reporting run on the same cap table and data model so every state change is authoritative and auditable.
+2. **Compliance-by-design.** Identity, KYC/KYB, accreditation, and jurisdiction-specific rules execute before transfers, with configurable policies, whitelisting, and complete audit trails.
+3. **Custody + settlement clarity.** MPC/HSM key control, policy governance, recovery, and custodian integrations pair with atomic DvP across tokenized cash and bank rails, ISO 20022 mapping, and 24/7 finality.
+4. **Enterprise control.** Deployment choice (on-prem/BYOC/SaaS with dedicated services), deep white-label options, SSO/MFA/SAML/OIDC, RBAC/ABAC, session policies, SIEM export, and detailed logging are table stakes.
+5. **Developer & operator instrumentation.** Typed APIs, SDKs, sandboxes, event subscriptions, versioning, diagnostics, and a jurisdictional rule library let teams compose solutions instead of filing feature requests.
+6. **Proof through metrics.** Target T+0 settlement on ~99% of transactions, first-attempt success ≥99%, 0 compliance breaches, KYC turnaround under a day, and UX uptime ≥99.9%.
+
+---
+
+## 2.3 Architecture at a glance
+
+The design splits by planes so compliance, identity, and cash legs are first-class, not afterthoughts.
+
+```mermaid
+flowchart LR
+  %% ===== Subgraphs (Planes) =====
+  subgraph EP["Experience Plane"]
+    EP_UI["Issuer UI"]
+    EP_INV["Investor Portal"]
+    EP_ADMIN["Admin Console"]
+    EP_DEV["Developer Portal (Docs, Sandbox)"]
+  end
+
+  subgraph CP["Control Plane - Compliance & Identity"]
+    CP_KYC["KYC/KYB Integrations"]
+    CP_ID["Identity Registry"]
+    CP_RULES["Jurisdictional Rule Engine"]
+    CP_AUDIT["Audit & Reporting"]
+  end
+
+  subgraph AP["Asset Plane - Issuance & Lifecycle"]
+    AP_ISS["Issuance Service"]
+    AP_FACTORY["ERC‑3643 Token Factory"]
+    AP_CAP["Cap Table Indexer (real-time)"]
+    AP_DOCS["Docs/Metadata (hash anchored)"]
+    AP_CA["Corporate Actions (Dividends, Coupons, Votes, Redemptions)"]
+  end
+
+  subgraph SP["Settlement & Interop Plane"]
+    SP_DVP["Atomic DvP Engine"]
+    SP_RAILS["Payment Rails (SWIFT/SEPA/RTGS/Stablecoins)"]
+    SP_ISO["ISO 20022 Translator"]
+    SP_XCHAIN["Cross‑Chain Bridge (compliance‑aware)"]
+    SP_NET["Netting • PvP FX"]
+  end
+
+  subgraph KP["Custody Plane"]
+    KP_MPC["MPC/HSM Key Mgmt"]
+    KP_MSIG["Multi‑Sig & Policy Engine"]
+    KP_APIS["Custodian APIs"]
+    KP_REC["Recovery Procedures"]
+  end
+
+  subgraph DP["Deployment & IAM Plane"]
+    DP_MODELS["On‑Prem • BYOC • Dedicated SaaS"]
+    DP_WL["White‑Label Theming & Tenanting"]
+    DP_IAM["SSO/MFA/SAML/OIDC • RBAC/ABAC"]
+    DP_SIEM["SIEM Export • Audit Logs • Data Residency"]
+  end
+
+  %% ===== Key Interactions =====
+  EP_UI --> AP_ISS
+  EP_INV --> CP_KYC
+  EP_ADMIN --> CP_AUDIT
+  EP_DEV --> AP_ISS
+  EP_DEV --> CP_RULES
+
+  AP_ISS --> AP_FACTORY
+  AP_FACTORY --> CP_ID
+  AP_FACTORY --> CP_RULES
+  AP_FACTORY --> AP_CAP
+  AP_ISS --> AP_DOCS
+  AP_CA --> SP_RAILS
+  AP_CA --> AP_CAP
+
+  SP_DVP --> SP_RAILS
+  SP_DVP --> KP_MPC
+  SP_DVP --> AP_CAP
+  SP_ISO --- SP_RAILS
+  SP_XCHAIN --> CP_RULES
+  SP_XCHAIN --> CP_ID
+
+  KP_MPC --> KP_MSIG
+  KP_APIS --> KP_MPC
+  KP_MSIG --> CP_RULES
+
+  DP_IAM --- EP_ADMIN
+  DP_IAM --- EP_UI
+  DP_IAM --- EP_INV
+  DP_MODELS --- AP_ISS
+  DP_WL --- EP_UI
+  DP_SIEM --- CP_AUDIT
+
+```
+
+The Compliance & Identity plane implements pre-transfer controls and a canonical investor registry with reusable IDs and claims. The Asset Plane mints tokens from templates, maintains the real-time cap table, and runs corporate actions without manual handoffs.
+
+Settlement & Interop provides DvP, rails connectivity, ISO 20022 translation, and cross-chain capability with compliance continuity. The Custody Plane delivers bank-grade key control and policy governance with custodian integrations. Deployment & IAM lets institutions own the environment and plug into corporate identity and SIEM systems. The Experience Plane provides modern UI and complete developer tooling.
+
+---
+
+## 2.4 Data & object model (primitives that matter)
+
+Core objects define how the platform operates. Assets have class, legal form, chains, contracts, and document hashes that link to Positions showing holder and balance. Identity captures KYC/KYB attributes, accreditation, and jurisdictions, connecting to attested, whitelisted Wallets. Rules encode jurisdictional constraints, holding periods, geo fences, and concentration caps, evaluated pre-transfer.
+
+Lifecycle instructions—issuance events, transfers, redemptions, and corporate actions—generate eligibility tickets with allow/deny decisions and reasons, leading to settlement instructions for DvP/PvP. Corporate Actions handle dividends/coupons/votes/redemptions with record-date locks and receipts. Audit Events capture who/what/when across issuance, compliance, IAM, and settlement.
+
+The guarantee: the cap table is the source of truth, updated on every on-chain event and every approved instruction.
+
+---
+
+## 2.5 Compliance as code (ERC-3643-style)
+
+Compliance cannot sit in a sidecar. The mechanism binds identity registry to verified investors and wallets, with KYC/KYB and accreditation living in the profile. On-chain whitelisting forces pre-transfer checks where non-compliant flows revert. The policy controller and rule engine encode jurisdictional limits, holding periods, geo fences, and concentration caps, evaluated before state change.
+
+Emergency hooks enable freeze/force under due process with full audit trails. Selective disclosure and privacy align with GDPR/PDPA requirements. The outcome is ex-ante control that regulators can verify, with 0 compliance breaches as the operating target.
+
+---
+
+## 2.6 Custody and key governance
+
+Institutional custody requires more than "just a wallet." Controls include MPC/HSM key management, multi-sig approvals, policy engines with limits/whitelists/dual-control, recovery flows, and custodian APIs for Fireblocks/Coinbase/Copper/Metaco. Omnibus look-through via attestations ensures cap-table truth and eligibility survive omnibus holdings.
+
+---
+
+## 2.7 Lifecycle operations & monitoring
+
+Post-issuance operations cannot rely on spreadsheets and ad-hoc scripts. The DALP provides a control room for lifecycle activity: eligibility decisions surface in real time, settlement status is tracked to completion, and corporate actions are orchestrated with record-date locks, notifications, and automated reconciliation.
+
+Exception handling, alerts, and audit-ready dashboards keep compliance, operations, and finance aligned. Success is measured by first-attempt settlement rates, zero unresolved exceptions past SLA, automated reconciliation coverage, and demonstrable reduction in manual workloads.
+
+---
+
+## 2.8 Settlement & interoperability: T+0 is the baseline
+
+Atomic DvP works when cash and tokens share a rail. Near-simultaneous settlement connects with bank rails when they don't. ISO 20022 adapters book events into core systems. Cross-chain bridges preserve whitelists and rules so compliance never "falls off" in transit. Multi-currency, PvP FX, and netting are supported with 24/7 finality.
+
+KPIs: T+0 for 99% of transactions, 100% clean outcomes (both legs or none), and ~90% reduction in reconciliation effort.
+
+---
+
+## 2.9 Deployment, white-label, and enterprise identity
+
+Control is non-negotiable. Run it on-prem, BYOC, or SaaS, in all cases with dedicated services, hard tenancy, and full brand and UX control. Choose chains and nodes, integrate custom middleware, enforce data residency, and meet SLAs with HA topologies.
+
+IAM that auditors sign off includes SSO/MFA/SAML/OIDC, RBAC/ABAC, session policies, IP allowlists, SIEM export, and complete auth/audit logs.
+
+---
+
+## 2.10 UX/DX: speed for humans and for code
+
+Users get modern, localized UI with wizards, analytics, notifications, and investor portals. Developers get consistent APIs/SDKs, ORPC + GraphQL, sandbox environments, event subscriptions, versioning, diagnostics, and reference architectures. Target docs rating ~5/5, integration time in days not weeks, and 99.9% UX uptime.
+
+---
+
+## 2.11 Governance, legal, and audit
+
+The rule library tracks EU/GCC/SG frameworks, drives auto-filings, raises real-time legal alerts, classifies tokens, supports e-sign/eIDAS, and exposes a regulatory audit dashboard for read-only oversight.
+
+---
+
+## 2.12 How the DALP changes the game (institution, developer, investor)
+
+Institutions get one platform with audit-ready controls, lower OpEx, and instant finality, without surrendering deployment control. Developers get primitives for issuance, rules, custody, and settlement automation, callable via APIs to build products, not plumbing. Investors get consistent onboarding, transparent rights, and predictable settlement windows without compliance roulette.
+
+---
+
+## 2.13 Proof: what "good" looks like in numbers
+
+T+0 settlement on 99% of lifecycle transactions with 100% deterministic outcomes (both legs or none). First-attempt settlement ≥99%, 0 regulatory incidents, 0 cap-table drift post-settlement. KYC under 1 day, >95% automated approvals, 0 compliance breaches. Automation ~100% for cap-table updates and lifecycle event processing. UX uptime ≥ 99.9%, docs rated ~5/5, integration in days.
+
+---
+
+## 2.14 Why SettleMint's DALP is the category
+
+Because it actually implements every law above: lifecycle coverage; compliance inside the transfer path; bank-grade custody; deterministic settlement rails; deployment control and IAM; and a first-class developer surface. That's not a toolbox. That's market infrastructure.
+
+---
+
+### What's next
+
+Chapter 3 dives into the compliance backbone in detail, identity registry, claims, rule composition, and how we keep legality attached to the asset across venues, banks, and chains.

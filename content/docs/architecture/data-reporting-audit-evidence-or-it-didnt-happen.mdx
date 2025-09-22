@@ -1,0 +1,45 @@
+---
+title: "Data, Reporting & Audit: Evidence or It Didn't Happen"
+description: "In regulated markets, evidence is the product. The DALP treats reporting, audit, and observability as first-class workflows, not afterthought exports, so institutions can substantiate every decision on demand."
+icon: "PieChart"
+---
+
+**Conclusion:** In regulated markets, evidence is the product. The DALP treats reporting, audit, and observability as first-class workflows, not afterthought exports, so institutions can substantiate every decision on demand.
+
+---
+
+Financial institutions measure success by how quickly they can answer “what happened and why.” Our data and audit layer pairs the shared ledger underneath the kit with structured stores, reporting APIs, and export tools so teams do not chase spreadsheets or craft ad‑hoc SQL when regulators call. Everything that touches issuance, compliance, treasury, or operations emits a consistent record, and the platform keeps the heavy lifting—normalization, scheduling, validation—off business teams.
+
+## 9.1 Evidence that stays in your control
+
+Every user interaction, API call, compliance decision, and asset movement lands in two places: the on-chain event stream that smart contracts and subgraphs expose and the operational stores the dApp already uses. Querying the Graph endpoints or Hasura views yields the instantaneous cap table, while Postgres-backed ORPC routes provide consented slices of PII or workflow metadata. That mix lets compliance officers prove holder positions, permissions granted, and overrides executed without round-tripping data through shadow systems.
+
+Because the dApp runs localized and white-labeled, the same artefacts are branded and formatted for investors and issuers. Investors receive payout receipts, voting confirmations, and redemption statements generated directly from the event store; issuers download reconciliation packs and claim histories in CSV, JSON, or PDF. All of it lives inside the platform instance—no third-party reporting warehouse required.
+
+When institutions need to speak to banks or payment rails, the ISO 20022 mapping packaged with the kit translates token movements into booking and reconciliation messages. Ledger entries line up with treasury systems without manual translation, which eliminates the “spreadsheet merge Friday” many teams still endure.
+
+## 9.2 Reporting that withstands supervisory scrutiny
+
+Scheduled jobs run against the same typed ORPC layer the application uses, so regulatory filings, compliance attestations, and jurisdictional position reports are generated from live data, not stale extracts. The regulatory reporting module (detailed in the ATK docs) partitions reports by audience: transaction activity for financial authorities, AML exposure for compliance desks, and on-demand audit packs for auditors. Each is template-driven—institutions configure frequency, delivery format, and sign-off flows once, after which the platform renders, validates, and archives automatically.
+
+For oversight teams, the read-only regulatory dashboard surfaces configuration histories, policy revisions, and submission statuses. Blocked transfers, escalation notes, and holder-by-region exports sit alongside the filings themselves, giving regulators a “show me” view without granting write access to production systems.
+
+## 9.3 Observability for operators, not just engineers
+
+Operational telemetry ships with the deployment Helm charts: Prometheus, Loki, and OpenTelemetry collectors feed Grafana dashboards for latency, error budgets, and service-level trends. The dApp layers usage analytics on top (TanStack Query statistics, ORPC metadata) so operators know which flows succeed and which error codes spike. When something breaks, structured logs and trace IDs flow through the same pipelines your security teams already monitor, making SIEM forwarding a configuration exercise rather than a custom build.
+
+## 9.4 Data handling that keeps audits short
+
+Event sourcing makes approvals, overrides, and compliance decisions immutable, but sensitive details stay off-chain. The kit stores hashes or metadata on the ledger and keeps personal information in encrypted Postgres tables, so institutions can satisfy right-to-be-forgotten requests while still proving control decisions. Export jobs are deterministic—the same parameters reproduce the same dataset every time—so auditors get consistent evidence even if they re-run a report months later. Role-based access to exports and dashboards sits on top of Better Auth, ensuring only the right personas can pull regulated data.
+
+## 9.5 Weekly signals that prove the system is working
+
+- **Report run success**: scheduled filings, investor statements, and reconciliation jobs complete on time with validation checks satisfied.
+- **Exception volume**: blocked transfers, manual overrides, or AML escalations stay within agreed thresholds; spikes trigger root-cause reviews.
+- **Telemetry health**: dashboards stay green (availability ≥99.9%, API error rate &lt;0.1%) and traces arrive in the log pipeline without gaps.
+- **Export fidelity**: rerun audits produce identical artefacts; discrepancies flag schema or data regression risk.
+- **Data privacy posture**: monitor PII access logs and retention timers to confirm off-chain stores honour policy and legal requirements.
+
+Staying on top of those metrics keeps the promise of “evidence on demand” intact. Combined with IAM, UX, and compliance automation, the DALP gives institutions proof without the usual firefight when regulators or auditors knock.
+
+**Bottom line:** Trust is earned when you can prove what happened. The DALP’s data, reporting, and observability stack ensures you always can.

@@ -1,0 +1,73 @@
+---
+title: "Enterprise Control and Governance"
+description: "Covers the enterprise deployment, IAM, logging, and governance capabilities that satisfy institutional buyers."
+icon: "Building2"
+---
+
+Enterprise buyers judge more than product vision—they audit deployment models, identity controls, resilience, and regulatory evidence. The DALP ships with enterprise infrastructure baked in so the platform passes procurement, security, and regulatory diligence without bespoke projects.
+
+---
+
+## 6.1 Why enterprise diligence blocks adoption
+
+Legacy tokenization stacks stumble when banks ask for tenancy isolation, SSO, data residency, uptime guarantees, or evidence of operational controls. Shared SaaS environments blur customer boundaries. Manual deployments make recovery stories unbelievable. Identity and access live in vendor silos instead of the customer’s directory. Without demonstrable governance and reliability, deals stall before pilots finish.
+
+---
+
+## 6.2 Deployment topologies without rewrite
+
+The DALP deploys as on-prem, bring-your-own-cloud, or dedicated SaaS without changing product logic:
+
+- **Kubernetes + Helm** define every environment—web, API, indexers, databases, caches, storage—so topology is code and repeatable.
+- **Ingress and networking** layers support custom domains, mTLS, WAF policies, and traffic shaping.
+- **Data plane** separates PostgreSQL HA clusters, Redis caches, and object storage with automated backups and failover.
+- **External services** (blockchain nodes, monitoring stacks, backup services) integrate through documented adapters, enabling customers to select their preferred providers.
+
+This architecture makes isolation, scaling, and data residency configurable knobs rather than custom projects.
+
+---
+
+## 6.3 CI/CD, change management, and evidence
+
+Release management is codified:
+
+- **Pipeline architecture** runs static analysis, multi-package builds, security scanning, and layered test suites (unit → integration → E2E → performance) before any deployment.
+- **Artifact management** version-tags container images and Helm charts, enforcing vulnerability scans and approval gates.
+- **Staged deployments** promote through automated staging, manual approval, and blue/green or rolling releases with instant rollback commands (`helm rollback`).
+- **Change evidence**—build outputs, test reports, approvals, and deployment manifests—are stored with the release, giving auditors complete lineage.
+
+---
+
+## 6.4 Bank-grade integration and security posture
+
+Core banking adapters and security frameworks align with enterprise expectations:
+
+- **API gateway** enforces OAuth2, mTLS, rate limits, and SCIM/SSO integrations (SAML, OIDC) so customers plug in their IAM directly.
+- **Event orchestration & data transformation** sync accounts, transactions, and regulatory data with Kafka/RabbitMQ streams and deterministic mapping rules.
+- **Security layers** cover network, application, data, and operational controls; MFA, biometric options, risk scoring, and privilege management are first-class.
+- **Compliance**—MiCA, SEC/FINRA, MAS, GDPR—maps into the same policy library, with audit logging and evidence export baked in.
+
+---
+
+## 6.5 Procurement-ready checklist
+
+| Diligence Item | DALP Response |
+| --- | --- |
+| Tenancy & isolation | Dedicated Kubernetes namespaces/clusters per tenant; infrastructure-as-code controls |
+| Identity & access | SSO/MFA/SAML/OIDC, RBAC/ABAC, SCIM provisioning, session policies |
+| Data residency & privacy | Region-specific deployments, encrypted storage, consent + erasure workflows |
+| Uptime & resilience | 99.9 %+ SLA backed by HA topologies, automated failover, and runbook rehearsals |
+| Monitoring & SIEM | Metrics, logs, traces streaming to customer or SettleMint observability stacks |
+| Change control | Signed pipeline artifacts, approval gates, audit logs, rollback automation |
+| Regulatory evidence | Compliance bundles (MiCA, SEC/FINRA, MAS) continuously generated from platform telemetry |
+
+---
+
+## 6.6 Enterprise invariants
+
+1. Treat identity, access, and audit as first-class modules—the DALP must plug into customer directories and emit evidence without custom middleware.
+2. Keep infrastructure as code. Environments spin up, update, and recover via declarative definitions with automated validation.
+3. Map every deployment to observability and compliance requirements—metrics, logs, traces, alerts, and reports are default, not add-ons.
+4. Support multiple deployment topologies (on-prem, BYOC, managed SaaS) without rewriting product logic. Isolation, encryption, and upgrade paths stay consistent across them.
+
+With those guarantees, the DALP clears enterprise diligence at the same pace it ships product features, making adoption a procurement choice, not a multi-year integration risk.

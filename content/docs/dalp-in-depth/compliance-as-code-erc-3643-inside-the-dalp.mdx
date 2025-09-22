@@ -1,0 +1,71 @@
+---
+title: "Compliance as Code (ERC-3643 inside the DALP)"
+description: "Explains how the DALP embeds jurisdictional rules, identity, and audit trails directly into the asset path using ERC-3643."
+icon: "ShieldCheck"
+---
+
+Compliance cannot sit in a sidecar. It must live in the asset path, identity‑bound, rule‑enforced, and auditable before any state change. The DALP makes this non‑negotiable by combining onboarding (KYC/KYB), accreditation, on‑chain whitelists, a jurisdictional rule engine, and regulator‑grade reporting into one runtime. Transfers that don't comply never execute. Full stop.
+
+---
+
+## 4.1 What we’re enforcing
+
+The system enforces three core requirements. Only verified investors can hold or receive assets. We link investor identities to one or more wallets and maintain a whitelisted registry. Rules execute before transfers: jurisdictional limits, holding periods, geo‑fences, and concentration caps are checked pre-transfer and blocked on-chain if violated. Every decision gets audited—allow/deny outcomes, actors, timestamps, and rule references are exportable for regulators and auditors.
+
+---
+
+## 4.2 Principles and invariants
+
+Four principles govern the DALP’s compliance plane:
+
+1. **Ex-ante control**—approvals happen before state change, not after.
+2. **Single source of compliance truth**—investor identity, claims, and rules are canonical and reusable across offerings.
+3. **Explainability**—every allow/deny returns machine-readable reason codes plus human evidence for audit.
+4. **Regulatory continuity**—rule libraries track EU/GCC/SG/US frameworks and drive filings or alerts automatically.
+
+---
+
+## 4.3 The SMART compliance module system
+
+The SMART Protocol implements pluggable compliance modules so policy stays programmable:
+
+- **Core modules** cover geography (country whitelist/blacklist), investor concentration (max ownership), and temporal controls (lock-ups, vesting windows).
+- **Advanced modules** manage supply limits, approved venues, and bespoke rules for project-specific regulation.
+- **Module lifecycle** is governed—modules register in a central registry, deploy through managed factories, activate per token with administrator consent, and track updates or deactivation with governance approval.
+- **Performance footprint** stays predictable: typical modules add 3–12 k gas per transfer, so risk teams can model cost and throughput impact alongside policy decisions.
+
+This architecture lets compliance officers mix-and-match modules per instrument while guaranteeing a single on-chain enforcement point.
+
+---
+
+## 4.4 Identity integration and evidence trail
+
+OnchainID integration ensures identity and claim data remain reusable:
+
+- **OnchainID contracts** hold decentralized identity data, while trusted issuers populate KYC/AML/accreditation claims.
+- **Identity registry + claim validator** inside the DALP verify claim freshness, revocation status, and expiration before execution.
+- **Compliance engine** composes identity-derived rules with module logic, emitting allow/deny decisions, diagnostics, and immutable audit logs.
+- **Evidence bundles** package the identity snapshot, module verdicts, and transaction metadata so regulators or counterparties can verify compliance independently.
+
+---
+
+## 4.5 Jurisdictional playbook
+
+The same rule engine can express region-specific obligations:
+
+- **MiCA / EU**—country restriction + investor caps + time-based modules encode passporting, lock-ups, and reporting thresholds; audit bundles satisfy ESMA requests without manual compilation.
+- **United States**—accreditation claims combined with venue restrictions keep Reg D/Reg S flows separate while documenting exemption reliance.
+- **Singapore & GCC**—claim topics model MAS fit-and-proper checks and shariah eligibility; modules gate transfers geographically and by asset class.
+
+Because compliance logic is code, policy updates are versioned, peer-reviewed, and deployed through the same pipelines that manage contracts and APIs.
+
+---
+
+## 4.6 What to carry into the build
+
+1. Compliance executes ex-ante on the same control plane as the asset—no transfers bypass the policy brain.
+2. Identity, claims, and rules share a single source of truth so approvals are reusable across issuances and venues.
+3. Every decision emits evidence—reason codes, timestamps, accountable actors, and rule contexts—so regulators verify rather than trust.
+4. Module governance is formal: registration, activation, updates, and deactivation travel through controlled workflows with audit logs intact.
+
+Part II translates these mechanics into contract architecture, policy expression, onboarding UX, and operational tooling.

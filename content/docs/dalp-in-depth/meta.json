@@ -1,0 +1,13 @@
+{
+  "title": "DALP in Depth",
+  "description": "A deep dive into the parts that make up DALP.",
+  "icon": "BookOpen",
+  "pages": [
+    "unified-lifecycle-core-one-control-plane-for-the-dalp",
+    "compliance-as-code-erc-3643-inside-the-dalp",
+    "custody-and-settlement-clarity-bank-grade-control-and-atomic-dvp",
+    "enterprise-control-and-governance",
+    "developer-and-operator-instrumentation",
+    "proof-through-metrics"
+  ]
+}
