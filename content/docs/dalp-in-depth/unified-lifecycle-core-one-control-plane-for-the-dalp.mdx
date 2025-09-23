@@ -1,15 +1,15 @@
 ---
 title: "Lifecycle Core"
-description: "Fragmentation is the default state of today’s tokenization stack: issuance wizards, compliance databases, custody portals, trading adapters, and settlement workarounds stitched together by spreadsheets and project chats. The DALP turns that sprawl into one control plane, so every lifecycle event—issuance, onboarding, transfers, servicing, settlement, reporting—runs through a programmable core instead of brittle handoffs."
+description: "Fragmentation is the default state of today's tokenization stack: issuance wizards, compliance databases, custody portals, trading adapters, and settlement workarounds stitched together by spreadsheets and project chats. The DALP turns that sprawl into one control plane, so every lifecycle event (issuance, onboarding, transfers, servicing, settlement, reporting) runs through a programmable core instead of brittle handoffs."
 ---
 
 ## Why fragmentation kills institutional deals
 
-Fragmented programs stall for the same reasons cited in Chapter 1. Integrations between vendors add latency, reconciliation, and finger-pointing. Compliance breaks because eligibility lives in middleware instead of the asset path. Custody vaults cannot see rule updates. Secondary markets detach liquidity from governance. Cash settlement stays T+2 because tokens and fiat sit on separate systems with no shared state. Institutions do not buy that risk profile; they are judged by auditors who want a single accountable platform, not a blame-shifting consortium of vendors.
+Fragmented programs stall for the same reasons cited in Chapter 1, and teams feel the drag immediately. Integrations between vendors add latency, reconciliation, and finger-pointing. Compliance breaks because eligibility lives in middleware instead of the asset path. Custody vaults cannot see rule updates. Secondary markets detach liquidity from governance. Cash settlement stays T+2 because tokens and fiat sit on separate systems with no shared state. Institutions do not buy that risk profile; they are judged by auditors who want a single accountable platform, not a blame-shifting consortium of vendors.
 
 ## The DALP integration blueprint
 
-The Asset Tokenization Kit already models the control plane we need. Its layered architecture (frontend → ORPC API → business services → data → blockchain → infrastructure) replaces point integrations with orchestrated services:
+The Asset Tokenization Kit already models the control plane we need. Its layered architecture (frontend -> ORPC API -> business services -> data -> blockchain -> infrastructure) replaces point integrations with orchestrated services:
 
 <Mermaid
   chart={`
@@ -56,16 +56,16 @@ flowchart LR
 />
 
 - **Experience layer (web, mobile, admin, developer portals)** guides issuers, investors, and operators through lifecycle actions while reusing shared component libraries.
-- **API & business logic** run type-safe ORPC procedures that route every request through asset, compliance, identity, and notification services—removing one-off integrations and enforcing policy centrally.
-- **Blockchain infrastructure** couples ERC‑3643-based system contracts with TheGraph indexers so on-chain events and off-chain state stay synchronized.
+- **API & business logic** run type-safe ORPC procedures that route every request through asset, compliance, identity, and notification services, removing one-off integrations and enforcing policy centrally.
+- **Blockchain infrastructure** couples ERC-3643-based system contracts with TheGraph indexers so on-chain events and off-chain state stay synchronized.
 - **Data plane** (PostgreSQL HA cluster, Redis cache, MinIO/IPFS storage) provides authoritative state, document retention, and low-latency access for the entire stack.
 - **Testing & deployment** components (Playwright/Vitest suites, Helm/Kubernetes delivery) keep quality and rollout mechanics wired into the lifecycle core itself.
 
-Each component has explicit performance targets (e.g., \<2 s UI loads, \<200 ms API calls, \<5 s indexing latency, 99.9 % data uptime), so operations teams can measure the health of the control plane instead of inferring it from downstream breakage.
+Each component has explicit performance targets (e.g., \<2s UI loads, \<200ms API calls, \<5s indexing latency, 99.9% data uptime), so operations teams can measure the health of the control plane instead of inferring it from downstream breakage.
 
 ## How one control plane interacts with the outside world
 
-The integration architecture binds the DALP to identity networks, compliance partners, banking rails, custody providers, and monitoring stacks without diluting control. OnchainID and third-party KYC services plug into the identity registry while respecting the DALP’s rule engine. Core banking and payment systems connect through mediation services that translate ISO 20022 and SWIFT messaging, yet settlement logic remains inside the platform. Custodian APIs surface into the same business services that govern transfers. Observability hooks feed internal and client SIEM/SOC tooling so every external dependency is monitored from the DALP’s cockpit.
+The integration architecture binds the DALP to identity networks, compliance partners, banking rails, custody providers, and monitoring stacks without diluting control. OnchainID and third-party KYC services plug into the identity registry while respecting the DALP's rule engine. Core banking and payment systems connect through mediation services that translate ISO 20022 and SWIFT messaging, yet settlement logic remains inside the platform. Custodian APIs surface into the same business services that govern transfers. Observability hooks feed internal and client SIEM/SOC tooling so every external dependency is monitored from the DALP's cockpit.
 
 ## Operationalizing one control plane
 
@@ -82,14 +82,14 @@ The monorepo structure hard-codes the integration discipline the market has been
 
 Consider a launch that issues a bond, a feeder fund, and a deposit note simultaneously:
 
-1. Product leads model each instrument in the web console, generating ERC‑3643 token blueprints that inherit the appropriate extension sets (yield, voting, collateral) from the control plane.
+1. Product leads model each instrument in the web console, generating ERC-3643 token blueprints that inherit the appropriate extension sets (yield, voting, collateral) from the control plane.
 2. Compliance officers configure country, investor-limit, and lock-up modules once; those policies apply to every asset because the rule engine runs centrally.
 3. Identity teams onboard investors through the shared ORPC APIs. Claims flow into the identity registry and synchronize across offerings with no duplicate KYC.
-4. Custody operations pre-stage MPC wallet tiers and policy thresholds directly in the DALP’s custody services.
-5. Settlement ops wire cash legs via the payment gateway adapters (SWIFT for deposits, RTGS for bonds) using the same workflow state machine that drives token transfers.
+4. Custody operations pre-stage MPC wallet tiers and policy thresholds directly in the DALP's custody services.
+5. Settlement ops wire cash legs via the payment gateway adapters (SWIFT for deposits, RTGS for bonds) using the same workflow state machine that drives token transfers, so cash and tokens stay in lockstep.
 6. Corporate action timelines, notifications, and evidence packs are scheduled through the servicing workflow engine, providing investors and auditors the same data without manual exports.
 
-Because every step references the same control plane, there is no reconciliation step between products—issuance, compliance, custody, and settlement remain consistent across instruments and venues.
+Because every step references the same control plane, there is no reconciliation step between products, so issuance, compliance, custody, and settlement remain consistent across instruments and venues.
 
 ## Invariants to carry forward
 
@@ -98,4 +98,4 @@ Because every step references the same control plane, there is no reconciliation
 3. Compliance and identity stay embedded via SMART Protocol primitives; a transfer cannot bypass the rule engine even when adapters extend functionality.
 4. Deployment, monitoring, and disaster recovery remain part of the product. Environments move through the same automated pipeline so a fix applied in staging behaves identically in production.
 
-When we stick to those invariants, the platform upgrades from a patchwork to a single programmable lifecycle, making Chapter 2’s promise of the DALP tangible for customers who demand a turnkey answer to fragmentation.
+When we stick to those invariants, the platform upgrades from a patchwork to a single programmable lifecycle, making Chapter 2's promise of the DALP tangible for customers who demand a turnkey answer to fragmentation. The calm that follows is deliberate.

@@ -5,58 +5,58 @@ description: "Custody and settlement define whether institutions can trust token
 
 ## Why custody and settlement break under fragmentation
 
-Retail-style custody and legacy settlement workflows fail institutional review. Single keys, omnibus ledgers, and ad hoc approval chains leave regulators staring at operational risk. Meanwhile, token legs clear on-chain while cash crawls through ACH or SWIFT batches, forcing reconciliation teams to chase exposure. Without a shared runtime, eligibility updates, policy changes, and cash instructions diverge, driving cap-table drift, settlement risk, and painful audits.
+Retail-style custody and legacy settlement workflows fail institutional review, and everyone around the table knows it. Single keys, omnibus ledgers, and ad hoc approval chains leave regulators staring at operational risk. Meanwhile, token legs clear on-chain while cash crawls through ACH or SWIFT batches, forcing reconciliation teams to chase exposure. Without a shared runtime, eligibility updates, policy changes, and cash instructions diverge, driving cap-table drift, settlement risk, and painful audits that never seem to close.
 
 ## Custody architecture inside the DALP
 
-SettleMint’s custody blueprint gives the DALP bank-grade depth:
+SettleMint's custody blueprint gives the DALP bank-grade depth:
 
-- **Key management**—HSM- or MPC-backed key generation, storage, and recovery across hot, warm, and cold tiers with geographic distribution.
-- **Policy engine**—multi-party approvals, role-specific signing policies, and emergency overrides instrumented as code with full logging.
-- **Operational workflows**—automated transaction validation, reconciliation, and reporting services that keep custody state aligned with the cap table.
-- **Servicing coverage**—corporate actions, income collection, proxy voting, and tax automation run from the same service layer; current automation levels already hit 70–95 % depending on the event type.
+- **Key management**: HSM- or MPC-backed key generation, storage, and recovery across hot, warm, and cold tiers with geographic distribution.
+- **Policy engine**: multi-party approvals, role-specific signing policies, and emergency overrides instrumented as code with full logging.
+- **Operational workflows**: automated transaction validation, reconciliation, and reporting services that keep custody state aligned with the cap table.
+- **Servicing coverage**: corporate actions, income collection, proxy voting, and tax automation run from the same service layer; current automation levels already hit 70-95% depending on the event type.
 
 ### Custody performance snapshot
 
 | Capability | Target | Current | Notes |
 | --- | --- | --- | --- |
 | Transaction settlement | T+0 to T+1 | T+0 | No manual fallback |
-| Asset safekeeping | 100 % | 99.99 % | MPC/HSM enforced |
-| Reporting accuracy | 100 % | 99.98 % | Automated reconciliation |
-| System availability | >99.9 % | 99.95 % | Multi-zone deployments |
+| Asset safekeeping | 100% | 99.99% | MPC/HSM enforced |
+| Reporting accuracy | 100% | 99.98% | Automated reconciliation |
+| System availability | >99.9% | 99.95% | Multi-zone deployments |
 
 ## Asset servicing without spreadsheets
 
 Corporate actions, income, and proxy voting follow deterministic workflows:
 
-1. **Action detection → notification**: events publish to clients within 45–60 minutes of detection.
+1. **Action detection → notification**: events publish to clients within 45-60 minutes of detection.
 2. **Instruction capture**: investors respond through guided portals; validation enforces eligibility and deadlines.
-3. **Execution and reconciliation**: ledger updates, custody adjustments, and documentation complete in ~18 hours, hitting \<1 % exception rates.
+3. **Execution and reconciliation**: ledger updates, custody adjustments, and documentation complete in ~18 hours, hitting \<1% exception rates.
 4. **Evidence packs**: receipts, reconciled positions, and tax artifacts append to the investor record automatically.
 
-Automation levels already reach 80–95 % across servicing categories, freeing operations teams to focus on exceptions instead of bulk processing.
+Automation levels already reach 80-95% across servicing categories, freeing operations teams to focus on exceptions instead of bulk processing.
 
 ## Multi-signature policy fabric
 
 The DALP standardizes signature tiers so governance is predictable:
 
-- **Daily operations**: 2-of-3 approvals from custody ops cover routine transfers (\<30 min collection time).
+- **Daily operations**: 2-of-3 approvals from custody ops cover routine transfers (\<30 min collection time).
 - **Large transactions**: 3-of-5 signatures across senior management enforce segregation of duties.
 - **Emergency access**: 4-of-7 board-level approvals unlock break-glass flows with automatic incident logging.
 - **Administration**: 3-of-4 IT + compliance sign-offs guard system changes.
 
-Signature collection, transaction execution, and audit packaging are instrumented (typical execution \<3 min, audit documentation ~45 s), keeping both regulators and internal risk satisfied.
+Signature collection, transaction execution, and audit packaging are instrumented (typical execution \<3 min, audit documentation ~45s), keeping both regulators and internal risk satisfied.
 
 ## Settlement stack: atomic by default
 
 The payment-rails architecture coordinates cash and tokens simultaneously:
 
 - **Settlement engine** orchestrates deterministic states (initiated → reserved → executed → reversed) shared across smart contracts and ORPC APIs.
-- **Payment gateway adapters** translate ISO 20022, SWIFT MT/MX, ACH batches, card networks, and stablecoin bridges while enforcing risk limits and sanctions screening.
+- **Payment gateway adapters** translate ISO 20022, SWIFT MT/MX, ACH batches, card networks, and stablecoin bridges while enforcing risk limits and sanctions screening.
 - **Liquidity management** nets flows, optimizes routing, and surfaces queue depth and utilization metrics to operations.
 - **Compliance hooks** screen every leg (AML, sanctions, jurisdiction) before signing anything on- or off-chain.
 
-Failure paths are deterministic: if a rail rejects payment, the token leg aborts and reconciliation artifacts generate automatically. Success keeps cash and tokens perfectly synchronized.
+Failure paths are deterministic: if a rail rejects payment, the token leg aborts and reconciliation artifacts generate automatically. Success keeps cash and tokens perfectly synchronized, which means the reconciliation war room finally stays empty.
 
 ## Operating model and stakeholder outcomes
 
@@ -72,4 +72,4 @@ Failure paths are deterministic: if a rail rejects payment, the token leg aborts
 3. Settlement connectors remain stateless. If a rail fails, both legs revert with reconciliation artifacts emitted automatically.
 4. Lifecycle servicing (dividends, redemptions, tax) runs on the custody plane, ensuring corporate actions and entitlements always match recorded balances.
 
-When custody and settlement operate on the DALP control plane, the platform delivers the clarity regulators expect: deterministic DvP, provable asset protection, and zero tolerance for reconciliation surprises.
+When custody and settlement operate on the DALP control plane, the platform delivers the clarity regulators expect: deterministic DvP, provable asset protection, and zero tolerance for reconciliation surprises. The calm that follows is very much the point.
