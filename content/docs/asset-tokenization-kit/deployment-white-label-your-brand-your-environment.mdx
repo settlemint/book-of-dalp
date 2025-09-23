@@ -3,13 +3,29 @@ title: "Deployment & White-Label"
 description: "ATK ships Helm charts, Compose blueprints, and managed Console automation so institutions own runtime, branding, and evidence from day one."
 ---
 
+import { Tab, Tabs } from "@/components/tabs";
+
 ## Deployment choices that pass review
 
 ATK supports three delivery patterns that run the same code and APIs:
 
-- **Self-hosted Kubernetes**: `kit/charts/atk` packages the dApp, REST API backend, Besu network, Blockscout, Hasura, MinIO, and observability stack with environment-specific values, disruption budgets, and network policies.
-- **Local and dev automation**: `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers and QA teams; the compose stack uses the same artifacts Helm deploys.
-- **Managed SettleMint Console**: SettleMint operates the stack for teams that want a service, while still exposing tenant automation, exports, and access to the Helm assets for later self-hosting.
+<Tabs items={["Self-hosted Kubernetes", "Local & dev automation", "Managed Console"]}>
+  <Tab>
+    <p>
+      Deploy <code>kit/charts/atk</code> into your cluster to run the dApp, REST API backend, Besu network, Blockscout, Hasura, MinIO, and observability stack. Environment-specific values, disruption budgets, and network policies come baked in so you retain full operational control.
+    </p>
+  </Tab>
+  <Tab>
+    <p>
+      Use <code>docker-compose.yml</code> with <code>bun run dev:up</code> to reproduce the full platform for developers and QA. The Compose stack pulls the exact artifacts Helm deploys, keeping dev, staging, and production honest.
+    </p>
+  </Tab>
+  <Tab>
+    <p>
+      Let SettleMint operate the stack via Console while you still access tenant automation, exports, and Helm assets. Institutions can prove tenancy boundaries today and transition to self-hosting whenever procurement requires it.
+    </p>
+  </Tab>
+</Tabs>
 
 Procurement sees real controls instead of promises: you can point to the charts, the pipelines, and the evidence before diligence even starts.
 

@@ -3,6 +3,8 @@ title: "Custody Operations"
 description: "ATK ships bank-grade key control, policy automation, and custodian adapters so assets and controls stay aligned."
 ---
 
+import { Accordion, Accordions } from "@/components/accordion";
+
 ## What the custody layer delivers
 
 ATK supports self-custody, institutional sub-custody, and third-party vaults under one policy model. Hardware wallets, MPC platforms, and bank custodians plug into the same control plane, so institutions keep their preferred vendors without losing governance.
@@ -13,9 +15,23 @@ A single Bun-based signer exposes JSON-RPC and OpenAPI surfaces for key manageme
 
 ## Key storage tiers
 
-- **Base**: Postgres with pgsodium encryption and a server key managed through the platform secrets store.
-- **Hybrid**: Postgres keys wrapped by Vault Transit, cloud KMS, Conjur, or Luna devices for separation of duties.
-- **Full HSM**: Keys created or imported as non-extractable PKCS#11 objects in SoftHSM, Luna, CloudHSM, or customer hardware; signing never leaves the module.
+<Accordions type="single" defaultValue="base">
+  <Accordion title="Base" value="base">
+    <p>
+      Postgres storage with pgsodium encryption keeps secrets local while the platform secrets store manages the server key. It is the quickest path to a secure pilot without extra hardware.
+    </p>
+  </Accordion>
+  <Accordion title="Hybrid" value="hybrid">
+    <p>
+      Database keys wrap through Vault Transit, cloud KMS, Conjur, or Luna devices so operations teams separate duties. Rotation policies live in the external service while ATK orchestrates usage.
+    </p>
+  </Accordion>
+  <Accordion title="Full HSM" value="hsm">
+    <p>
+      Keys originate as non-extractable PKCS#11 objects in SoftHSM, Luna, CloudHSM, or customer hardware. Signing never leaves the module, matching the requirements of bank-grade custodians.
+    </p>
+  </Accordion>
+</Accordions>
 
 The custody container bundles Biome, Drizzle, viem, Noble crypto, and shadcn/ui tooling, ships non-root and read-only, and includes vendor PKCS#11 libraries under `/opt/pkcs11` so deployments move cleanly between cloud, on-prem, or air-gapped clusters.
 

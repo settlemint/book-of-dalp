@@ -3,6 +3,8 @@ title: "Settlement & Interop"
 description: "ATK treats T+0 as the baseline: atomic swaps, settlement validators, and payment-rail adapters remove counterparty gaps."
 ---
 
+import { Accordion, Accordions } from "@/components/accordion";
+
 ## Closing the settlement gap
 
 Traditional systems create windows of counterparty risk while one leg clears and the other waits. ATK removes that risk by design: both sides complete their obligation, or the trade unwinds automatically.
@@ -58,7 +60,23 @@ Programs track atomic settlement success rates, average time to finality for on-
 
 ## Failure handling
 
-If a bank confirmation stalls, the escrow contract times out, reverts, and notifies each party with context. Bridges refuse to mint on chains that miss policy, even if that denies the transfer. When ledger and bank views diverge, the ISO 20022 message flow becomes the system of record for booking and reconciliation, removing ambiguity.
+<Accordions type="single" defaultValue="confirmation">
+  <Accordion title="Bank confirmation stalls" value="confirmation">
+    <p>
+      When a rail fails to acknowledge the ISO 20022 instruction within the agreed window, the escrow contract times out, reverts both legs, and notifies each party so treasury can reissue with context.
+    </p>
+  </Accordion>
+  <Accordion title="Policy mismatch" value="policy">
+    <p>
+      Bridges refuse to mint on destinations that miss policy checks or limits. The validator blocks the hop immediately and logs the rejection for compliance review instead of leaving the trade in limbo.
+    </p>
+  </Accordion>
+  <Accordion title="Ledger vs. bank drift" value="ledger">
+    <p>
+      If the ledger and bank view diverge, the ISO 20022 message flow becomes the system of record for booking and reconciliation, eliminating ambiguity about settlement state.
+    </p>
+  </Accordion>
+</Accordions>
 
 ## Why this approach is different
 

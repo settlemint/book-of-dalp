@@ -3,6 +3,8 @@ title: "Servicing"
 description: "ATK handles coupons, redemptions, distributions, and vault events without spreadsheet choreography."
 ---
 
+import { Step, Steps } from "@/components/steps";
+
 ## Corporate actions and servicing
 
 The Asset Tokenization Kit (ATK) turns corporate actions into deterministic workflows. Declarations start in guided wizards, record-date snapshots lock eligible balances, and payouts execute through the same contracts that issued the asset. Operations teams see the cadence in a single console instead of juggling email threads.
@@ -27,10 +29,20 @@ The bond implementation wires these modules together, enforcing maturity rules, 
 
 ## Zero-leak workflow
 
-1. Operators schedule a payout or redemption in the Asset Manager, supplying record date, pay date, funding accounts, and overrides.
-2. Historical balance modules confirm eligible balances and preview reports; compliance modules run checks on the target holders.
-3. The addon executes a batched transaction that debits the custodian wallet and applies the distribution on-chain.
-4. Subgraph and Hasura layers emit updated ledgers so finance, compliance, and auditors pull the same evidence.
+<Steps>
+  <Step>
+    <strong>Schedule the action.</strong> Operators set record date, pay date, funding accounts, and overrides inside the Asset Manager before anything hits the chain.
+  </Step>
+  <Step>
+    <strong>Validate eligibility.</strong> Historical balance modules preview reports and compliance engines run jurisdiction, accreditation, and blocklist checks against every holder.
+  </Step>
+  <Step>
+    <strong>Execute distributions.</strong> The addon debits the custodian wallet and applies payouts or redemptions on-chain, eliminating manual reconciliation.
+  </Step>
+  <Step>
+    <strong>Broadcast evidence.</strong> Subgraph and Hasura layers refresh ledgers so finance, compliance, and auditors retrieve the same receipts immediately.
+  </Step>
+</Steps>
 
 ## Operational guardrails
 
