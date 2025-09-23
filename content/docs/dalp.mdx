@@ -4,6 +4,8 @@ description: "The fix for a fragmented, non-compliant, T+2 world is a single, pr
 icon: "Workflow"
 ---
 
+import { Steps, Step } from "@/components/steps";
+
 ## What the DALP is (and isn't)
 
 A DALP is a full-stack, compliance-native platform that collapses issuance, lifecycle servicing, compliance, custody, settlement, and operational tooling into one programmable system. It replaces the multi-vendor maze with a single control plane that keeps the cap table, rules, and records in sync. Sounds ambitious? That's exactly the promise institutions expect us to keep.
@@ -11,6 +13,12 @@ A DALP is a full-stack, compliance-native platform that collapses issuance, life
 At its core, the DALP manages issuance and ongoing servicing with real-time cap tables, document management, and automated corporate actions. Compliance and identity are embedded, not bolted on, through integrated KYC/KYB, accreditation, on-chain whitelisting, and a rule engine that evaluates every transfer ex-ante. Custody meets bank standards via HSM or MPC key management, multi-sig policies, recovery workflows, and integrations with regulated custodians. Settlement and interoperability deliver atomic DvP across tokenized cash and fiat rails (SWIFT/SEPA/RTGS), ISO 20022 translation, and cross-chain continuity when assets span ledgers. Why ship another tool if the hard parts still live in spreadsheets?
 
 The platform deploys on-prem, in a client cloud, or as hardened SaaS with dedicated services. Enterprise IAM covers SSO/MFA/SAML/OIDC, RBAC/ABAC, SIEM integration, and audit-ready logging. Developers and operators get modern UIs, APIs/SDKs, sandbox environments, webhooks, and observability hooks. No mystery boxes, just infrastructure teams can actually control.
+
+<Callout type="info" title="What clients keep repeating">
+  "Give us one control plane, wire identities into transfers, and settle cash
+  with the asset." That is the recurring theme from banks, asset managers, and
+  market operators we brief every week.
+</Callout>
 
 This is not an issuance wizard, custody bolt-on, or "exchange with an API." The DALP is lifecycle infrastructure built to remove every handoff. We've all watched quick demos that crumble under diligence; this is the antidote.
 
@@ -172,6 +180,20 @@ T+0 settlement on 99% of lifecycle transactions with 100% deterministic outcomes
 
 Because it actually implements every law above: lifecycle coverage; compliance inside the transfer path; bank-grade custody; deterministic settlement rails; deployment control and IAM; and a first-class developer surface. That's not a toolbox. That's market infrastructure. Why settle for less?
 
-### What's next
+### Rollout snapshot
 
-Chapter 3 dives into the compliance backbone in detail, identity registry, claims, rule composition, and how we keep legality attached to the asset across venues, banks, and chains. Ready to keep going?
+<Steps>
+  <Step>
+    Start with issuance, identity, and compliance in one environment. Map every
+    existing rule and translate it into the DALP rule engine before migrating
+    live balances.
+  </Step>
+  <Step>
+    Connect custody and settlement legs. Bring MPC/HSM policies online, wire
+    cash rails, and rehearse atomic DvP with a dry-run cohort.
+  </Step>
+  <Step>
+    Layer monitoring, reporting, and governance. Once dashboards, alerts, and
+    audit exports are live, invite external stakeholders and scale volume.
+  </Step>
+</Steps>

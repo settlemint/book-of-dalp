@@ -3,6 +3,8 @@ title: "Infrastructure"
 description: "The Asset Tokenization Kit (ATK) ships as an umbrella Helm chart that brings the Besu network, data APIs, signing workflows, and observability stack into a single release with Kubernetes and OpenShift friendly defaults."
 ---
 
+import { Tabs, Tab } from "@/components/tabs";
+
 Deploying the Asset Tokenization Kit (ATK) umbrella chart brings an opinionated slice of blockchain infrastructure into your cluster: the Besu network, the data APIs, the signing edge, and the observability plumbing ship together with defaults that match the sample `values.yaml`. You keep the freedom to point databases and caches at managed services, yet the bundle still carries a fully wired fallback when those are unavailable. Why spend hours reverse-engineering the wiring when the chart already spells it out?
 
 The stack view below shows how traffic moves from the issuer-facing surfaces through the shared services and down to the ledger.
@@ -107,6 +109,111 @@ Each dependency is declared in `Chart.yaml` with a `condition` referencing `<com
 - Hostnames, TLS issuers, and ingress classes live under each component’s `ingress` or `openShiftRoute` block; keep them synchronized across environments.
 - Every service that talks to Postgres or Redis uses an init container based on `ghcr.io/settlemint/btp-waitforit`, making dependencies explicit and easier to debug.
 - `global.chainId` and `global.chainName` flow into Besu, TxSigner, and downstream clients, so change them once when you stand up a new network.
+
+## Environment setup playbooks
+
+<Tabs items={["AWS", "Azure", "GCP", "On-Prem Kubernetes", "On-Prem OpenShift"]}>
+  <Tab>
+    <div className="space-y-6">
+      <section className="space-y-2">
+        <h4>Cluster prep</h4>
+        <p>Start with an EKS cluster on version 1.29. Spread nodes across at least three availability zones so Besu validators and RPC nodes land on separate failure domains. Provision managed node groups with taints for the Besu stateful workloads and let the Kubernetes cluster autoscaler handle bursts. Attach the IAM OIDC provider and map service-account roles for the ALB controller, TxSigner, and eRPC pods; without that mapping the ingress annotations in the chart stay ignored. Set each host in the ingress blocks to Route 53 records backed by an Application Load Balancer and disable the support slice for ingress-nginx.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>External data plane</h4>
+        <p>Switch the <code>support.postgresql.enabled</code>, <code>support.redis.enabled</code>, and <code>support.minio.enabled</code> flags to false. Under <code>global.datastores</code>, replace the sample hosts with the RDS writer endpoint, the ElastiCache configuration endpoint, and the S3 domain that stores ABI archives. Capture credentials in AWS Secrets Manager and mount them through Kubernetes secrets referenced in the same block so the chart never holds clear text. Keep storage classes pointed at gp3 volumes for Besu PVCs by setting <code>network-nodes.persistence.storageClass</code> to your EBS class.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Observability handshake</h4>
+        <p>Leave every <code>observability.*.enabled</code> toggle unset and stream logs with the aws-for-fluent-bit add-on that writes to CloudWatch Logs. Configure Alloy sidecars and Grafana dashboards to forward metrics into Amazon Managed Service for Prometheus and Amazon Managed Grafana by supplying their endpoints through environment variables on the Alloy DaemonSet. Wire Besu and Graph Node tracing to AWS X-Ray by enabling the OpenTelemetry collector in your cluster add-ons; the chart already emits OTLP traffic once you inject the collector service name.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Support channel</h4>
+        <p>Every runbook should list the RDS instance identifier, ElastiCache cluster ID, and S3 bucket ARN alongside the Helm release name so AWS support cases open with context. Enable CloudTrail data events against the bucket, configure Auto Recovery on the RDS instance, and record the EKS cluster UUID inside your ticket template. It sounds fussy, yet it prevents late-night hunting when a failover happens.</p>
+      </section>
+    </div>
+  </Tab>
+  <Tab>
+    <div className="space-y-6">
+      <section className="space-y-2">
+        <h4>Cluster prep</h4>
+        <p>Stand up an AKS cluster on version 1.29. Use Azure CNI with an address space that gives each node at least 64 pod IPs so Besu RPC pods never starve. Create a system node pool for platform services and a user pool with Premium SSDs for Besu validators, then taint the user pool so only stateful sets land there. Enable the Application Gateway ingress controller with a dedicated gateway subnet and point the chart ingress hosts to the public IP that controller manages. Turn off the <code>support.ingress-nginx</code> toggle because the Azure gateway carries the edge traffic.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>External data plane</h4>
+        <p>Set <code>support.postgresql.enabled</code>, <code>support.redis.enabled</code>, and <code>support.minio.enabled</code> to false. In <code>global.datastores</code>, reference Azure Database for PostgreSQL Flexible Server endpoints with forced SSL, Azure Cache for Redis replica cache nodes, and an Azure Blob Storage container with versioning enabled for ABI backups. Pull credentials from Azure Key Vault via secrets-store CSI; list the Key Vault object IDs in your deployment manifest so rotation happens without a redeploy.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Observability handshake</h4>
+        <p>Keep the observability chart disabled and enable Container Insights on the AKS cluster so stdout and stderr stream to Azure Monitor Logs. Configure the OpenTelemetry collector add-on to push metrics into Azure Monitor managed Prometheus and wire Grafana dashboards to Azure Managed Grafana using service principal credentials. For tracing, create a dedicated Azure Monitor workspace and point the collector exporter at its ingestion endpoint; the chart sidecars begin sending OTLP the moment the service name matches.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Support channel</h4>
+        <p>Capture the resource IDs for the Flexible Server, Redis cache, Blob Storage account, and Application Gateway inside your incident template. Enable zone redundant HA on the database and set diagnostic settings to flow into your Log Analytics workspace. It feels redundant to repeat IDs, yet it keeps Azure support engineers from guessing which resource backs the chart during a page.</p>
+      </section>
+    </div>
+  </Tab>
+  <Tab>
+    <div className="space-y-6">
+      <section className="space-y-2">
+        <h4>Cluster prep</h4>
+        <p>Create a regional GKE standard cluster on version 1.29. Use three zones and configure node pools with Workload Identity so service accounts gain dedicated IAM roles. Reserve one node pool with SSD persistent disks for Besu stateful sets and allow a preemptible pool for stateless APIs if you want to shave cost. Deploy the GKE Ingress with container-native load balancing and disable the chart's support ingress; annotate the service with <code>networking.gke.io/load-balancer-type: External</code> to land a global HTTP(S) endpoint.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>External data plane</h4>
+        <p>Flip <code>support.postgresql.enabled</code>, <code>support.redis.enabled</code>, and <code>support.minio.enabled</code> to false. Update <code>global.datastores</code> with the private IP of your Cloud SQL for PostgreSQL instance, the Memorystore Redis endpoint, and the regional Cloud Storage bucket that keeps ABI artifacts. Mount credentials from Secret Manager via the GKE Secret Manager CSI driver and schedule syncs so password rotation is automatic. When you provision Cloud SQL, enable high availability and set the maintenance window to avoid your release windows.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Observability handshake</h4>
+        <p>Leave the observability chart off and enable Cloud Operations for GKE so logs and metrics stream into Cloud Logging and Cloud Monitoring. Configure Alloy or OpenTelemetry collectors to ship Prometheus format metrics into Managed Service for Prometheus by setting the exporter endpoint environment variables on the collector deployment. Send traces into Cloud Trace by creating a service account with <code>cloudtrace.agent</code> and pointing the OTLP exporter at the regional ingest URL; Besu tracing starts flowing once credentials load.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Support channel</h4>
+        <p>Tag the Cloud SQL instance, Memorystore cluster, Cloud Storage bucket, and load balancer with the Helm release label so support tickets stay linked. Capture the project ID, cluster UUID, and Secret Manager secret versions in your runbooks. You might think the labeling is overkill, yet it is the fastest way to prove impact when a Google Cloud support engineer joins a call.</p>
+      </section>
+    </div>
+  </Tab>
+  <Tab>
+    <div className="space-y-6">
+      <section className="space-y-2">
+        <h4>Cluster prep</h4>
+        <p>Run Kubernetes 1.28 or newer on hardened nodes with containerd and a CNI that enforces network policies. Segment workloads by creating dedicated node pools for Besu validators with SSD-class storage and use TopologySpreadConstraints so pods span racks. Front the cluster with your campus load balancer (F5, HAProxy, or equivalent) and map the chart ingress hosts to DNS entries that point at that device; disable the support ingress because the hardware appliance terminates TLS. Apply Pod Security Standards in baseline mode and document any exceptions for the Besu namespace so security reviews stay predictable.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>External data plane</h4>
+        <p>The standard expectation is an enterprise PostgreSQL cluster managed by the database team with streaming replicas, a Redis Sentinel deployment for caching, and an object store such as Ceph RGW or NetApp StorageGRID. Set all <code>support.*.enabled</code> toggles to false and populate <code>global.datastores</code> with the service VIPs, TLS requirements, and secret names provided by those teams. Fetch credentials from HashiCorp Vault through the CSI driver and schedule regular Vault renewals so TxSigner never sees expired leases.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Observability handshake</h4>
+        <p>Use the cluster-wide Prometheus and Loki stacks that operations already run. Annotate Besu, TxSigner, and eRPC deployments with the scrape labels your observability platform expects, then configure Alloy or the OpenTelemetry collector to remote write into the central monitoring plane. Ship logs through Fluent Bit to the shared Elastic or Splunk index and document which index receives which namespace. Since there is no managed Grafana here, reference the central Grafana URL in your runbooks and supply dashboard JSON to the team who curates it.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Support channel</h4>
+        <p>List contact rotations for the database group, cache administrators, storage operators, and observability desk in the environment handbook. Record the VLAN IDs, firewall change form, and storage volume IDs next to the Helm values path. Who wants to guess which SAN engineer to ping when latency spikes?</p>
+      </section>
+    </div>
+  </Tab>
+  <Tab>
+    <div className="space-y-6">
+      <section className="space-y-2">
+        <h4>Cluster prep</h4>
+        <p>Run OpenShift 4.14 or later with three control plane nodes and a minimum of three worker nodes sized with 8 vCPU and 32 GiB for Besu. Import the values-openshift.yaml overlay so the pods inherit OpenShift-friendly security contexts, host path policies, and Route definitions. Label worker nodes with <code>atk-role=stateful</code> and reference that label in <code>network-nodes.nodeSelector</code> so validators stick to storage-backed nodes. Expose ingress through OpenShift Routes and disable the support ingress, since the cluster's router handles TLS termination.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>External data plane</h4>
+        <p>Expect Red Hat OpenShift Database Access or a managed Crunchy Postgres cluster, along with Redis provided by IBM DataPower Gateway or a self-managed Redis Sentinel pair, plus an S3-compatible bucket from OpenShift Data Foundation. Set <code>support.postgresql.enabled</code>, <code>support.redis.enabled</code>, and <code>support.minio.enabled</code> to false and populate <code>global.datastores</code> with the service hosts, TLS settings, and secret names created by those operators. Mount secrets through OpenShift's External Secrets Operator so updates arrive without restarts.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Observability handshake</h4>
+        <p>Keep the observability chart disabled and connect to the cluster's user workload monitoring stack. Annotate namespaces with <code>openshift.io/cluster-monitoring=true</code> so Prometheus scrapes the pods, then configure recording rules in the central cluster-monitoring-config ConfigMap rather than inside the chart. Send logs to LokiStack by enabling the OpenShift Logging Operator and mapping namespaces to the correct log store via ClusterLogForwarder. Integrate Grafana by referencing the corporate Grafana instance, which already reads from the monitoring stack.</p>
+      </section>
+      <section className="space-y-2">
+        <h4>Support channel</h4>
+        <p>Document the OpenShift subscription ID, cluster ID, and project names that hold ATK in the support wiki. Link each external datastore secret back to its operator namespace and include the Route hostnames so Red Hat support can reconstruct traffic paths. When incidents rise to Red Hat, provide the must-gather bundle plus the values overlay; it saves hours of back-and-forth.</p>
+      </section>
+    </div>
+  </Tab>
+</Tabs>
 
 ## Component walkthrough
 

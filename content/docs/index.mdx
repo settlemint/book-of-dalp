@@ -4,9 +4,15 @@ description: "The tokenization market stalled because it runs on a patchwork of 
 icon: "TriangleAlert"
 ---
 
+import { Steps, Step } from "@/components/steps";
+
 The opportunity is both real and urgent. Real-world assets (RWAs) passed $50B on-chain in 2024 and are projected to hit $500B+ in 2025, excluding stablecoins. Yet this represents a fraction of a $230T addressable base. Institutional intent is there, and regulatory clarity is improving with frameworks like MiCA. If the runway looks this wide, why does it still feel like the wheels are chocked? The current technology stack keeps scale stuck in the hangar.
 
 This chapter names the failures plainly, shows how they hit institutions, investors, and developers, and defines the non-negotiables any serious solution must meet. You know what? Sugarcoating would just waste another quarter.
+
+<Callout type="info" title="Signal from the field">
+  Inefficient handoffs, off-ledger compliance, and clumsy settlement have shown up in every diligence call we have joined this year. Risk teams keep repeating the same three asks: fix lifecycle gaps, put compliance in code, and stop making them juggle vendors.
+</Callout>
 
 ## Fragmentation: five vendors for one lifecycle
 
@@ -103,6 +109,20 @@ The easy mistake is to buy a slick issuance wizard or a single-purpose custody v
 ## The bar to clear
 
 Institutions expect bank-grade security, auditable compliance, instant or near-instant settlement, and enterprise governance controls to be present on day one. Anything short of that will fail risk committees and regulators, regardless of product vision or UI quality. The lifecycle platform either clears that bar or the deal never leaves diligence. Risk teams can smell shortcuts a mile away.
+
+### Quick triage plan
+
+<Steps>
+  <Step>
+    Map the current vendor chain and log every manual handoff. If a control lives in email or a spreadsheet, mark it as broken.
+  </Step>
+  <Step>
+    Pull compliance and identity into the asset path so rules execute before transfers. Shared registries beat duplicated whitelists every time.
+  </Step>
+  <Step>
+    Pair token settlement with real cash rails—stablecoin, RTGS, or both—so T+0 stops being marketing copy and starts being the default outcome.
+  </Step>
+</Steps>
 
 ## Where this book goes next
 
