@@ -9,7 +9,8 @@ Financial teams judge platforms by how fast they can answer what happened and wh
 
 Every interaction lands in two sources: the on-chain event stream and the Postgres-backed operational store. Graph and Hasura views expose instantaneous cap tables, while ORPC routes provide consented slices of PII or workflow metadata. Compliance officers can prove holder positions, permissions, and overrides without shadow systems.
 
-```
+<Mermaid
+  chart={`
 flowchart LR
   subgraph Sources
     chain["On-chain events"]
@@ -27,7 +28,8 @@ flowchart LR
   indexers --> filings
   indexers --> observability
   observability --> siem
-```
+`}
+/>
 
 Localized, white-labeled portals render the same artifacts for investors and issuers: payout receipts, voting confirmations, redemption statements, reconciliation packs, claim histories. ISO 20022 mapping translates token movements to booking messages, eliminating the spreadsheet merge marathons that still dominate many back offices.
 

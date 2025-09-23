@@ -11,7 +11,8 @@ Traditional systems create windows of counterparty risk while one leg clears and
 
 The Cross-Value Proposition (XvP) addon ships escrow contracts, settlement validators, and atomic engines.
 
-```
+<Mermaid
+  chart={`
 sequenceDiagram
   participant PartyA as "Party A"
   participant PartyB as "Party B"
@@ -34,7 +35,8 @@ sequenceDiagram
     Escrow-->>PartyA: Return original asset
     Escrow-->>PartyB: Return original asset
   end
-```
+`}
+/>
 
 When both legs live on-chain, finality is T+0. When cash sits on bank rails, ATK sends ISO 20022-aligned instructions through the payment-rails architecture and waits for confirmation before releasing the token leg. Result: no partial deliveries, no manual reconciliation queues, and an audit trail for every instruction.
 

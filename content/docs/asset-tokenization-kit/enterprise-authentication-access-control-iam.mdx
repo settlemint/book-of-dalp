@@ -17,7 +17,8 @@ Each authenticated user links to an OnchainID identity. When they mint assets or
 
 Human users sign in through the dApp, complete onboarding, and receive role-based permissions. Automation uses scoped API keys, so bots and batch jobs get just enough access to operate. Compliance modules stand as the third guardrail: even with a valid session, a transfer fails if the holder’s OnchainID claims do not satisfy the token’s policy.
 
-```
+<Mermaid
+  chart={`
 sequenceDiagram
   participant User
   participant Auth as "Better Auth"
@@ -37,7 +38,8 @@ sequenceDiagram
   Auth->>APIKey: Mint scoped key
   APIKey->>Service: Automation call
   Service->>Audit: Log event
-```
+`}
+/>
 
 ## Threat model and controls
 

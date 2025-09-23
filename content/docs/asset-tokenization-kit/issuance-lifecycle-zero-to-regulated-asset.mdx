@@ -27,7 +27,8 @@ Issuance gates distribution with KYC/KYB, accreditation, and on-chain whitelisti
 
 ## Architecture at a glance
 
-```
+<Mermaid
+  chart={`
 flowchart LR
   designer["Asset Designer"] --> factory["Token factory + controllers"]
   factory --> indexer["Subgraph + cap table"]
@@ -35,7 +36,8 @@ flowchart LR
   indexer --> engine["Distribution engine"]
   docs --> surfaces["Asset Manager & APIs"]
   engine --> surfaces
-```
+`}
+/>
 
 A subgraph-backed indexer subscribes to transfer, mint, and burn events, reconciles positions instantly, and exposes query endpoints in the Asset Manager and via GraphQL. Document hashes, prospectus references, and base price claims live alongside the asset’s on-chain identity, keeping legal artifacts auditable from launch through redemption.
 
