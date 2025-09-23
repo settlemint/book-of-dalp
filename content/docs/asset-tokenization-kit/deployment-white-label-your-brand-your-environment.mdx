@@ -1,67 +1,40 @@
 ---
-title: "Deployment"
-description: "From local sandboxes to regulated clusters, ATK packages the full environment so ops teams avoid snowflake stacks."
+title: "Deployment & White-Label"
+description: "ATK ships Helm charts, Compose blueprints, and managed Console automation so institutions own runtime, branding, and evidence from day one."
 ---
 
-## Deployment & White-Label – _Your Brand, Your Environment_
+## Deployment choices that pass review
 
-**Any Cloud or Chain, Same Platform:** SettleMint’s Asset Tokenization Kit is designed to be **deployable market infrastructure** – you control where it runs and on what blockchain network, without sacrificing functionality. For regulated banks that require a **private network**, the provided Helm charts can spin up a complete Hyperledger Besu network (with QBFT or other consensus) in your own Kubernetes cluster. If instead you want to leverage a **public EVM chain** (Ethereum mainnet, Polygon, Base, etc.), the platform supports that too – the smart contracts and APIs are chain-agnostic, and configuration toggles let you point the kit at any EVM network endpoint. In fact, the official docs highlight multi-chain deployment support, enabling launches on Ethereum, Polygon, Besu, Quorum **from a single playbook**. This is a key differentiator: **many competing solutions are tied to one network or require a separate instance per chain**, whereas SettleMint’s kit was built with interoperability in mind. For example, you could issue a token on Polygon for cost-efficiency while simultaneously mirroring compliance states to a private Besu ledger that your regulators interface with – all orchestrated by the same kit. The **deployment scripts and charts are open-source** and highly configurable, so institutions can swap components or customize as needed (database, blockchain client, storage classes, etc.). Need to use Geth or a specific enterprise Ethereum client? Simply adjust a Helm value – no code changes required. This flexibility extends to infrastructure choices: the kit runs on any CNCF-conformant Kubernetes, and we provide Terraform templates for major clouds (AWS, GCP, Azure) via the BTP deployment guides. Self-hosting gives you **full control over nodes, keys, and integration**, which is often a gating item for risk review. At the same time, if speed is essential, you can start on the **managed SettleMint Console** (our SaaS) and later migrate on-premise – because it’s the **identical codebase** on both. The ability to _“start in the cloud, then bring it in-house”_ is something we’ve seen large banks appreciate as it de-risks early experimentation while satisfying long-term deployment mandates.
+ATK supports three delivery patterns that run the same code and APIs:
 
-**White-Label UI/UX:** Delivering a blockchain app to end-users doesn’t mean you have to expose SettleMint’s branding or style. The kit’s **Next.js frontend** is built with theming and extensibility in mind: you can customize color palettes, logos, and even UI components to match your brand guidelines. Under the hood, all UI elements use a design token system and Radix UI for accessibility, so changing the look and feel is straightforward without breaking functionality. For instance, you can white-label the investor portal to look exactly like your bank’s existing online portal – end users won’t even know SettleMint is behind it. The **ingress and routing** configuration supports custom domain names and your own TLS certificates, meaning every interface (the dApp, API endpoints, explorer, etc.) can sit behind your organization’s URL and security layer. This level of control even extends to **integrations**: if you prefer to integrate our functionality into your existing mobile app or web portal via API, that’s fully supported. The Portal’s REST/GraphQL APIs and webhook system let you embed tokenization workflows into other channels easily. For example, a bank could keep their current customer mobile app and just call the kit’s APIs for token issuance or transfers, while the heavy-lifting and compliance checks happen on the backend. Because the kit was built API-first, there’s **no hacky workaround needed** – it’s a clean separation of front-end and back-end. Summed up, **you own the user experience** and the runtime: the kit provides the industrial-strength engine under the hood, but you present it to users and regulators on _your_ terms and branding. This is crucial in regulated environments where demonstrating control over the tech (security, look/feel, data flows) is required in due diligence.
+- **Self-hosted Kubernetes**: `kit/charts/atk` packages the dApp, ORPC backend, Besu network, Blockscout, Hasura, MinIO, and observability stack with environment-specific values, disruption budgets, and network policies.
+- **Local and dev automation**: `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers and QA teams; the compose stack uses the same artifacts Helm deploys.
+- **Managed SettleMint Console**: SettleMint operates the stack for teams that want a service, while still exposing tenant automation, exports, and access to the Helm assets for later self-hosting.
 
-**Operational Readiness & DevOps:** The deployment package comes with everything needed to satisfy enterprise ops teams from day one. We provide **Helm charts with battle-tested configurations** for all components – blockchain node, database, API servers, indexers, monitoring stack, etc.. These charts include sensible defaults like pod disruption budgets, network policies (for secure intra-cluster comms), and liveness/readiness probes. As a result, when you deploy the kit, you automatically get a production-ready setup (not a toy). There are built-in hooks for secrets management (Kubernetes secrets or external vaults) and for integrating with identity systems (for example, you can plug in an OAuth/OpenID Connect provider to manage console access). The observability suite is bundled: **Prometheus for metrics, Grafana with pre-built dashboards, Loki/FluentBit for aggregated logs**, and alertmanager integration. This means your ops team can immediately tie into your SIEM/SOC – every transaction, error, or unusual event on the platform can stream into Splunk, Datadog, etc. for analysis. On the CI/CD side, the kit’s repository defines a consistent pipeline (`bun run ci`) that runs formatting, compilation, tests, and even packaging of Helm charts. You can fork the repo and integrate this pipeline into your own CI – ensuring that any custom modifications you make still pass the same quality gates we use for official releases. We even include **deployment automation scripts** and guides (for AWS, Azure, bare metal) in the broader BTP docs, so your infra team has a head start on setting up production clusters. Importantly, because **the entire stack is open source**, your engineers can inspect every aspect of the deployment – from smart contract bytecode to Kubernetes config – which greatly simplifies security audits and regulator due diligence. There are no black boxes or hidden SaaS components; you can demonstrate end-to-end how the system works and prove ownership of the environment. One final note: **migrating between deployment models is painless**. We’ve had clients start on our managed cloud and then bring on-prem – since both use the same Docker images and Helm charts, it’s mostly a matter of pointing to new infrastructure and transferring data. The configuration-driven approach ensures that whether you run one sandbox or ten production clusters, **you’re using one consistent codebase and configuration framework**. This continuity means lower risk and faster iteration: you can develop and test on your local Docker Compose setup, and trust that _“if it works here, it’ll work in prod”_ because the charts and Compose files mirror each other. All of this empowers institutions to move swiftly (spin up new environments, white-label for partners, roll out updates) without ever giving up the control and transparency they need.
+Procurement sees real controls instead of promises: you can point to the charts, the pipelines, and the evidence before diligence even starts.
 
-## Turnkey environments
+## Branding without rewrites
 
-ATK provides two fully supported deployment paths:
+- The Next.js app (`kit/dapp`) ships theming, tokens, and brand packs so tenants can match their visual identity without forking screens.
+- Helm ingress values let you attach custom domains, certificates, and CDN strategies to each surface while keeping TLS under your policy.
+- Portal APIs and webhooks stay consistent, letting partners embed flows or build new UIs while regulated functions remain in your environment.
 
-1. **Local compose stack (`docker-compose.yml`)**: spins up Anvil, TxSigner, Portal, Graph Node, Hasura, Postgres, Redis, MinIO, and Blockscout with pre-generated artifacts. Developers run `bun run artifacts && bun run dev:up` to regenerate genesis files, ABIs, database snapshots, and subgraph deployments before launching the stack.
-2. **Kubernetes Helm chart (`kit/charts/atk`)**: ships environment-specific values for vanilla Kubernetes and OpenShift. The chart composes subcharts for the dApp, network, Portal, txsigner, Graph Node, Hasura, observability (Grafana, Loki, VictoriaMetrics, Tempo), ingress, and support services. Operators simply override connection strings and ingress hosts to land the kit in their cluster.
+## Infrastructure building blocks
 
-<Mermaid
-  chart={`
-flowchart TD
-  Artifacts["bun run artifacts"] --> Compose["docker-compose"]
-  Artifacts --> Helm["Helm chart"]
-  Compose --> LocalSandbox
-  Helm --> Cluster["Kubernetes/OpenShift"]
-  Cluster --> Observability["Grafana/Loki/Tempo"]
-`}
-/>
+- Hyperledger Besu, Blockscout, and supporting services swap through values overrides; images, storage classes, or cloud primitives change without touching templates.
+- Tooling such as `kit/charts/tools/aws-marketplace-automation.ts` and the environment hierarchy document promotion paths from local to staging to production, including feature-branch environments.
+- Observability is bundled: Prometheus, Grafana, Loki, and alert routing stream metrics and logs into your SIEM from day one.
 
-## White-label UX in minutes
+## Security, identity, audit
 
-The dApp exposes theming and terminology controls in `kit/dapp/src/components/platform-settings` and Tailwind design tokens. Teams customise logos, color palettes, copy, onboarding flows, and even navigation by editing config files or environment variables—no fork required. Because the UI consumes typed ORPC endpoints, whitelabeling does not break backend compatibility.
+- Secrets land in Kubernetes or external stores, and charts expose OIDC hooks for services like MinIO while network policies enforce least privilege between pods.
+- The dApp and ORPC backend already model OAuth flows, MFA checks, and granular role validation, so existing identity providers plug straight in.
+- Every component emits structured logs and metrics; forwarding them to your observability stack gives compliance the audit trails it expects without extra engineering.
 
-Portal exposes the same white-label surface: change customer-facing branding, domain names, and email templates through configuration while relying on the same asset management, identity, and analytics capabilities.
+## Operational readiness
 
-## Infrastructure baked in
+- `bun run ci` packages formatting, contract compilation, code generation, linting, and testing; the same workflow underpins Console deployments and self-managed pipelines.
+- Deployment docs cover backups, disaster recovery, and capacity planning, cutting the time needed to answer RTO/RPO questions.
+- Moving between models is configuration work: Compose for development, Helm for self-managed clusters, and Console for managed service all share contracts, schema, and ORPC procedures.
 
-- **Secrets & config management:** Helm values split credentials for Portal, Graph Node, Hasura, txsigner, and addons so ops teams route to external PostgreSQL/Redis clusters or managed services effortlessly.
-- **Scaling guidance:** Each subchart exposes resource requests/limits. Network nodes, eRPC, and subgraph workloads support horizontal scaling, while observability defaults to production-ready storage classes.
-- **Upgrade safe:** Implementation addresses are managed centrally in `ATKSystemImplementation`, so contract upgrades follow a controlled process. Docker images for Portal, dApp, Graph Node, and txsigner are versioned (e.g., `2.0.0-alpha.7`) for predictable rollouts.
-
-## CI/CD ready signals
-
-Turbo tasks and Bun scripts encapsulate linting, testing, code generation, and build artefacts. Combine them in CI pipelines (`bun run ci`) to validate smart contracts, dApp, and subgraph before shipping Helm releases. Artifact jobs output predeployed addresses and ABIs, which the chart then mounts automatically.
-
-<Mermaid
-  chart={`
-sequenceDiagram
-  participant Dev
-  participant CI
-  participant Registry
-  participant Cluster
-  Dev->>CI: push main
-  CI->>CI: bun run ci
-  CI->>Registry: publish artifacts & images
-  Ops->>Cluster: helm upgrade --install atk
-  Cluster->>Ops: Portal + dApp ready
-`}
-/>
-
-## Operational comfort for enterprises
-
-Observability is not an afterthought. Grafana dashboards surface network health, tx signer load, Portal API latencies, and Graph Node indexing status out of the box. Logs land in Loki, metrics in VictoriaMetrics, and traces in Tempo, meeting enterprise monitoring baselines without extra wiring.
-
-Whether teams run a local proof-of-concept, a regulated pilot, or a multi-region rollout, ATK delivers a repeatable deployment story with white-labeled interfaces that stay in lockstep with the underlying smart-contract architecture.
+**Bottom line:** ATK is deployable market infrastructure. Own the runtime, match your brand, and let every other chapter build on a stack you already control.

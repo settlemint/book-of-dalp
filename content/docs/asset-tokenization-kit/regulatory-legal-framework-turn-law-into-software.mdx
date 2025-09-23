@@ -1,74 +1,40 @@
 ---
-title: "Regulation"
-description: "ATK encodes law as configurable modules so compliance evolves without redeploying the stack."
+title: "Regulatory Framework"
+description: "ATK encodes jurisdictional rules, filings, and alerts so compliance runs as code, not paperwork."
 ---
 
-## Regulatory & Legal Framework – *Turning Law into Software*
+## Why regulation lives in the platform
 
-**Regulations as Executable Code:** SettleMint’s approach treats financial regulations not as after-the-fact paperwork but as **business logic embedded in the platform**. The Asset Tokenization Kit ships with a **jurisdictional rule library** and smart policy engine that covers the major markets (US, EU, UK, Singapore, GCC, etc.). In practical terms, this means when you configure a token or workflow, you’re not starting from a blank slate – the system is already aware of things like **prospectus thresholds, private placement limits, travel rule requirements, accredited investor definitions** and so on. For example, if you indicate that a token is a security offered under **Reg D 506(c)**, the platform automatically knows that investors must be accredited and that there’s a 12-month lockup on secondaries; it will enforce those by requiring the appropriate KYC claims and by blocking disallowed transfers until the period lapses. If an EU-based stablecoin is being issued, the system can apply **MiCA** rules – e.g. ensuring real-time reserve reports and redemption limits are in place per the regulation. These rules are versioned and extensible; as regulations change, updates to the rule library can be applied without redeploying contracts (where possible) or by smoothly upgrading the compliance modules. The outcome is that compliance becomes **automatic rather than aspirational**. Your team doesn’t have to constantly remember to check Rule X or file Form Y – if it’s in the ruleset, the platform either handles it or prevents non-compliant actions.
+Treating regulation as paperwork creates mismatches between what technology can do and what the law allows. ATK embeds rule libraries, filings, alerts, token classification guidance, e-signature/eIDAS hooks, and regulatory dashboards directly in the runtime so compliant behavior is the default outcome.
 
-**Global Coverage & Localization:** The kit’s regulatory module covers “same activity, same risk, same rules” across jurisdictions. We maintain templates and configurations for each supported jurisdiction’s approach to tokenized assets. This includes: securities law (e.g. EU’s MiFID II/MiFIR, DLT Pilot Regime, US SEC rules for ATS/broker-dealer when doing secondary trading), e-money and payments (e.g. eWPG in Germany, MAS PS Act in Singapore), and even emerging regimes (like ADGM’s crypto framework, HK SFC’s tokenized securities guidelines). The **jurisdiction setup wizard** helps projects choose the right regulatory path by asking a series of questions about the asset and investor base. It then suggests the appropriate framework (for instance, “This looks like a private securities offering in the UK – consider using the Digital Securities Sandbox exemption”) and automatically configures the system with the corresponding rules. By preventing misconfiguration at launch, we avoid the scenario of having to unravel a compliance issue months later (e.g. too many unaccredited investors, or missing disclosures). Furthermore, the platform is built to handle **multi-jurisdictional operations**: if you’re doing an offering across EU, US, and Singapore, it can enforce the intersection of all applicable rules (and segregate pools if needed). We have built-in logic for travel rule compliance – any transfer between two regulated entities triggers the gathering or forwarding of originator/beneficiary information as required. The kit can generate the IVMS101 message payload or other travel rule data forms and either deliver it on-chain (if both sides use the network) or off-chain via API. Essentially, we ensure that **compliance duties travel with the asset movement**, so that using the platform inherently produces the artifacts regulators expect (instead of requiring separate systems).
+It is simpler to ship policy once than to chase it ticket by ticket, which is why we treat statutes like source code.
 
-**Automation of Reporting and Filings:** The “turn law into software” philosophy shines in how the kit automates what traditionally would be legal or compliance officer tasks. For instance, the kit can automatically **hash and timestamp offering documents** (prospectus, T&Cs) into the token’s metadata at issuance, creating an immutable audit link between the token and its legal docs. It also keeps counters for things like the EU Prospectus 150-investor limit or volume sold – if thresholds approach, the system **alerts and will pause further sales** once a cap is reached until a new filing is registered. The integration with external regulators is also considered: where APIs exist (e.g. an MAS filing portal, or an SEC EDGAR submission for Form D), the kit’s **filing module** can auto-submit or at least auto-generate the required reports from on-chain data. For example, it can compile an EU Central Securities Depository Regulation (CSDR) report of all settlements that month, or generate a transaction reporting file for the FINRA Trace system if required – using the single source of truth ledger data. The kit’s **regulatory dashboard** provides a read-only interface that can even be shown to regulators or auditors. An auditor logging in can see, for example, all transactions with flags (like transfers that were blocked for compliance reasons), outstanding required actions (like “Prospectus needed if >€8M raised – 90% threshold reached”), and a full history of compliance actions taken (investor A accredited on X date by Y issuer, etc.). We even considered localization: the dashboard and rule explanations are available in multiple languages (English, French, Arabic, etc. for different jurisdictions), so that local compliance teams and regulators can work in their native language to avoid misunderstandings. By providing this level of automation and transparency, the kit **reduces the cost of compliance** – instead of a team of lawyers and analysts manually collating data to prove to a regulator that all rules were followed, the system can produce evidence on-demand.
+## Where the world is (September 9, 2025)
 
-**Baseline Controls & Custom Rules:** We recognize that each institution might have its own internal policies on top of the law. The kit allows layering **custom compliance rules** atop the baseline. This could be as simple as “We don’t allow trading of this token on weekends” or as complex as “Investors from country X must not exceed Y% of the cap table unless additional due diligence is done.” Administrators can define these via the expression builder in the dApp (which uses logical building blocks like jurisdiction == X, or investor tag == “VIP”) to create institution-specific policies. These get compiled into on-chain checks by deploying a small custom module or using a generic logic module with parameters. The key point is that the system’s default is already **conservative and bank-grade** – global baseline controls ensure things like: illegal transfers are impossible (the token controllers will block any transfer that violates a rule *before* it alters state); every investor identity is tied to verifiable claims (no anonymous holding unless explicitly allowed as in some crypto use cases); omnibus accounts are handled with look-through where required (the system can enforce that a custodian must regularly attest the breakdown of an omnibus holding, or else freeze it). These baseline controls come from synthesizing the overlapping requirements of the major regimes into a safe default. From there, you dial it in to your specific needs. It’s much easier to relax a strict default or add one more check than to discover an issue later. This philosophy – **compliance by construction** – is why projects using the kit have successfully passed regulatory scrutiny in multiple jurisdictions. As one global report puts it, *“every one of these jurisdictions is comfortable with tokenization when you behave like a supervised financial institution.”* The Asset Tokenization Kit bakes that supervised institution mindset into the software, so you **operate inside the law by default, not as an afterthought**. By turning complex legal texts into automated workflows and constraints, we drastically reduce operational risk (no more missing a filing or overshooting a limit) and increase trust – both internally and with regulators. In a field where legal uncertainty has stalled many projects, our approach provides a clear answer: the laws and regulations are not obstacles but parameters of the system, and our platform is built to adapt to them as they evolve.
+Supervisors across major markets apply the same principle: same activity, same risk, same rules. Licensing, disclosures, AML/CTF, custody segregation, and audit-grade evidence are expected. Travel Rule obligations require that originator and beneficiary data move with value between regulated entities, so ATK encodes those checks in the settlement flows themselves.
 
-## Compliance as first-class modules
+- **European Union**: MiCA governs crypto-assets outside securities, with stablecoin obligations live since June 30, 2024 and CASP rules ramping from December 30, 2024. Tokenized securities stay under MiFID/MiFIR, while the DLT Pilot Regime grants permissions for issuance, trading, and settlement on DLT. Templates separate crypto-asset and security-token features accordingly.
+- **United Kingdom**: The Digital Securities Sandbox now supports issuance, trading, and settlement under modified rules. ATK’s primary and secondary connectivity can point at sandbox venues without bespoke builds.
+- **United States**: There is no omnibus “crypto law,” but the path is clear. Tokenized securities remain securities, secondary trading touches ATS, broker-dealer, and transfer-agent obligations, and Article 12 of the UCC modernizes property rights in controllable electronic records. ATK enforces cap-table truth and transfer restrictions inside the token path and integrates with licensed intermediaries where required.
+- **Switzerland and Liechtenstein**: Mature digital-securities regimes with production venues; ATK aligns templates to their licensing requirements.
+- **APAC**: Singapore finalized a stablecoin framework with reserve and redemption discipline, Hong Kong released detailed tokenized-securities and stablecoin guidance, and Korea’s STO and virtual-asset acts define perimeters for securities and non-securities. ATK mirrors those obligations in configuration.
+- **Gulf**: ADGM, DIFC/DFSA, and VARA run full rulebooks for custody, issuance, exchanges, and stablecoins. ATK’s templates capture those activity-based licenses.
 
-ATK’s compliance contract (`ATKComplianceImplementation`) orchestrates both token-level and global modules. During bootstrap, the system registers an identity verification module so every asset inherits KYC enforcement. Compliance managers can add, update, or remove global modules—think jurisdiction blocklists, concentration caps, investor eligibility—without touching token code. Tokens can add their own modules for asset-specific policies.
+The environment will evolve, but today’s guidance is stable enough to build systems that obey the law by construction.
 
-Modules receive hook calls on `created`, `transferred`, and `destroyed` events, guaranteeing that every lifecycle action obeys policy. Global bypass lists exist, but only compliance, system, or addon managers can alter them, and every change is logged.
+## Scope covered today
 
-## Identity governance baked in
+ATK’s regulatory framework focuses on markets with clear guidance for tokenization. Templates capture licensing, disclosure, reporting, and travel-rule duties for each supported jurisdiction. Every change ships as versioned code, reviewed and deployed through the same pipelines that manage contracts and APIs.
 
-The identity stack—identity factory, identity registry, identity registry storage, trusted issuers, topic scheme registry—ships with the system. Claim topics defined in `ATKTopics.sol` (e.g., KYC/AML, accredited investor, contract identity) ensure consistent semantics across issuers. Trusted issuers register once and gain authority, via claim authorizers, to append claims directly to identities.
+## How ATK turns law into code
 
-Contract identities can issue claims themselves (`issueClaimTo`), enabling products like whitelisted DeFi integrations or automated corporate attestations. Claim issuance is tracked end-to-end: the identity factory gives itself a contract identity, registers as a trusted issuer, and delivers initial claims automatically.
+- Setup wizards stitch jurisdiction, asset class, and exemption paths into templated configurations.
+- Compliance modules run pre-transfer enforcement (country allowlists, investor accreditation, holding periods, transfer approvals) before state changes.
+- Filing automation generates regulatory, compliance, and tax reports on the cadence institutions configure.
+- Real-time alerts watch thresholds (ownership caps, disclosure triggers, travel-rule checks) and pause workflows until obligations clear.
+- Token classification guidance and legal checkpoints keep product teams aligned with counsel as features evolve.
+- Regulatory dashboards provide read-only access to rule updates, configuration history, filings, and escalations for supervisors and internal audit.
 
-<Mermaid
-  chart={`
-flowchart LR
-  TrustedIssuer --> TopicRegistry
-  TrustedIssuer --> IdentityRegistry
-  IdentityFactory --> IdentityRegistry
-  IdentityRegistry --> Compliance
-  Compliance --> Token
-  Token --> Compliance
-`}
-/>
+## Operating inside the law by design
 
-## Regulatory agility
-
-- **Jurisdiction templates:** Compliance modules encapsulate jurisdiction-specific logic (e.g., EU prospectus thresholds, US accreditation checks). Teams can deploy new modules as regulations evolve and register them via the module registry.
-- **Attestation lineage:** Claims store issuer, topic, issuance proof, and optional URI, giving auditors a cryptographically linked trail from asset action back to documentation.
-- **Policy versioning:** Implementation managers update module or identity implementations centrally. Tokens inherit upgrades through the system proxies, so if a regulator updates guidance, teams roll out the new module once.
-
-## Enforcement workflow
-
-1. **Investor onboarding:** Portal collects KYC/KYB evidence, then a trusted issuer mints claims onto the investor’s identity. The identity registry publishes status to tokens and compliance modules.
-2. **Policy evaluation:** Before a transfer, compliance queries token-specific modules, then global modules; if any fail, the transaction reverts, preventing regulatory breaches.
-3. **Audit:** Subgraph mappings (`kit/subgraph/src/identity`, `.../compliance`) record claims, issuers, modules, and evaluation results. Hasura exposes the same information for reporting, with filters by jurisdiction, issuer, asset, and time window.
-
-<Mermaid
-  chart={`
-sequenceDiagram
-  participant Portal
-  participant Issuer
-  participant Identity
-  participant Compliance
-  participant Token
-  Portal->>Issuer: requestClaim(wallet, topic)
-  Issuer->>Identity: addClaim(topic, proof)
-  Identity-->>Portal: claimIssued
-  Token->>Compliance: canTransfer(from, to, amount)
-  Compliance->>Identity: verifyClaims(to, topic)
-  Identity-->>Compliance: valid
-  Compliance-->>Token: allowed
-`}
-/>
-
-## Reporting ready for regulators
-
-Hasura and Portal build compliance reports from subgraph data: who holds what, which claims back their eligibility, and which modules permitted or blocked transactions. Teams export audit artifacts on demand instead of manually stitching evidence later.
-
-By encoding law as registries, claims, and modules, ATK lets compliance stay ahead of regulation without sacrificing programmability or speed.
+ATK keeps legal, compliance, and engineering on the same page: regulations live in configuration, enforcement runs in smart contracts, and filings come from live data. The result is compliant behavior by default and a far easier conversation with regulators.

@@ -1,77 +1,40 @@
 ---
-title: "UX & DX"
-description: "ATK keeps product, engineering, and operations moving quickly without introducing chaos."
+title: "UX & Developer Experience"
+description: "ATK ships guided UX for issuers, investors, and operators plus typed APIs and automation so teams move fast without rebuilding plumbing."
 ---
 
-## User & Developer Experience – *Speed Without Chaos*
+## Why UX/DX matter
 
-**Intuitive No-Code Interface:** A core theme of the Asset Tokenization Kit is empowering **business users** without sacrificing compliance. The **Asset Manager dApp** provides a no-code, guided interface for all common tasks – from designing a new token to managing investors to initiating corporate actions. This isn’t a generic UI; it’s purpose-built with financial workflows in mind. For example, the Asset Designer wizard walks the user through entering an instrument’s key terms with contextual help (e.g. “Coupon Frequency – this is how often interest will be paid, typically semi-annual for bonds”). Each field maps directly to a smart contract parameter, so there’s no ambiguity or loss in translation. Users can see in real time how their choices affect the compliance rules (toggle on *“Accredited Investors Only”* and the UI shows that an ERC-3643 whitelist will be enforced, etc.). The goal is **UX that speaks the language of finance, not code**. By keeping the UI simple and domain-specific, the kit lets product managers, lawyers, and ops teams confidently engage in the tokenization process without constantly involving developers. This speeds up iteration (you can adjust a tokenization plan on the fly in a workshop with compliance, for instance) but keeps everything deterministic – the UI won’t let you, say, set a coupon that conflicts with the chosen regulatory exemption. *Speed without chaos* means business folks can move fast within guardrails, and the platform ensures those guardrails are never broken.
+Fintech platforms fail when workflows are confusing or slow. Tokenization has higher stakes because issuers, investors, and administrators need different controls, and developers expect clean surfaces.
 
-**Full API and SDK Coverage:** For developers, the kit offers an equally pleasant experience: **everything the UI can do, you can do via API or SDK**. There’s a rich ORPC (type-safe RPC) API and REST/GraphQL endpoints for every major function – issuance, transfers, compliance ops, reporting queries, you name it. This parity means you can integrate tokenization into your existing systems or build custom apps on top of the kit without hacks. For example, a developer could use the **JavaScript/TypeScript SDK** to trigger a token issuance from an internal app when a client clicks “Approve” on a loan underwriting workflow. The SDK and API cover token creation, mint/burn, KYC checks, corporate action scheduling, and retrieval of analytics (e.g. “give me the current cap table or the last 10 transfers”) – all with proper auth and role checks. Because the API is built on ORPC with Zod schemas, developers get **end-to-end type safety**; your integration code will catch if you pass a wrong field or forget a parameter. We even provide **client libraries and Postman collections** to accelerate integration. This focus on DX (developer experience) reflects our belief that the tokenization platform must *blend into* your existing architecture. Many of our clients embed SettleMint flows into their online banking portals or mobile apps – with our kit, they do so via documented APIs rather than brittle workarounds.
+## UX for issuers, investors, admins
 
-**Deterministic Environments & Testing:** A often overlooked aspect of DX is the ability to test and sandbox in a deterministic way. The Asset Tokenization Kit excels here by providing **fully reproducible dev/test environments**. With a single `bun run dev:up` command, a developer launches a Docker Compose stack that mirrors the production architecture (including a local Besu node, subgraph, database, and the dApp). This means you can write and run integration tests locally or in CI that cover the entire flow – deploy a token, simulate investor onboarding, perform a trade – and be confident the results would be the same in a real deployment. We include a comprehensive **Foundry test suite** for the smart contracts and **Playwright end-to-end tests** for the UI, which serve as both QA and examples. Developers can even use the sandbox mode with **sample data** – spin up with example assets and users – to explore the platform’s capabilities or demonstrate features to stakeholders without touching a production system. By keeping environments in lockstep (through infrastructure-as-code and consistent container images), the kit ensures that moving from dev to staging to prod is smooth. This eliminates the “works on my machine” syndrome and gives developers confidence to iterate rapidly.
+The production dApp splits responsibilities:
 
-**Extensibility Without Forking:** The kit is open-source and modular, which is a boon for developers who need to extend it. Need a custom compliance rule? You can implement a new **Compliance Module** (Solidity interface provided) and register it via the system’s module registry – no need to fork the whole codebase. Want to support a new asset type? The system’s factory pattern allows adding a new Asset Factory contract that plugs into the existing lifecycle engine. We’ve seen partners create bespoke modules (e.g. a ESG rating compliance check, or a region-specific tax handling) by following the provided examples and using our extension hooks. Because the platform uses a plugin architecture, these custom extensions **don’t break or diverge from core** – you can still upgrade the base platform and just reattach your modules. And thanks to the FSL license and eventual MIT conversion, developers have the freedom to contribute or keep their customizations proprietary as needed. We encourage a collaborative approach: if you build something useful, you can PR it back to the project, but you’re not forced to open source custom business logic if that’s sensitive.
+- Issuers configure assets through multi-step wizards that surface only instrument-specific choices while compliance officers follow a separate onboarding state machine that checks wallet security, identity claims, and bootstrap tasks.
+- Investors and relationship managers see lighter dashboards focused on portfolio health, distributions, and pending actions.
 
-In short, the **UXDX** philosophy of the Asset Tokenization Kit is to provide **consumer-grade simplicity for users and rock-solid tools for developers**. Issuers and operators get a click-button interface for complex processes – which reduces errors and training costs – while engineers get the APIs, documentation, and dev tools to integrate and innovate on the platform. This combination translates to speed: projects that would have taken 6+ months of engineering can often be delivered in a few weeks, because both business and dev teams are enabled by the platform rather than hindered by it. And crucially, this speed doesn’t come at the expense of control; everything is deterministic, tested, and compliant. *Speed without chaos* means moving fast **with** governance intact – a rare proposition that the Asset Tokenization Kit makes possible. (It’s the culmination of years of refinement to ensure that “easy-to-use” and “enterprise-grade” are not contradictions here, but rather jointly delivered.)
+Radix primitives, Tailwind theming, and TanStack Form/Query provide accessibility, validation, and near-real-time refresh. Charts fall back to skeletons during fetches so long workflows stay smooth. Data rides on ORPC and typed Graph/Hasura clients, keeping refreshes quick without exposing the service mesh.
 
-## A monorepo that actually helps
+Localization arrives out of the box: locale bundles for English, German, Japanese, and Arabic (RTL) live in `kit/dapp/locales/`, and layout utilities handle mirroring. White-label controls (color tokens, logos, typography) live in configuration, so partners keep brand identity without forking code.
 
-ATK is organised as a Turbo repo with workspaces for contracts, dApp, subgraph, charts, and e2e tests. Bun powers scripts across the stack (`bun run artifacts`, `bun run test`, `bun run lint`, `bun run codegen`). Shared configuration makes cross-package changes predictable, while caching keeps CI and local workflows fast.
+Mobile responsiveness targets investor journeys. Single-column workflows handle votes, distribution alerts, and signature requests. Toasts, callouts, and action centers collect approvals, KYC follow-ups, and notices so users always know the next step.
 
-Developers jump between packages without context loss: TypeScript paths align, lint rules match, and generated types reflect smart-contract changes the moment `bun run artifacts` runs. No more wondering which repository owns a component.
+## DX: build fast, stay aligned
 
-## Operator-grade dApp, developer-friendly APIs
+- The ORPC router in `kit/dapp/src/orpc` exposes every asset, compliance, and system capability through typed HTTP and OpenAPI surfaces; the same definitions back the React client and external integrators.
+- Bundled subgraph and Hasura endpoints with generated fragments (`@settlemint/sdk-thegraph`, `@settlemint/sdk-hasura`) replace hand-written queries.
+- Automation includes Bun tasks for codegen, linting, testing; Drizzle migrations; logging helpers; and CLI tooling. The SettleMint CLI scaffolds contract sets and scripts turn ABI artifacts into typed clients so front- and back-end stay synced.
+- Developers authenticate with Better Auth, mint API keys with the `sm_atk_` prefix, and inherit rate limits and structured errors. Observability hooks—OpenTelemetry exporters in Helm charts, logger utilities in the app, standardized error helpers—drop traces and metrics into existing logging back ends without bespoke wiring.
+- One Turborepo houses it all: add a TanStack route, expose it through ORPC, update locale bundles, and typegen picks up the change.
 
-- **TanStack Router + Query:** The dApp provides route-level loaders, optimistic updates, and offline resilience. Operators enjoy snappy interactions, while developers hook into proven patterns.
-- **ORPC server (`kit/dapp/src/orpc`)**: typed procedures expose contract actions, compliance operations, identity management, and analytics. Clients consume generated types, so front-end, back-end, and integration partners all speak the same language.
-- **Drizzle ORM & Hasura:** Database schemas live alongside TypeScript types (`kit/dapp/src/lib/db`). Hasura automatically tracks migrations, giving developers GraphQL APIs for dashboards and integrations without writing resolvers.
+## Weekly checkpoints
 
-<Mermaid
-  chart={`
-flowchart LR
-  Contracts -->|bun run artifacts| Types
-  Types --> Dapp
-  Types --> Subgraph
-  Dapp --> ORPC
-  ORPC --> Portal
-  Subgraph --> Hasura
-  Hasura --> Analytics
-`}
-/>
+- Guide completion: track progress through onboarding and asset wizards; review drop-off to refine copy or validation.
+- Localization coverage: watch untranslated keys and RTL regressions so new markets stay launch-ready.
+- Interaction latency: monitor median render and fetch times for dashboards and ORPC calls; rising retries flag upstream issues.
+- Developer flow: measure SDK downloads, CLI usage, and failed codegen or deployment scripts to spot friction early.
+- Automation safety: review API key usage, rate-limit hits, and logged errors to keep bots predictable.
+- Support signals: correlate help-desk tickets with the above metrics to confirm fixes translate into fewer user issues.
 
-## Testable from IDE to CI
-
-- **Contracts:** Foundry tests cover factory flows, compliance checks, and role management. Hardhat scripts publish artifacts to local Anvil nodes for integration testing.
-- **Front end:** Vitest exercises hooks and UI logic; Playwright (`kit/e2e/ui-tests`) runs end-to-end scenarios covering onboarding, issuance, and corporate actions.
-- **APIs:** Playwright API suites ensure ORPC routes and Portal endpoints stay backward compatible.
-
-`bun run ci` chains format, compile, codegen, lint, and test into a single command. Teams see comprehensive validation before merges, which keeps mainline stable.
-
-## User tooling that hides complexity
-
-The Asset Manager UI guides non-technical staff through onboarding, asset creation, compliance configuration, monitoring, and servicing. Components like `system-addons`, `asset-designer`, and `compliance` give contextual help, while data tables and charts draw from the subgraph for real-time insight.
-
-Portal mirrors these capabilities for client organisations, exposing member management, activity feeds, API keys, and monitoring dashboards. Because Portal and the dApp share artifacts and ORPC contracts, brand teams can create cohesive experiences without duplicating logic.
-
-## Automation-ready from day zero
-
-Typed SDKs, GraphQL endpoints, and ORPC procedures equip partners to integrate quickly. Whether banks embed issuance in existing portals or custodians automate reconciliation, they inherit the same safeguards (compliance modules, access control, audit logs) as the first-party UI.
-
-<Mermaid
-  chart={`
-sequenceDiagram
-  participant Dev
-  participant CLI
-  participant Tests
-  participant Portal
-  participant Ops
-  Dev->>CLI: bun run artifacts
-  CLI->>Tests: bun run ci
-  Tests-->>Dev: pass
-  Dev->>Repo: merge
-  Ops->>Portal: monitor rollout dashboards
-`}
-/>
-
-ATK stops teams from choosing between velocity and control. Developers iterate confidently, operators enjoy polished tooling, and partners integrate through stable, typed APIs—without reinventing the stack each time.
+Keep those dials visible and UX/DX stays a continuous practice instead of a quarterly retrofit.

@@ -1,73 +1,54 @@
 ---
 title: "Data & Audit"
-description: "Every ATK move is indexed, queryable, and exportable—no more reconciliation fire drills."
+description: "ATK treats evidence as a product feature: every action emits structured data, ready for regulators, auditors, and operations."
 ---
 
-## Data, Reporting & Audit – *Evidence or It Didn’t Happen*
+## Evidence in one place
 
-**Unified Data Layer for Truth:** The Asset Tokenization Kit produces a single, **real-time source of truth** for all asset and transaction data. Every time a token is issued, transferred, or modified, an event is recorded on-chain and the kit’s **subgraph indexer** immediately ingests it into a queryable datastore. This means the cap table, transaction ledger, and compliance log are always up-to-date to the last block. Gone are the days of T+N reconciliation – any authorized stakeholder (be it an operations manager or an external auditor with read-only access) can query the current state or historical states via GraphQL or the Portal UI and get an **accurate answer in seconds**. For example, an auditor can query “Who were all holders of Asset X as of end of Q3?” and the system’s historical balance extension can provide that instantly, thanks to on-chain snapshots and the indexed data. *“If there’s no evidence, it didn’t happen”* is a mantra we enforce with technology: **all actions that change state produce evidence** (events, logs, database records), and the kit aggregates these in an organized way. The subgraph, coupled with a traditional SQL database for certain off-chain data (like user account info, metadata), gives a comprehensive data warehouse for the platform. Because it’s updated in real-time, you can close your books faster – no waiting for end-of-day or end-of-month batch processes to know the exact holdings or outstanding obligations.
+Financial teams judge platforms by how fast they can answer what happened and why. ATK pairs the shared ledger with operational stores, reporting APIs, and export tooling, so nobody hunts for spreadsheets when regulators call. All heavy lifting—normalization, scheduling, validation—runs inside the platform.
 
-**Regulator-Ready Reporting:** The kit comes with a suite of **pre-built reports and dashboards** designed to meet common regulatory and audit requirements. Need an **allocation report** for an issuance? It’s a click away – the system can output a CSV or PDF of every allocation, who received it, when, and under what exemption, with all relevant IDs (wallet addresses, national IDs if collected, etc.) included. Need a **transaction log** for an investigation? The platform can produce a tamper-evident log of every transfer, trade, or action on the platform, cross-linked to identity records and compliance checks (e.g., showing that each transfer was either allowed or blocked by rule XYZ, and if blocked, that it never settled). The **audit trail** is comprehensive: not only does it show the on-chain events, but it also links to off-chain context like “User John Doe (ID 123, from Compliance Dept) initiated this transfer via the Portal at 2025-09-23 10:15 from IP 10.0.0.X”. We surface these through an **Audit Dashboard** that lets auditors search and filter, or they can export raw data if they prefer their own tooling. The data model is compatible with common audit software, and because everything is time-stamped and signed by the blockchain, it provides strong evidence. Regulators have often voiced concerns about the opacity of crypto platforms – our approach flips that narrative: **full traceability and transparency** are a feature, not a bug. In fact, one benefit of tokenization noted by industry bodies is *increased transparency throughout the trade lifecycle*. We deliver that by default: positions, trades, collateral, etc., are always up-to-date and visible to those with permission.
+Every interaction lands in two sources: the on-chain event stream and the Postgres-backed operational store. Graph and Hasura views expose instantaneous cap tables, while ORPC routes provide consented slices of PII or workflow metadata. Compliance officers can prove holder positions, permissions, and overrides without shadow systems.
 
-**Real-Time Monitoring & Alerts:** Beyond static reports, the kit’s data layer enables **real-time monitoring** of key indicators. Compliance teams can have a live dashboard of things like: number of active investors by jurisdiction, any breaches of investment limits, any pending documents or consents needed (e.g., “France investor approaching 100k€ limit, needs MiFID check”). Operations can watch settlement times, throughput, and any failed transactions. Risk teams can see metrics like collateral ratios for tokens if relevant, or the distribution of token holders (to catch concentration risks). The kit can be configured with **alerting rules** – for instance, if any transfer is blocked by a sanction list rule, send an immediate alert to compliance and log an incident. Or if the system detects a mismatch between on-chain cap table and an off-chain system it’s integrated with (say a core banking system for mirror entries), it will flag it. This proactive approach means you catch anomalies early. Because all data is integrated, **cross-functional views** are possible: e.g., correlating technical metrics with business metrics – if block times slow down or a node is lagging, you might see a dip in throughput and can address it before it becomes a problem.
-
-**Immutable Proof & Forensics:** In case of disputes or investigations, the kit provides strong forensic capabilities. Every transaction’s critical parameters are **hashed and stored**, and documents uploaded (like KYC documents or corporate resolutions) can be hashed on-chain to prove they were unchanged. If at any point someone questions “Was this person allowed to trade?” you have the complete evidence: the on-chain identity claim, the timestamp it was verified, the policy that allowed the trade, and the audit log of who approved that policy. This level of detail can resolve issues in hours that might otherwise take weeks of back-and-forth. Importantly, data integrity is ensured by the blockchain itself – no one (not even the admins) can retroactively alter the cap table or transaction history; attempts to do any irregular state change would simply result in a failed transaction that is itself logged. This gives regulators a high degree of confidence. As noted in industry analysis, having a **shared ledger as a golden source** can *“reduce discrepancies… and enhance transparency… across the lifecycle of a security.”* Our platform embodies that: it is the golden source, and it provides interfaces for all stakeholders to consume that source appropriately.
-
-**Privacy and Data Governance:** Of course, transparency doesn’t mean all data is public to everyone. The kit supports **data partitioning and permissioning**. Personal data (PII) can be stored off-chain in the secure database with references on-chain (to satisfy GDPR and data privacy rules), and the system’s APIs ensure that only authorized roles can see sensitive details. For example, an auditor may see an investor identified as “Investor #AO12, accredited, KYCed” without seeing their name or passport – unless the role permits. Meanwhile, an internal compliance officer with the right role can view the actual identity details linked to that investor. All data access is logged, and we provide tooling to demonstrate compliance with data access policies (who viewed what data, when). Additionally, if needed, the platform can integrate with a bank’s data lake or reporting warehouse by streaming events in real-time, so that your chief data office can include tokenization data in broader analytics while still respecting controls.
-
-In summary, the **Data, Reporting & Audit** capabilities of the Asset Tokenization Kit turn the platform into a **continuous audit trail** for your digital asset operations. Instead of having to trust and reconcile multiple systems, you get one coherent ledger and database that **everyone trusts** – because they’re seeing the same verifiable facts. Regulators and auditors have access to *evidence on demand*, not just promises. Internally, this means far less time compiling reports or chasing down information, and more time analyzing and improving processes. If a process isn’t working, you’ll see it in the metrics; if it is, you’ll have the numbers to prove it. In an era where *“if it isn’t documented, it didn’t happen,”* our kit ensures everything **is** documented and readily accessible. This level of transparency and accountability is not just a technical feature – it’s a strategic asset when building trust with clients, senior management, and regulators in your tokenization journey.
-
-## Unified data layer
-
-ATK’s subgraph (`kit/subgraph`) tracks system events, asset deployments, transfers, compliance outcomes, claims, collateral balances, and corporate actions. Entities in `stats/`, `token/`, and `identity/` directories transform raw events into business-friendly aggregates—holder counts by jurisdiction, outstanding principals by asset class, compliance exceptions, and addon execution history.
-
-Hasura sits on top of the same PostgreSQL backing the dApp, exposing GraphQL and SQL APIs for dashboards, BI tools, and automated reporting. Because migrations are generated (`bun run db:generate`) and versioned with the codebase, analytics never drift from contract reality.
-
-<Mermaid
-  chart={`
+```
 flowchart LR
-  Blockchain --> Subgraph
-  Subgraph --> Postgres
-  Postgres --> Hasura
-  Hasura --> BI["BI tools"]
-  Postgres --> PortalReports["Portal analytics"]
-  Postgres --> DappDashboards["Asset Manager dashboards"]
-`}
-/>
+  subgraph Sources
+    chain["On-chain events"]
+    ops["Operational stores"]
+  end
+  indexers["GraphQL/Hasura"]
+  exports["Investor & issuer artifacts"]
+  filings["Regulatory reports"]
+  observability["Prometheus/Loki/OTel"]
+  siem["SIEM pipelines"]
 
-## Operational telemetry out of the box
+  chain --> indexers
+  ops --> indexers
+  indexers --> exports
+  indexers --> filings
+  indexers --> observability
+  observability --> siem
+```
 
-- **Portal dashboards** surface asset-specific analytics: top holders, investor onboarding funnel, compliance blocks, corporate action histories, and API usage.
-- **Asset Manager visualisations** pull from the subgraph and Hasura to give treasury, compliance, and operations teams instant insight—no exports required.
-- **Observability stack** (Grafana, Loki, VictoriaMetrics, Tempo) monitors infrastructure health and provides event traces, making it easy to correlate user actions with on-chain events.
-- **Blockscout explorer** adds transaction-level transparency and API access for partners.
+Localized, white-labeled portals render the same artifacts for investors and issuers: payout receipts, voting confirmations, redemption statements, reconciliation packs, claim histories. ISO 20022 mapping translates token movements to booking messages, eliminating the spreadsheet merge marathons that still dominate many back offices.
 
-## Evidence for regulators and auditors
+## Reporting that survives review
 
-Every compliance check emits typed events stored by the subgraph (`compliance.ts`). Identity claim changes, role grants, and addon executions get the same treatment. Teams export CSVs or feed data warehouses by consuming Hasura endpoints or the GraphQL API exposed by the Graph Node.
+Scheduled jobs run against typed ORPC routes, so regulatory filings, compliance attestations, and jurisdictional reports pull live data. The reporting module parameterizes audience, format, and sign-off flows; once configured, ATK renders, validates, archives, and hands the package to the right team automatically. A read-only regulatory dashboard surfaces configuration history, policy revisions, escalations, and submission status without granting write access.
 
-<Mermaid
-  chart={`
-sequenceDiagram
-  participant Auditor
-  participant Portal
-  participant Hasura
-  participant Subgraph
-  Auditor->>Portal: Request compliance report
-  Portal->>Hasura: query compliance_events(issuer, asset)
-  Hasura-->>Portal: dataset
-  Portal->>Auditor: export (CSV/PDF/API)
-  Auditor->>Subgraph: verify events via GraphQL
-  Subgraph-->>Auditor: on-chain proof references
-`}
-/>
+## Observability for operators
 
-## Near real-time insights
+Prometheus, Loki, and OpenTelemetry ship with the Helm charts, feeding Grafana dashboards for latency, error budgets, and service-level trends. The dApp overlays usage analytics (TanStack Query stats, ORPC metadata) so operators spot failing flows quickly. Logs and traces travel through the same pipelines your security team already monitors, making SIEM forwarding a configuration exercise.
 
-`kit/subgraph/src/stats/token-distribution-stats.ts` maintains running totals for supply, redemptions, yield payouts, and holder segments. `account-stats.ts` tracks investor onboarding velocity, while `system-stats.ts` reports registry changes and addon activations. These feeds power:
+## Data handling practices
 
-- **Compliance alerts:** Immediately flag transfers blocked by policy, claim expirations, or bypass list changes.
-- **Treasury dashboards:** Monitor collateralization, outstanding redemption liability, and coupon coverage.
-- **Investor relations metrics:** Shareholder concentration, geographic exposure, and voting power snapshots.
+Event sourcing makes approvals and overrides immutable while sensitive data stays off-chain. ATK stores hashes on the ledger and keeps personal information in encrypted Postgres tables, satisfying right-to-be-forgotten requests without losing evidence. Export jobs are deterministic—the same parameters output the same dataset—so auditors can rerun reports months later. Better Auth governs who can access exports and dashboards.
 
-With ATK, reporting is intrinsic to the platform. The same mechanisms that enforce policy also publish the evidence everyone needs—regulators, auditors, partners, and internal teams alike.
+## Weekly signals
+
+- Report run success: scheduled filings, investor statements, and reconciliation jobs finish on time.
+- Exception volume: blocked transfers, manual overrides, and AML escalations stay within thresholds.
+- Telemetry health: availability stays >=99.9%, API error rate stays <0.1%, traces arrive without gaps.
+- Export fidelity: rerun audits reproduce identical artifacts; any drift flags schema regressions.
+- Privacy posture: monitor PII access logs and retention timers to confirm off-chain stores honor policy.
+
+Stay on top of those metrics and “evidence on demand” becomes routine instead of crisis management.

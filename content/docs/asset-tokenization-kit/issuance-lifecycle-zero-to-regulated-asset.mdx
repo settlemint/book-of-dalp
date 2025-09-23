@@ -1,69 +1,62 @@
 ---
-title: "Issuance Flow"
-description: "How ATK moves a regulated asset from blueprint to secondary-ready state without scripting the fundamentals from scratch."
+title: "Issuance Lifecycle"
+description: "ATK moves assets from term sheet to production with templated compliance, real-time cap tables, and programmable lifecycle controls."
 ---
 
-## Issuance Flow – _From Blueprint to Regulated Asset_
+## What the issuance layer covers
 
-**Standards-Based Compliance at the Core:** The Asset Tokenization Kit implements the full ERC-3643 security token standard (on-chain identity registry, claim topics, and trusted issuers) natively into every issuance. This makes SettleMint’s platform the only open solution outside Consensys’s ecosystem with **built-in identity and compliance logic** instead of bolt-on processes. Every token is born compliant – KYC/AML, investor caps, lockup periods, and jurisdiction restrictions are enforced by the smart contracts themselves, not by off-chain spreadsheets. _Why it matters:_ Industry research confirms that using standards like ERC-3643 to digitize compliance can **dramatically speed up issuance** by removing manual steps. By shipping **jurisdiction-specific templates** (Reg D, Reg S, MiFID, etc.) and a no-code Asset Designer, the kit ensures issuers go from term sheet to on-chain asset in days, with **zero legal guesswork**. All critical parameters – supply, transfer rights, freeze periods, revenue-sharing – are configured in a guided UI and compiled into the token at deployment. As a result, issuers get **speed _and_ legal certainty**: no missed filings, no out-of-sync cap tables, and no custom coding for each jurisdiction. This _“law-in-the-loop”_ approach (turning regulations into executable code) means **every allocation is compliant by construction**, eliminating the traditional backlog between business teams and legal reviewers.
+ATK handles multi-asset creation across equity, debt, fund, and deposit products. Jurisdiction-specific templates (Reg D, Reg S, MiCA, MAS, others) remove guesswork, so legal and product teams configure real parameters during the first workshop instead of filling a parking lot of follow-up tasks.
 
-**Multi-Asset, Multi-Chain Agility:** A single **ATKSystemFactory** transaction bootstraps an entire regulated tokenization environment – deploying the Access Manager, Identity Registry, Compliance engine, and Asset Factories in one go. From there, the **Token Factory Registry** exposes factories for each asset type (bond, equity, fund, stablecoin, deposit), each pre-wired with the appropriate lifecycle rules (maturity dates, NAV calculations, collateral, etc.). Because the kit is **chain-agnostic**, this same issuance flow works on public Ethereum or Polygon as well as private consortium networks like Hyperledger Besu or Quorum **with no code changes**. Teams can sandbox on a local Besu network and seamlessly promote to a production network (or even a Mainnet) once ready, keeping rollout aligned with regulatory comfort. And since everything is **fully open-source under a permissive FSL-MIT license**, institutions can inspect, extend, or customize any part of the issuance stack to fit their needs – with no vendor lock-in. (The FSL license converts to MIT after two years, guaranteeing eventual full open-source rights.) This openness and flexibility, backed by nearly a decade of SettleMint’s experience delivering blockchain solutions to global banks, means the issuance module isn’t just a demo – it’s battle-tested in real financial environments. Delivery teams have repeatedly proven they can go from a term sheet to a live, compliant asset **4× faster** than traditional methods, precisely because the kit provides **all the plumbing out-of-the-box**. Issuers and their lawyers focus on instrument design and let the platform handle **the heavy lifting of compliance, deployment, and record-keeping**.
+The no-code Asset Designer exposes supply limits, divisibility, transfer rules, freeze periods, and corporate rights without touching Solidity. Business users keep pace with demand while engineering focuses on differentiated work.
 
-## What the lifecycle engine automates
+Multi-chain deployment support launches assets on Ethereum, Polygon, Besu, Quorum, or another EVM network from one playbook. Sandbox assets promote to production networks as policy evolves, keeping rollout aligned with regulatory staging.
 
-The Asset Tokenization Kit (ATK) ships the full issuance stack instead of leaving teams to stitch contracts, identity, and UI together. The `ATKSystemFactory` contract creates a governed system instance in a single transaction, wiring identity, compliance, registry, and access-control modules before any asset work begins. Once bootstrapped, the Token Factory Registry exposes dedicated factories for bond, equity, fund, stablecoin, and deposit instruments, each composed from SMART extensions (`SMARTUpgradeable`, `SMARTYieldUpgradeable`, `SMARTTokenAccessManagedUpgradeable`, and more) so supply limits, redemption mechanics, and lifecycle hooks are first-class capabilities rather than one-off scripts.
+A real-time cap table in the Asset Manager aggregates ledger events into a current registry. Issuers see holdings, eligibility, and lifecycle actions immediately, so reconciliation never becomes the long pole.
 
-On the front end, the kit’s TanStack-powered Asset Designer (`kit/dapp/src/components/asset-designer`) gives business users a feature-complete configuration surface. Every field—denomination asset, dividend yield model, coupon cadence, country restrictions—maps directly to contract parameters, eliminating the translation errors that slow legal reviews. The designer calls typed ORPC procedures, which in turn orchestrate contract factories, the identity registry, and compliance module registry.
+Lifecycle primitives let issuers manage supply after launch: minting, burning, redemptions, buybacks, and follow-on issuance all enforce contract-level conditions automatically.
 
-<Mermaid
-  chart={`
+The distribution engine handles pro-rata lists, auctions, and bulk allocations. It hashes legal documents to token metadata, creating an immutable link between the asset and its documentation.
+
+Gravity for all of this sits in APIs. Everything you can do in the UI is also exposed through ORPC procedures, REST, and GraphQL, so banks embed issuance flows inside existing portals under their own branding.
+
+## Compliance in the primary market
+
+Issuance gates distribution with KYC/KYB, accreditation, and on-chain whitelisting. Verified wallets only, jurisdictional caps and lockups enforced pre-distribution, and geo rules checked before transfers. Custodial, retail, and institutional flows run the same engine, so allocations inherit the right eligibility profile automatically.
+
+**Result:** zero non-compliant allocations and a clean audit trail out of the box.
+
+## Architecture at a glance
+
+```
 flowchart LR
-  designer["Asset Designer"] -->|ORPC createAsset| orpc["Typed ORPC server"]
-  orpc -->|Deploy via| factory["ATK token factory"]
-  factory --> identity["Identity factory" ]
-  identity --> registry["Identity registry"]
-  factory --> compliance["Compliance contract"]
-  compliance --> modules["Compliance module registry"]
-  factory --> indexers["Subgraph indexers"]
-  indexers --> captable["Cap table + analytics"]
-`}
-/>
+  designer["Asset Designer"] --> factory["Token factory + controllers"]
+  factory --> indexer["Subgraph + cap table"]
+  factory --> docs["Document & claim store"]
+  indexer --> engine["Distribution engine"]
+  docs --> surfaces["Asset Manager & APIs"]
+  engine --> surfaces
+```
 
-## Lifecycle coverage end to end
+A subgraph-backed indexer subscribes to transfer, mint, and burn events, reconciles positions instantly, and exposes query endpoints in the Asset Manager and via GraphQL. Document hashes, prospectus references, and base price claims live alongside the asset’s on-chain identity, keeping legal artifacts auditable from launch through redemption.
 
-1. **System bring-up:** `createSystem()` deploys the centralized Access Manager, registers identity verification as a default compliance module, and logs the system for discovery. Admins receive bootstrap roles (`DEFAULT_ADMIN_ROLE`, `SYSTEM_MANAGER_ROLE`) automatically, so they can proceed directly to factory registration.
-2. **Template selection:** Token factories encode asset-specific guardrails. For example, the bond implementation enforces maturity, denomination, redemption accounting, and cap logic, while the fund implementation focuses on share classes, NAV interactions, and custodian flows.
-3. **Compliance scoping:** Global compliance modules—blacklist/whitelist, jurisdiction gates, investor concentration checks—can be set once on the system and apply to every token. Token-specific rules can be layered from the dApp without contract redeployments.
-4. **Identity binding:** Every asset gets an OnchainID contract identity via the identity factory; trusted issuers are registered so they can append legal attestations automatically. Because the Portal API already understands the claim topics defined in `ATKTopics.sol`, onboarding and accreditation surfaces stay synchronized with asset policy.
-5. **Event capture:** Subgraph mappings in `kit/subgraph/src/token` and `.../stats` project creation, allocation, transfer, and redemption events into a real-time cap table. The dApp and Portal read from the same index, so finance, compliance, and ops teams work from a single source of truth.
+Distribution runs through addons (airdrop, sale, yield) that log every step for audits.
 
-<Mermaid
-  chart={`
-sequenceDiagram
-  participant Admin
-  participant FactoryRegistry
-  participant TokenFactory
-  participant IdentityFactory
-  participant Compliance
-  participant Subgraph
-  Admin->>FactoryRegistry: registerFactory(assetType)
-  Admin->>TokenFactory: createToken(params)
-  TokenFactory->>IdentityFactory: createContractIdentity()
-  IdentityFactory-->>TokenFactory: contractIdentityAddress
-  TokenFactory->>Compliance: configureModules(token)
-  TokenFactory->>Subgraph: emit Deployment, ModuleConfigured
-  Subgraph-->>Admin: indexed token + compliance metadata
-`}
-/>
+## Operational guardrails
 
-## Tooling for human and automated teams
+Pre-transfer checks either succeed or revert; there is no limbo state. Jurisdictional profiles cover the United States, European Union, United Kingdom, Singapore, Japan, and more. Compliance teams adjust parameters through configuration instead of code edits, and the Asset Manager exposes receipts, holder-by-jurisdiction breakdowns, blocked-transfer ledgers, and lifecycle actions on demand.
 
-- **Self-service and API parity:** The Asset Manager UI and ORPC routes expose identical coverage—mint, burn, lock, whitelist, distribute, and corporate action initiation—so human operators and automated desks can share workflows.
-- **Genesis and artifact automation:** `bun run artifacts` regenerates the genesis file, Hasura migrations, Portal ABI bundle, and subgraph deployment artifacts whenever a factory or module changes, making it safe to iterate on templates without drifting downstream services.
-- **Testing baked in:** Foundry scenarios (`kit/contracts/test`) and Playwright integration tests (`kit/e2e/ui-tests`) already exercise issuance, investor onboarding, and lifecycle operations. Developers validate changes locally before touching production-like environments.
+Law-in-the-loop issuance means legal templates drive the parameters contracts enforce. Stablecoin and deposit products attach base price claims; supply-limit modules convert minted amounts against reference currency to uphold lifetime or rolling caps. Prospectus thresholds raise alerts before limits are breached and pause execution until filings complete.
 
-## What changes for programme leads
+## Proof the layer works
 
-Issuers stop translating policy into ad-hoc scripts; the lifecycle path is compiled from libraries that already embed compliance expectations, role separation, and audit hooks. Product teams iterate on new asset classes simply by registering a factory and, if needed, shipping an addon. Compliance officers review enforceable parameters rather than prose. Engineering focuses on differentiation—distribution mechanics, data products, partner APIs—because the foundations are ready on day one.
+Teams routinely move from term sheet to pilot in days, compressing timelines by more than 4x thanks to templated compliance, pre-built integrations, and automated pipelines. Automation keeps the cap table, eligibility checks, and lifecycle actions synchronized; human intervention is reserved for authorized exceptions.
 
-The net result: moving from term sheet to compliant, indexable, and serviced assets becomes a predictable playbook instead of an integration project.
+Scale metrics track healthy issuance volume across multiple asset types per region and the throughput of lifecycle events processed by the addon framework. Strong numbers signal the platform is operating as a single system rather than a bundle of point tools.
+
+## Why ATK beats point solutions
+
+Issuance wizards without cap-table truth or embedded compliance create rework and legal risk. ATK ships templated legality, cap-table truth, and programmable lifecycle in one system, plus:
+
+- A no-code designer business teams can own without trading safety for speed.
+- An addon ecosystem (airdrop, yield, XvP, vault) packaging complex distribution and settlement workflows.
+- API and UI surfaces that expose every action through secure endpoints and real-time dashboards, so partners embed issuance flows in existing channels without rebuilding the core.

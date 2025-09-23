@@ -1,71 +1,34 @@
 ---
-title: "Custody Control"
-description: "The kit enforces role-separated control for keys, custodians, and operator actions without rebuilding governance."
+title: "Custody Operations"
+description: "ATK ships bank-grade key control, policy automation, and custodian adapters so assets and controls stay aligned."
 ---
 
-## Custody Control – *Bank-Grade Key Management*
+## What the custody layer delivers
 
-**Unified Access Plane with Role Separation:** The kit replaces ad-hoc contract admins with a **unified Access Manager** and clearly separated roles for every function. Instead of one super-admin holding all keys (a common anti-pattern that scares custodians), roles like *Identity Manager*, *Token Manager*, *Compliance Manager*, *Custodian* etc. are each scoped to specific duties. This means a custodian wallet might only have permission to invoke escrow releases and redemption payouts, while a compliance officer wallet can freeze or force-transfer but **cannot mint new tokens**, for example. These roles are enforced at the contract level via modules like `SMARTCustodianUpgradeable` and `SMARTTokenAccessManagedUpgradeable` – so even if someone tried to call a sensitive function from an unauthorized address, the transaction is rejected on-chain. The net effect is **institutional-grade segregation of duties**: front-office actions, back-office actions, and administrative actions all have distinct keys and workflows. This design was informed by 10+ years working with banks on custody: we baked in the same **checks-and-balances** they expect in traditional systems, but now enforced by smart contracts. No more all-powerful private keys; every capability can be distributed and even rotated without downtime.
+ATK supports self-custody, institutional sub-custody, and third-party vaults under one policy model. Hardware wallets, MPC platforms, and bank custodians plug into the same control plane, so institutions keep their preferred vendors without losing governance.
 
-**HSM and MPC Integration:** Because real-world custodians demand *hardware-backed security*, the SettleMint Signer service integrates with Hardware Security Modules and MPC wallets for key management. Out of the box, the platform supports storing private keys in AWS KMS or Azure Vault HSMs – the signer will **never expose the raw key in memory**, it just requests signatures from the HSM. This means even if your node or signing server is compromised, your critical keys are safe in tamper-proof hardware. The signer also handles nonce management, chain coordination, and can work across multiple networks simultaneously, so a single custody service can orchestrate transactions on Ethereum, Polygon, or a private chain without race conditions. We also provide **advanced signing patterns**: built-in support for **multi-sig approvals** (e.g. requiring N-of-M AccessManager admins to co-sign a transaction) and **ERC-2771 meta-transactions** for gas abstraction. For institutions, this means the custody solution can be plugged into their existing governance – e.g. require two authorized ops users to approve a large transfer – and even allow gas fees to be centrally managed (operators don’t need to hold ETH/MATIC for gas; a relayer can pay while preserving the audit trail of who initiated the action). All of these capabilities are provided as **configuration, not custom development**. The Helm charts and Portal UI have options to configure HSM key stores, to enforce multi-channel approvals, and to enable the trusted forwarder for meta-txs. By shipping these features, the kit meets *“bank-grade”* expectations: keys in secure custody, **dual control on sensitive actions, full traceability on every transaction**.
+Threshold signatures, HSM support, and MPC deployments remove single points of failure. Critical actions require approvals bound to policy statements, keeping routine flows fast while stopping unauthorized transfers at the signer.
 
-**Operator Experience & Oversight:** The kit leverages SettleMint’s Portal to give custody and operations teams a full **“key control console”** out of the box. Through the Portal’s interface, admins can invite or revoke operators, assign them roles (which map to the on-chain Access Manager roles), and define policies like trading hours or IP restrictions. Every login and action is logged and can feed into the bank’s SIEM. The Portal uses enterprise-grade auth (OIDC/OAuth2) with support for SSO, SAML, and WebAuthn passkeys – meaning staff can log in with their corporate credentials or hardware keys instead of handling blockchain keys directly. Behind the scenes, each operator still has an on-chain identity (an *OnchainID* contract tied to their organization identity), which allows fine-grained on-chain tracking (e.g. if Alice from Compliance initiates a freeze, the blockchain event can reflect that it was Alice’s ID that did it). All operator actions (like “Custodian X initiated a redemption for Investor Y”) are captured by the subgraph and surfaced in audit dashboards. **Multi-channel approvals** are also supported: e.g. an initiation in the web portal can trigger an approval request to another user via email or an ITSM integration, and only when the second party approves does the on-chain transaction execute – ensuring **no single individual can secretly move assets**. Additionally, the kit’s observability stack (Prometheus + Grafana included) provides **custody-specific dashboards**: you can monitor vault balances, pending redemption requests, and key usage in real time. If any anomaly occurs (say a key usage pattern deviates or a vault contract is running low on liquidity), alerts can be fired to the ops team immediately. By delivering these features out-of-the-box, the Asset Tokenization Kit lets institutions hit the ground running with a **pre-secured, pre-audited custody framework**. Instead of spending months building a custom wallet management system, teams configure a few YAML files and focus on business logic, confident that **the platform itself enforces all the critical safeguards**. (No more nightmares about a developer wallet holding millions in tokens, or an admin accidentally bricking a contract – the kit’s roles and tools make those scenarios virtually impossible.)
+A single Bun-based signer exposes JSON-RPC and OpenAPI surfaces for key management and transaction orchestration. Storage providers load at runtime, letting the same binary run in Postgres-backed, KMS-wrapped, or full HSM mode without code changes. Memory stays locked, buffers zeroize, and every sensitive workflow demands explicit approval.
 
-## Centralized access, distributed duties
+## Key storage tiers
 
-ATK replaces contract-by-contract permissioning with a single Access Manager deployed by `ATKSystemFactory`. The manager exposes people roles (`ATKPeopleRoles.SYSTEM_MANAGER_ROLE`, `IDENTITY_MANAGER_ROLE`, `TOKEN_MANAGER_ROLE`, and more) and system roles (`ATKSystemRoles.SYSTEM_MODULE_ROLE`, `TOKEN_FACTORY_MODULE_ROLE`) so wallets, services, and automation scripts inherit only the capabilities they need.
+- **Base**: Postgres with pgsodium encryption and a server key managed through the platform secrets store.
+- **Hybrid**: Postgres keys wrapped by Vault Transit, cloud KMS, Conjur, or Luna devices for separation of duties.
+- **Full HSM**: Keys created or imported as non-extractable PKCS#11 objects in SoftHSM, Luna, CloudHSM, or customer hardware; signing never leaves the module.
 
-Tokens plug into this control plane through `SMARTTokenAccessManagedUpgradeable`. Custodian-specific operations—escrowing collateral, releasing funds, handling investor redemptions—are exclusively gated behind `SMARTCustodianUpgradeable`, while supply operations sit behind `SUPPLY_MANAGEMENT_ROLE`. This prevents the all-powerful admin wallets that plague bespoke deployments.
+The custody container bundles Biome, Drizzle, viem, Noble crypto, and shadcn/ui tooling, ships non-root and read-only, and includes vendor PKCS#11 libraries under `/opt/pkcs11` so deployments move cleanly between cloud, on-prem, or air-gapped clusters.
 
-<Mermaid
-  chart={`
-flowchart LR
-  AccessManager["ATKSystemAccessManager"] --> PeopleRoles["People roles"]
-  AccessManager --> SystemRoles["System roles"]
-  PeopleRoles --> Operators
-  SystemRoles --> Tokens
-  Tokens -->|enforce| SMARTCustodian
-  Tokens -->|enforce| SMARTTokenAccessManaged
-`}
-/>
+## Policy, compliance, and settlement
 
-## Custodian-first token design
+The same compliance engine that governs transfers applies to custody calls: RBAC and ABAC statements gate every method, whitelists block disallowed wallets, and maker-checker flows capture dual control. Standardized custodian adapters (Fireblocks, Metaco, others) align with the payment-rails architecture so cash and tokens settle together.
 
-- **Escrow discipline:** The bond contract tracks denomination assets and refuses maturity finalization unless redemption liquidity is fully funded. Withdrawal helpers ensure custodians can reclaim excess collateral without jeopardising investor payouts.
-- **Forced operations with audit:** Governance can pause, force-transfer, or freeze accounts through SMART modules, yet all such actions emit structured events consumed by the subgraph, so oversight teams review every exceptional move.
-- **Segregated vaults:** The vault addon offers segregated pools per asset or tranche, with role-gated deposit and withdrawal functions. Custodial providers integrate through Portal APIs, enabling SOC2-compliant workflows.
+Look-through tooling reconciles omnibus accounts with beneficiary-level eligibility. Recovery runbooks document backup material, multi-site DR, and re-verification so key loss never cascades into missed settlement windows.
 
-## Identity & credential governance
+## Interfaces and flows
 
-Identity management is tied directly to custody. When an operator is onboarded, the dApp assigns people roles and the identity registry stores their OnchainID. Trusted issuers registered at bootstrap (or later by compliance teams) can append AML/KYC claims, enabling automated credential revocation if an operator leaves the organization.
+Custody onboarding begins with a provider handshake that maps accounts to issuers. Once registered, the orchestrator submits notarized moves that respect both ATK policy and the custodian’s own approval stack. Execution follows a simple loop: proposal -> validation -> approval -> broadcast. Proposals enter the queue, policy validators review them, and only then does ATK dispatch the transaction on-chain or to the payment rail.
 
-The front end uses Better Auth with passkey/WebAuthn support (`kit/dapp/src/providers/auth.tsx`) for strong MFA. Portal accounts inherit the same sign-in flows—SSO, passkeys, backup codes—so custody desks use enterprise-grade authentication rather than seed phrases. Administrators can invite or disable operators, set operating hours, and review system access logs directly in the Portal interface.
+Operational dashboards surface wallet posture, cold-storage ratios, policy exceptions, and real-time notifications. Finance and risk teams monitor the same telemetry without touching secret material.
 
-## Operational consoles ready out of the box
-
-SettleMint’s Portal bundles asset management, member management, and monitoring surfaces. Operators gain clear entry points for scanning holdings, initiating transfers, managing user roles, and reviewing audit trails without custom dashboards. The Asset Tokenization Kit integrates with the same backend, so the operator console reflects on-chain events in near real-time.
-
-<Mermaid
-  chart={`
-sequenceDiagram
-  participant Admin
-  participant Portal
-  participant AccessManager
-  participant Token
-  participant Subgraph
-  Admin->>Portal: Assign custodian role
-  Portal->>AccessManager: grantRole(CUSTODIAN, wallet)
-  Custodian ->> Portal: Initiate redemption
-  Portal->>Token: redeem(holder, amount)
-  Token->>Subgraph: emit RedemptionRecorded
-  Subgraph-->>Portal: Updated custody dashboard
-`}
-/>
-
-## Safeguards for institutions
-
-- **Multi-channel approvals:** Workflows can require approvals from separate roles (e.g., treasury + compliance) before execution; the Access Manager’s batch grant/revoke helpers make multi-sig or MPC wallet integration straightforward.
-- **Gas abstraction:** ERC-2771 support lets operators act through the trusted forwarder, so actions originate from controlled service wallets while preserving the actual human approver in the logs.
-- **Observability:** Helm chart values include dedicated monitoring (Grafana, VictoriaMetrics, Loki). Custody desks get dashboards for vault balances, redemption queues, and Mint/Burn operations out of the box.
-
-ATK turns wallet governance, custody segregation, and operator oversight into configuration tasks instead of engineering projects, meeting bank-grade expectations with auditable, multi-layer controls.
+Custody in ATK keeps the asset path, compliance engine, and bank connections synchronized, which is what risk committees expect before green-lighting production.

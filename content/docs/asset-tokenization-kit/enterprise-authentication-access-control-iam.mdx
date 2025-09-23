@@ -1,79 +1,61 @@
 ---
-title: "Identity & IAM"
-description: "ATK aligns smart-contract roles, Portal access, and workforce identity to keep auditors and CISOs comfortable."
+title: "Enterprise IAM"
+description: "ATK pairs Better Auth with OnchainID so human users, automation, and smart contracts share the same enforcement points."
 ---
 
-## Enterprise Authentication & Access Control – *IAM Integration*
+## Identity as infrastructure
 
-**Plug-in to Existing Identity Systems:** In large organizations, identity management and access control must align with established IT policies. The Asset Tokenization Kit was built to integrate, not reinvent, enterprise identity and access management (IAM). It supports out-of-the-box integration with **OAuth2/OIDC identity providers and SAML**, meaning you can hook up the platform to corporate Single Sign-On (SSO) solutions like Azure AD, Okta, or any SAML IdP. The Portal and dApp use **Better Auth** libraries that handle SSO redirects, multi-factor auth, and session management, so users log in with the same credentials and 2FA devices they use for other corporate systems. This is critical – it means no new passwords or insecure key management practices for your staff. Moreover, the kit’s architecture cleanly separates identity/authentication from on-chain authorization. Human users authenticate via standard enterprise methods, and upon success, the platform maps them to their on-chain roles (e.g. *SYSTEM_MANAGER_ROLE*) through the Access Manager. This mapping can be automated: for example, you could configure that any user in your “BlockchainOps” AD group gets assigned the Token Manager role in the kit upon first login.
+Authentication failures sink fintech projects, so ATK treats identity as product code, not a late add-on. Better Auth secures every web session, OnchainID binds those sessions to on-chain claims, and every action maps back to a verifiable persona.
 
-**Granular Roles and Policy Control:** The platform provides a rich **RBAC model** that mirrors financial operations. Roles like *System Admin*, *Compliance Officer*, *Custodian*, *Investor*, *Auditor*, etc., are predefined in the Access Manager smart contract, and you can extend them or create custom ones as needed. Each role carries specific permissions enforced by the contracts (for instance, only an *Investor* role can initiate a self-service transfer, only a *Compliance Officer* can whitelist an address, only a *Custodian* can trigger a forced redemption, and so on). Administrators can grant or revoke these roles via the Portal UI with full audit logging. The kit also supports **organizational unit scoping** – if you operate multiple systems or segregated asset pools, you can restrict roles to particular scopes (e.g. a Token Manager role might be limited to managing tokens of a certain asset class or business unit). On the infrastructure side, the Kubernetes charts allow tying into corporate IAM for cluster access: you can require, say, your Ops team’s Azure AD group to assume a Kubernetes role before they can even view the logs or metrics of the deployment. Network policies and firewall rules can restrict access to the dApp and APIs such that only users on the corporate VPN or in certain locations can reach them. In essence, the kit was built to slot into a **defense-in-depth security model** – corporate identity at the front door, contract-level authorization at the core, and observability throughout.
+Sign-in covers passwords, passkeys, and recovery flows. Admins can require TOTP, pin codes, and recovery codes, while portfolio teams start with lighter policies and graduate to stronger factors. Sessions expire daily, refresh securely, and ride in HTTP-only cookies; global rate limits absorb brute-force attempts before they hit business APIs.
 
-**Audit and Compliance Integration:** Every admin or user action in the platform is **auditable** for compliance. The system maintains an immutable on-chain log of critical actions (role grants, identity registrations, policy changes) and couples that with off-chain logs (via Loki/FluentBit) that detail the **who/when/where** from the IT side. For example, if a compliance officer blacklists an investor wallet, the blockchain emits an event (recording which identity did it and which investor was blacklisted) and the off-chain log captures the IP, timestamp, and user SSO ID of the person who clicked the button. These logs can be streamed to your SIEM, and the kit even provides pre-built **compliance dashboards** to review access changes, failed login attempts, and permission grants over time. Additionally, the kit’s **Identity Registry** is compatible with standards like ERC-734/735 (self-sovereign identity), which means it can ingest or publish verifiable credential data. If your compliance process requires, say, checking an external KYC attestation for a user, the identity system is already set up to handle signed claims from trusted issuers. This ties into access control as well: a user’s ability to perform certain actions (e.g. increase a trading limit) could be conditioned on possessing a specific claim (like “Certified Trader” issued by an exchange). The kit provides the hooks to implement such **policy-driven access** effortlessly. In summary, the Enterprise Authentication & IAM capabilities ensure the kit **feels like part of your existing IT stack** – users login with enterprise creds, permissions are managed with familiar RBAC concepts, and every access is accountable. For IT security teams and auditors, this is a big win: they see that adopting the blockchain platform doesn’t mean creating a shadow IT; instead, it extends their governance into the blockchain realm. (This approach reflects our 10-year experience bridging fintech platforms with banks’ identity systems – we know “go live” will be blocked if the solution can’t plug into AD/LDAP and standard governance, so we’ve handled that upfront.)
+Role management lives in Better Auth access statements. The starter roles (`admin`, `user`) expand easily—banks can add resources such as compliance policies or reports without rewriting the auth layer. Automation flows use API keys minted through the same service; keys carry explicit scopes, rate limits, revocation paths, and audit trails.
 
-## One control plane for smart contracts and people
+Each authenticated user links to an OnchainID identity. When they mint assets or approve compliance actions, the same persona is checked in Better Auth and in the compliance modules, closing the gap between web IAM and token-level rules.
 
-The Access Manager deployed by `ATKSystemFactory` becomes the IAM backbone of the system. Human operators receive `ATKPeopleRoles` (system manager, token manager, compliance manager, claim policy manager, auditor, etc.), while smart contracts and services obtain `ATKSystemRoles`. Because every contract that matters inherits from `ATKSystemAccessManaged`, the same role check modifers guard on-chain actions, ORPC procedures, and Portal APIs.
+## Access model
 
-Role grants and revocations happen in batches, so organisations can wire approvals into their internal workflows or multi-sig/MPC policies. Every change emits audit events, making it trivial to reconcile blockchain state with IAM records.
+Human users sign in through the dApp, complete onboarding, and receive role-based permissions. Automation uses scoped API keys, so bots and batch jobs get just enough access to operate. Compliance modules stand as the third guardrail: even with a valid session, a transfer fails if the holder’s OnchainID claims do not satisfy the token’s policy.
 
-<Mermaid
-  chart={`
-flowchart LR
-  HR["HR / IdP"] --> PortalProvisioning
-  PortalProvisioning --> AccessManager["ATKSystemAccessManager"]
-  AccessManager --> PeopleRoles
-  AccessManager --> SystemRoles
-  PeopleRoles --> Dapp
-  SystemRoles --> Contracts
-`}
-/>
-
-## Workforce identity with modern auth
-
-The dApp and Portal share a Better Auth integration with passkey/WebAuthn support (`kit/dapp/src/providers/auth.tsx`). Features include:
-
-- **Passwordless login:** Passkeys and WebAuthn, with backup codes and authenticator apps for fallbacks.
-- **Session intelligence:** TanStack Query-backed session hooks add optimistic UX without compromising security.
-- **Role-aware UI:** Authentication context propagates into TanStack Router guards, so components render only when the operator’s role set matches the required on-chain permissions.
-
-Portal extends these capabilities to customer organisations: onboarding, member management, asset access, and monitoring consoles sit behind the same identity layer, delivering consistent MFA, session control, and admin oversight.
-
-## Policy capture as code
-
-Compliance, identity, and addon modules rely on registries managed by the system contract. Policy changes—adding a new trusted issuer, tweaking a claim topic, registering a custom compliance module—translate to explicit transactions rather than undocumented operations. Compliance teams can read `ATKTopics.sol` and module registries to validate that legal requirements remain enforceable.
-
-## End-to-end IAM workflow
-
-1. **Provision:** Ops teams invite a user via Portal. The invite triggers Better Auth enrolment; once complete, ORPC routes apply requested roles by calling the Access Manager.
-2. **Operate:** When the user initiates an action (mint, whitelist, corporate event), the dApp checks both Better Auth session state and on-chain roles. ERC-2771 contexts preserve their identity even when a forwarder pays the gas.
-3. **Review:** Audit teams query Hasura or the subgraph to cross-check role assignments, transaction history, and Portal activity. `kit/subgraph/src/access-control` indexes grants, revocations, and role usage.
-4. **Deprovision:** Removing a user in Portal revokes roles on the Access Manager and invalidates sessions instantly.
-
-<Mermaid
-  chart={`
+```
 sequenceDiagram
-  participant Admin
-  participant Portal
-  participant Auth
-  participant AccessManager
-  participant Dapp
-  Admin->>Portal: Invite operator
-  Portal->>Auth: createEnrollment(passkey)
-  Operator->>Auth: completeEnrollment
-  Portal->>AccessManager: grantRoles(operator, [TOKEN_MANAGER])
-  Operator->>Dapp: mint request
-  Dapp->>Auth: validateSession
-  Dapp->>AccessManager: hasRole(operator, TOKEN_MANAGER)
-  AccessManager-->>Dapp: true
-  Dapp->>Blockchain: execute transaction
-`}
-/>
+  participant User
+  participant Auth as "Better Auth"
+  participant Roles as "Role engine"
+  participant APIKey as "Automation key"
+  participant OnchainID
+  participant Service as "Asset service"
+  participant Audit
+  User->>Auth: Sign in
+  Auth->>Roles: Evaluate statements
+  Roles-->>Auth: Session scopes
+  User->>Service: Request action
+  Service->>Roles: Permission check
+  Service->>OnchainID: Verify claims
+  OnchainID-->>Service: Result
+  Service-->>User: Approve or deny
+  Auth->>APIKey: Mint scoped key
+  APIKey->>Service: Automation call
+  Service->>Audit: Log event
+```
 
-## Governance assurances
+## Threat model and controls
 
-- **Least privilege:** Separation between people and system roles means automation can hold powerful capabilities while humans retain oversight, or vice versa.
-- **Audit exports:** Portal dashboards and APIs output role matrices, login histories, and transaction summaries, supporting internal audit and regulatory filings.
-- **Compliance ready:** Because trusted issuers, claim topics, and compliance modules are registries rather than hard-coded addresses, organisations can update legal policies without contract redeployments—critical when regulations shift.
+Most attacks begin with credential replay or phishing. Passkeys and TOTP remove shared secrets, while pin code and secret-code plugins give support teams a break-glass option that stays auditable. Sessions can be revoked centrally and expire quickly, limiting the blast radius of a compromised device.
 
-ATK brings enterprise IAM discipline to tokenized assets: workforce identity, contract permissions, and governance trails live in a single, observable system instead of scattered scripts.
+API keys are namespaced, rotate without downtime, and emit separate audit events. Teams can disable one integration without touching staff credentials, and rate limits stop runaway scripts from overwhelming services.
+
+Onchain compliance modules force approvals for high-value moves and stop disallowed investors even if someone copied a cookie. Because they execute on-chain, no amount of web manipulation bypasses them.
+
+Prometheus, Loki, and OpenTelemetry collectors ship with the charts, so authentication events, role changes, and compliance rejections land in the same telemetry your security team already monitors. Forwarding into a SIEM becomes configuration, not a new project.
+
+## KPIs that prove control
+
+- MFA coverage: aim for 100% of administrators on passkeys or TOTP; watch standard-user adoption curves.
+- Passkey uptake: track WebAuthn registrations to learn when to tighten legacy password rules.
+- API key hygiene: monitor rotation cadence, unused keys, and the share carrying custom scopes.
+- Identity linkage: watch how many active users maintain valid OnchainID claims.
+- Access anomalies: review failed logins, rate-limit triggers, and session revocations for spikes.
+- Compliance guardrails: report how often modules such as transfer approvals or allowlists block actions; steady numbers reassure auditors.
+
+Those indicators keep security, compliance, and product aligned on whether controls are being used, not just configured.
