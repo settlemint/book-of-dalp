@@ -3,6 +3,8 @@ title: "Corporate Actions"
 description: "Post-issuance servicing is where trust is won or lost. Spreadsheets, missed record dates, and cash leaks kill institutional confidence. Our Corporate Actions module orchestrates dividends, coupons, votes, redemptions, splits, mergers, tax handling, notifications, and receipts with record-date discipline, multi-rail payouts, and end-to-end audit trails so every action lands on time and matches the ledger."
 ---
 
+import { Step, Steps } from "@/components/steps";
+
 ## What it automates
 
 The Corporate Actions module replaces the spreadsheet choreography that slows down dividends, coupons, and governance. Declarations start in guided wizards that align to regulatory notice periods, then flow into automated pro-rata calculations and payout orchestration. Payouts can settle on-chain or through connected ACH, SEPA, SWIFT, or RTGS rails, producing receipts for issuers and holders without manual exports.
@@ -48,15 +50,23 @@ sequenceDiagram
 `}
 />
 
-Next comes the record-date snapshot that captures eligible holders at a specific point in time. The system can optionally implement a temporary transfer lock to prevent ownership changes that would complicate the distribution. This snapshot becomes the immutable basis for all subsequent calculations.
-
-The computation step handles pro-rata calculations and tax withholding automatically. The system checks eligibility for each holder based on their jurisdiction, investor status, and any asset-specific restrictions. This prevents payments to ineligible recipients that would create compliance violations.
-
-Payment execution happens through the integrated rails, whether on-chain through stablecoins or off-chain through bank networks. The system generates receipts for investors and comprehensive reports for issuers automatically. This eliminates the manual receipt generation that typically takes days in traditional operations.
-
-When stablecoin or deposit tokens drive payouts, disclosure packs and analytics surface the latest reserve attestation and link token transfers to the relevant fiat leg so finance teams can reconcile without bespoke exports. Eligibility and tax computation reuse the same signed claims that power transfer checks, so the distribution reflects the investor's verified status at the record date rather than whatever a spreadsheet captured that morning.
-
-Finally, the audit step creates an immutable record of every action with human-readable reports. The outputs reconcile cash, tokens, and withheld amounts so discrepancies surface immediately instead of weeks later. This audit trail satisfies regulatory requirements without requiring additional manual compilation.
+<Steps>
+  <Step>
+    <strong>Declare the action.</strong> Issuers set payment amounts, record dates, and eligibility rules. Compliance validates notice periods and filing triggers before the workflow progresses.
+  </Step>
+  <Step>
+    <strong>Snapshot holders.</strong> The platform captures the record-date ledger and can apply a temporary transfer lock so later movements do not upset entitlement math.
+  </Step>
+  <Step>
+    <strong>Compute entitlements.</strong> Pro-rata calculations and tax withholding run automatically while jurisdiction, accreditation, and asset rules block ineligible holders.
+  </Step>
+  <Step>
+    <strong>Execute payouts.</strong> Stablecoin and bank rails fire in parallel, generating investor receipts and issuer reports, with reserve attestations attached when digital cash is involved.
+  </Step>
+  <Step>
+    <strong>Archive the evidence.</strong> The system reconciles tokens, cash, and withholdings, then stores audit-ready packs so reviews start with aligned numbers instead of manual exports.
+  </Step>
+</Steps>
 
 ## What "good" looks like
 

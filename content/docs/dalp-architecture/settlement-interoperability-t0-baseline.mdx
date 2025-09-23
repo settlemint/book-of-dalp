@@ -3,6 +3,8 @@ title: "Settlement & Interop"
 description: "Settlement risk is optional. We remove it. The Asset Tokenization Kit treats T+0 as the default by shipping ready-to-use atomic settlement patterns, the Cross-Value Proposition (XvP) addon stack, and the payment-rail integrations required to run them."
 ---
 
+import { Accordion, Accordions } from "@/components/accordion";
+
 The tokenization industry has a fundamental problem with settlement. Traditional systems create windows of counterparty risk where one party delivers their asset while waiting for the other party to fulfill their obligation. This gap, however brief, represents real financial exposure that risk committees won't tolerate in institutional markets.
 
 Risk teams appreciate hearing that we close that window by design, not with promises to reconcile it later.
@@ -60,7 +62,25 @@ Current programmes track atomic settlement success rates, average time-to-finali
 
 ## Failure modes and defenses
 
-Settlement systems must be designed to fail gracefully when, inevitably, someone misses a step. If bank confirmation stalls, the escrow contract times out and reverts, notifying every party with context they can act on. Bridges refuse to mint on chains that don't meet policy, even if it means denying the transfer. And when discrepancies arise between on-chain events and bank ledgers, the ISO 20022 message flow becomes the authoritative source for booking and reconciliation so there is never any ambiguity about the state of a transfer.
+Settlement systems must be designed to fail gracefully when, inevitably, someone misses a step.
+
+<Accordions type="single" defaultValue="bank-confirmation">
+  <Accordion title="Bank confirmation stalls" value="bank-confirmation">
+    <p>
+      If a payment rail does not acknowledge the ISO 20022 instruction inside the defined window, the escrow contract times out and reverts both legs. Each party receives context-rich notifications so treasury can reissue instructions without guessing what happened.
+    </p>
+  </Accordion>
+  <Accordion title="Policy mismatch across bridges" value="policy-mismatch">
+    <p>
+      Bridges refuse to mint or release assets on destinations that fail policy or limit checks. Rather than forcing an operator to discover the issue later, the validator blocks the hop immediately and logs the rejection for compliance review.
+    </p>
+  </Accordion>
+  <Accordion title="Ledger discrepancies" value="ledger-gap">
+    <p>
+      When on-chain events disagree with bank ledgers, the ISO 20022 message flow becomes the authoritative record. Booking and reconciliation teams work from the same dataset, so there is no ambiguity about the state of a transfer.
+    </p>
+  </Accordion>
+</Accordions>
 
 ## Why this is different
 

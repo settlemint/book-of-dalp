@@ -3,6 +3,8 @@ title: "Deployment & White-Label"
 description: "Control over infrastructure is the gating item for regulated deployments. The Asset Tokenization Kit (ATK) ships with battle-tested Helm charts, Docker Compose blueprints, and managed SettleMint Console automation so you can prove ownership of the runtime before risk review even begins."
 ---
 
+import { Tab, Tabs } from "@/components/tabs";
+
 Enterprises do not clear shared clusters or cosmetic branding exercises. Compliance teams need to see where workloads run, how identities are governed, how evidence is captured, and how easily they can take the keys. This chapter distills the deployment and white-label options that already exist in the codebase and high-level documentation, keeping the focus on what matters to decision-makers rather than deep implementation detail.
 
 Procurement sees real controls, not another slide deck, and that changes the tone of every diligence meeting.
@@ -11,9 +13,23 @@ Procurement sees real controls, not another slide deck, and that changes the ton
 
 ATK supports three delivery patterns that all run the same code and APIs:
 
-- **Self-hosted Kubernetes**: The `kit/charts/atk` Helm stack packages the entire platform (dApp, REST API backend, Hyperledger Besu network, Blockscout, Hasura, MinIO, observability) with environment-specific `values*.yaml` files, pod disruption budgets, and network policies. You install it into your cluster and keep full control over nodes, keys, and change management.
-- **Local and dev automation**: `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers, QA teams, and sandbox demos. The Compose stack uses the same artifacts that Helm deploys, so what passes in dev mirrors what you later promote.
-- **Managed SettleMint Console**: SettleMint's hosted option runs the identical stack for teams that want the platform operated for them. Console still exposes tenant automation, exports, and access to the Helm assets so institutions can keep hard tenancy or move on-prem when procurement demands it.
+<Tabs items={["Self-hosted Kubernetes", "Local & dev automation", "Managed SettleMint Console"]}>
+  <Tab>
+    <p>
+      The <code>kit/charts/atk</code> Helm stack packages the entire platform with `values*.yaml` files, disruption budgets, and network policies. Install it inside your cluster, wire secrets to your stores, and you retain full control over nodes, keys, and change management.
+    </p>
+  </Tab>
+  <Tab>
+    <p>
+      <code>docker-compose.yml</code> with <code>bun run dev:up</code> reproduces the full stack for developers, QA, and sandboxes. Compose uses the same images and configuration that Helm deploys, so what succeeds in dev behaves the same when you promote it.
+    </p>
+  </Tab>
+  <Tab>
+    <p>
+      SettleMint Console runs the identical stack as a managed service. Tenants still access automation, exports, and the Helm assets, making it easy to prove tenancy boundaries today and move in-house when procurement insists.
+    </p>
+  </Tab>
+</Tabs>
 
 ## White-label and UX control without rework
 
