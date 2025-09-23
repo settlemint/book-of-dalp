@@ -37,6 +37,6 @@ The bond implementation wires these modules together, enforcing maturity rules, 
 - Access roles split governance, supply, custody, and emergency permissions so dual control stays intact.
 - Meta-transaction support enables gas-sponsored servicing from hardened consoles.
 - Every addon emits typed events; the subgraph stores inputs, hashes, and per-investor outcomes for audit review.
-- REST, GraphQL, and ORPC routes mirror the UI, letting custodians and transfer agents automate the same flows from their own systems.
+- REST (with detailed OpenAPI docs) and GraphQL routes mirror the UI, letting custodians and transfer agents automate the same flows from their own systems.
 
 With ATK, servicing lives in the same runtime as issuance: coupons land on time, redemptions enforce coverage, and every action leaves a verifiable footprint.

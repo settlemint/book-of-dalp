@@ -1,6 +1,6 @@
 ---
 title: "UX & Developer Experience"
-description: "Adoption follows the paths that feel fast and trustworthy. The DALP ships a guided, multilingual Next.js dApp plus typed SDKs, ORPC APIs, and automation tooling so teams can launch compliant asset workflows without rebuilding basics."
+description: "Adoption follows the paths that feel fast and trustworthy. The DALP ships a guided, multilingual Next.js dApp plus typed SDKs, OpenAPI-documented REST APIs, and automation tooling so teams can launch compliant asset workflows without rebuilding basics."
 ---
 
 Financial technology platforms often fail because they prioritize feature completeness over user experience. Complex interfaces, slow performance, and confusing workflows create adoption barriers that kill even the most technically sophisticated platforms. Users abandon systems that require extensive training or create friction in their daily operations.
@@ -13,7 +13,7 @@ We respect those roles from the first screen, so nobody feels like an afterthoug
 
 The production dApp is purpose-built for three constituencies. Issuers configure assets through multi-step wizards (`kit/dapp/src/components/asset-designer/…`) that surface only the choices relevant to the instrument they are creating, while compliance officers and operators follow a separate onboarding state machine that checks wallet security, identity claims, and system bootstrap tasks in order. Investors and relationship managers see lighter dashboards focused on portfolio health, distribution events, and pending actions.
 
-The UI stack uses Radix primitives, Tailwind theming, and TanStack Form/Query, so every screen inherits accessibility defaults, instant validation, and near-real-time data refresh. Charts and widgets fall back to skeleton components during fetches, preventing the jarring flicker that derails long workflows. Because the data layer rides on ORPC and typed Graph/Hasura clients, refreshes feel instantaneous without exposing the underlying service mesh.
+The UI stack uses Radix primitives, Tailwind theming, and TanStack Form/Query, so every screen inherits accessibility defaults, instant validation, and near-real-time data refresh. Charts and widgets fall back to skeleton components during fetches, preventing the jarring flicker that derails long workflows. Because the data layer rides on the OpenAPI-defined REST surface and typed Graph/Hasura clients, refreshes feel instantaneous without exposing the underlying service mesh.
 
 Localization is not an afterthought. The repo ships complete locale bundles for English, German, Japanese, and Arabic (right-to-left) under `kit/dapp/locales/`, and the layout utilities account for RTL mirroring. That coverage lets banks light up new regions without redesigning pages. White-label controls (colour tokens, logos, typography) live in configuration files rather than code forks, so partners keep their brand while still running the same UX baseline.
 
@@ -21,13 +21,13 @@ Mobile responsiveness targets the investor journeys where phones dominate: vote 
 
 ## DX (build fast, don't re-plumb)
 
-On the developer side the kit avoids mystery glue. The ORPC router in `kit/dapp/src/orpc` exposes every asset, compliance, and system capability through a typed HTTP+OpenAPI surface; the same definitions back the React client and any external integrator. When teams need data rather than commands, they can lean on the bundled subgraph and Hasura endpoints with generated fragments (`@settlemint/sdk-thegraph`, `@settlemint/sdk-hasura`) instead of hand-written queries.
+On the developer side the kit avoids mystery glue. The REST API router in `kit/dapp/src/orpc` exposes every asset, compliance, and system capability through a typed HTTP surface defined by the OpenAPI catalog; the same definitions back the React client and any external integrator. When teams need data rather than commands, they can lean on the bundled subgraph and Hasura endpoints with generated fragments (`@settlemint/sdk-thegraph`, `@settlemint/sdk-hasura`) instead of hand-written queries.
 
 The workspace already includes the automation most banks add later: Bun tasks for codegen, linting, and testing; Drizzle migrations wired to PostgreSQL; logging helpers from `@settlemint/sdk-utils`; and CLI tooling. The public SettleMint CLI (`settlemint scs create`) scaffolds contract sets locally, while repository scripts turn ABI artifacts into typed clients so front-end and back-end stay in sync.
 
 Developers authenticate with Better Auth just like operators, then mint API keys with explicit prefixes (`sm_atk_`) for bots or CI jobs. Rate limits, structured errors, and metadata live alongside the route definitions, so integration partners see the same diagnostics that the core team uses. Observability hooks: OpenTelemetry exporters in the Helm charts, logger utilities in the app, and standardized error helpers-mean stack traces and metrics flow into existing logging back-ends without bespoke plumbing.
 
-Because everything sits in one Turborepo, extending the platform feels familiar: add a TanStack route, expose it through ORPC, update the locale bundles, and the CLI/typegen scripts pick up the change. No one has to decipher hidden services or private SDKs before shipping a feature.
+Because everything sits in one Turborepo, extending the platform feels familiar: add a TanStack route, expose it through the REST layer, update the locale bundles, and the CLI/typegen scripts pick up the change. No one has to decipher hidden services or private SDKs before shipping a feature.
 
 ## What to measure weekly
 
@@ -35,10 +35,9 @@ Weekly checkpoints keep both experiences healthy:
 
 - **Guide completion**: Track progression through onboarding and asset-design wizards, especially drop-off per step, to spot confusing copy or validation.
 - **Localization coverage**: Monitor untranslated keys and RTL layout regressions so new markets stay launch-ready.
-- **Interaction latency**: Watch median render and fetch times for dashboard panels and ORPC calls; if TanStack retries climb, investigate upstream performance.
+- **Interaction latency**: Watch median render and fetch times for dashboard panels and REST calls; if TanStack retries climb, investigate upstream performance.
 - **Developer flow**: Measure SDK download/version adoption, CLI invocation counts, and failed codegen or deployment scripts to catch integration friction early.
 - **Automation safety**: Review API key usage, rate-limit hits, and logged error codes to ensure bots behave and partners see predictable responses.
 - **Support signals**: Correlate help-desk tickets with the above metrics to validate that quantitative improvements reduce real-world confusion.
 
 Keeping these dials visible turns UX/DX into an ongoing practice rather than a quarterly retrofit.
-

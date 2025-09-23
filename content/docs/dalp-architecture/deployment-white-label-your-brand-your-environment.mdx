@@ -11,7 +11,7 @@ Procurement sees real controls, not another slide deck, and that changes the ton
 
 ATK supports three delivery patterns that all run the same code and APIs:
 
-- **Self-hosted Kubernetes**: The `kit/charts/atk` Helm stack packages the entire platform (dApp, ORPC backend, Hyperledger Besu network, Blockscout, Hasura, MinIO, observability) with environment-specific `values*.yaml` files, pod disruption budgets, and network policies. You install it into your cluster and keep full control over nodes, keys, and change management.
+- **Self-hosted Kubernetes**: The `kit/charts/atk` Helm stack packages the entire platform (dApp, REST API backend, Hyperledger Besu network, Blockscout, Hasura, MinIO, observability) with environment-specific `values*.yaml` files, pod disruption budgets, and network policies. You install it into your cluster and keep full control over nodes, keys, and change management.
 - **Local and dev automation**: `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers, QA teams, and sandbox demos. The Compose stack uses the same artifacts that Helm deploys, so what passes in dev mirrors what you later promote.
 - **Managed SettleMint Console**: SettleMint's hosted option runs the identical stack for teams that want the platform operated for them. Console still exposes tenant automation, exports, and access to the Helm assets so institutions can keep hard tenancy or move on-prem when procurement demands it.
 
@@ -30,13 +30,13 @@ ATK supports three delivery patterns that all run the same code and APIs:
 ## Security, identity, and audit guardrails
 
 - Secrets and credentials are handled through Kubernetes secrets and external stores; the charts expose hooks for OIDC integration (e.g., MinIO identity settings) and network policies to enforce least privilege between pods.
-- The dApp and ORPC backend already model OAuth flows, multi-factor checks, and granular role validation, so you can integrate with existing identity providers instead of bolting on custom auth late in the project.
+- The dApp and REST API backend (OpenAPI-documented and implemented in the `orpc` module) already model OAuth flows, multi-factor checks, and granular role validation, so you can integrate with existing identity providers instead of bolting on custom auth late in the project.
 - Every component emits structured logs and metrics; streaming those into your SIEM or observability stack gives compliance teams the audit trails they expect without extra development.
 
 ## Operational readiness and migration paths
 
 - The CI command `bun run ci` packages formatting, contract compilation, code generation, linting, and testing. That same workflow underpins Console deployments and your own pipelines, creating a single definition of "ready for release."
 - Automated backups, disaster-recovery playbooks, and capacity guidance in the deployment documentation shorten the time from procurement to production because the answers to RTO/RPO and scaling questions are already documented.
-- Moving between models is a configuration exercise: Compose for development, Helm for self-managed clusters, and Console for managed service all rely on the same contracts, database schema, and ORPC procedures. That portability is what lets institutions start in the cloud and bring the stack in-house when mandated.
+- Moving between models is a configuration exercise: Compose for development, Helm for self-managed clusters, and Console for managed service all rely on the same contracts, database schema, and REST endpoints defined by the OpenAPI catalog. That portability is what lets institutions start in the cloud and bring the stack in-house when mandated.
 
 **Bottom line:** The Asset Tokenization Kit is deployable market infrastructure. Own the runtime, brand the experience, and every subsequent chapter (user experience, regulatory coverage, liquidity) builds on a platform you already control.

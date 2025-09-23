@@ -51,7 +51,7 @@ Signature collection, transaction execution, and audit packaging are instrumente
 
 The payment-rails architecture coordinates cash and tokens simultaneously:
 
-- **Settlement engine** orchestrates deterministic states (initiated → reserved → executed → reversed) shared across smart contracts and ORPC APIs.
+- **Settlement engine** orchestrates deterministic states (initiated → reserved → executed → reversed) shared across smart contracts and the OpenAPI-defined REST APIs.
 - **Payment gateway adapters** translate ISO 20022, SWIFT MT/MX, ACH batches, card networks, and stablecoin bridges while enforcing risk limits and sanctions screening.
 - **Liquidity management** nets flows, optimizes routing, and surfaces queue depth and utilization metrics to operations.
 - **Compliance hooks** screen every leg (AML, sanctions, jurisdiction) before signing anything on- or off-chain.

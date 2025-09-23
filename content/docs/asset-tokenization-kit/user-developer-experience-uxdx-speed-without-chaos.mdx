@@ -14,7 +14,7 @@ The production dApp splits responsibilities:
 - Issuers configure assets through multi-step wizards that surface only instrument-specific choices while compliance officers follow a separate onboarding state machine that checks wallet security, identity claims, and bootstrap tasks.
 - Investors and relationship managers see lighter dashboards focused on portfolio health, distributions, and pending actions.
 
-Radix primitives, Tailwind theming, and TanStack Form/Query provide accessibility, validation, and near-real-time refresh. Charts fall back to skeletons during fetches so long workflows stay smooth. Data rides on ORPC and typed Graph/Hasura clients, keeping refreshes quick without exposing the service mesh.
+Radix primitives, Tailwind theming, and TanStack Form/Query provide accessibility, validation, and near-real-time refresh. Charts fall back to skeletons during fetches so long workflows stay smooth. Data rides on the OpenAPI-defined REST layer and typed Graph/Hasura clients, keeping refreshes quick without exposing the service mesh.
 
 Localization arrives out of the box: locale bundles for English, German, Japanese, and Arabic (RTL) live in `kit/dapp/locales/`, and layout utilities handle mirroring. White-label controls (color tokens, logos, typography) live in configuration, so partners keep brand identity without forking code.
 
@@ -22,17 +22,17 @@ Mobile responsiveness targets investor journeys. Single-column workflows handle 
 
 ## DX: build fast, stay aligned
 
-- The ORPC router in `kit/dapp/src/orpc` exposes every asset, compliance, and system capability through typed HTTP and OpenAPI surfaces; the same definitions back the React client and external integrators.
+- The REST API router in `kit/dapp/src/orpc` exposes every asset, compliance, and system capability through typed HTTP surfaces described by the OpenAPI catalog; the same definitions back the React client and external integrators.
 - Bundled subgraph and Hasura endpoints with generated fragments (`@settlemint/sdk-thegraph`, `@settlemint/sdk-hasura`) replace hand-written queries.
 - Automation includes Bun tasks for codegen, linting, testing; Drizzle migrations; logging helpers; and CLI tooling. The SettleMint CLI scaffolds contract sets and scripts turn ABI artifacts into typed clients so front- and back-end stay synced.
 - Developers authenticate with Better Auth, mint API keys with the `sm_atk_` prefix, and inherit rate limits and structured errors. Observability hooks—OpenTelemetry exporters in Helm charts, logger utilities in the app, standardized error helpers—drop traces and metrics into existing logging back ends without bespoke wiring.
-- One Turborepo houses it all: add a TanStack route, expose it through ORPC, update locale bundles, and typegen picks up the change.
+- One Turborepo houses it all: add a TanStack route, expose it through the REST API layer, update locale bundles, and typegen picks up the change.
 
 ## Weekly checkpoints
 
 - Guide completion: track progress through onboarding and asset wizards; review drop-off to refine copy or validation.
 - Localization coverage: watch untranslated keys and RTL regressions so new markets stay launch-ready.
-- Interaction latency: monitor median render and fetch times for dashboards and ORPC calls; rising retries flag upstream issues.
+- Interaction latency: monitor median render and fetch times for dashboards and REST calls; rising retries flag upstream issues.
 - Developer flow: measure SDK downloads, CLI usage, and failed codegen or deployment scripts to spot friction early.
 - Automation safety: review API key usage, rate-limit hits, and logged errors to keep bots predictable.
 - Support signals: correlate help-desk tickets with the above metrics to confirm fixes translate into fewer user issues.

@@ -9,7 +9,7 @@ Fragmented programs stall for the same reasons cited in Chapter 1, and teams fee
 
 ## The DALP integration blueprint
 
-The Asset Tokenization Kit already models the control plane we need. Its layered architecture (frontend -> ORPC API -> business services -> data -> blockchain -> infrastructure) replaces point integrations with orchestrated services:
+The Asset Tokenization Kit already models the control plane we need. Its layered architecture (frontend -> REST API -> business services -> data -> blockchain -> infrastructure) replaces point integrations with orchestrated services:
 
 <Mermaid
   chart={`
@@ -19,8 +19,8 @@ flowchart LR
     admin["Operator console"]
     dev["Developer portal"]
   end
-  subgraph API["ORPC & API layer"]
-    orpc["ORPC router"]
+  subgraph API["REST & API layer"]
+    orpc["REST router"]
     webhooks["Webhooks & SDKs"]
   end
   subgraph Services["Business services"]
@@ -56,7 +56,7 @@ flowchart LR
 />
 
 - **Experience layer (web, mobile, admin, developer portals)** guides issuers, investors, and operators through lifecycle actions while reusing shared component libraries.
-- **API & business logic** run type-safe ORPC procedures that route every request through asset, compliance, identity, and notification services, removing one-off integrations and enforcing policy centrally.
+- **API & business logic** run type-safe REST endpoints defined by the OpenAPI catalog that route every request through asset, compliance, identity, and notification services, removing one-off integrations and enforcing policy centrally.
 - **Blockchain infrastructure** couples ERC-3643-based system contracts with TheGraph indexers so on-chain events and off-chain state stay synchronized.
 - **Data plane** (PostgreSQL HA cluster, Redis cache, MinIO/IPFS storage) provides authoritative state, document retention, and low-latency access for the entire stack.
 - **Testing & deployment** components (Playwright/Vitest suites, Helm/Kubernetes delivery) keep quality and rollout mechanics wired into the lifecycle core itself.
@@ -69,7 +69,7 @@ The integration architecture binds the DALP to identity networks, compliance par
 
 ## Operationalizing one control plane
 
-The monorepo structure hard-codes the integration discipline the market has been missing. Contracts, the Next.js dApp, the ORPC API, the TheGraph indexer, end-to-end tests, and Helm charts live in one workspace. Shared packages (configuration, TypeScript types, Zod schemas) remove ambiguity about interfaces, so lifecycle flows never drift between teams. Environments (development, staging, production) deploy from one Helm-defined topology, meaning policy, infrastructure, and product evolve together instead of through successive vendor statements of work.
+The monorepo structure hard-codes the integration discipline the market has been missing. Contracts, the Next.js dApp, the REST API module, the TheGraph indexer, end-to-end tests, and Helm charts live in one workspace. Shared packages (configuration, TypeScript types, Zod schemas) remove ambiguity about interfaces, so lifecycle flows never drift between teams. Environments (development, staging, production) deploy from one Helm-defined topology, meaning policy, infrastructure, and product evolve together instead of through successive vendor statements of work.
 
 ## What stakeholders finally get
 
@@ -84,7 +84,7 @@ Consider a launch that issues a bond, a feeder fund, and a deposit note simultan
 
 1. Product leads model each instrument in the web console, generating ERC-3643 token blueprints that inherit the appropriate extension sets (yield, voting, collateral) from the control plane.
 2. Compliance officers configure country, investor-limit, and lock-up modules once; those policies apply to every asset because the rule engine runs centrally.
-3. Identity teams onboard investors through the shared ORPC APIs. Claims flow into the identity registry and synchronize across offerings with no duplicate KYC.
+3. Identity teams onboard investors through the shared OpenAPI-documented REST APIs. Claims flow into the identity registry and synchronize across offerings with no duplicate KYC.
 4. Custody operations pre-stage MPC wallet tiers and policy thresholds directly in the DALP's custody services.
 5. Settlement ops wire cash legs via the payment gateway adapters (SWIFT for deposits, RTGS for bonds) using the same workflow state machine that drives token transfers, so cash and tokens stay in lockstep.
 6. Corporate action timelines, notifications, and evidence packs are scheduled through the servicing workflow engine, providing investors and auditors the same data without manual exports.

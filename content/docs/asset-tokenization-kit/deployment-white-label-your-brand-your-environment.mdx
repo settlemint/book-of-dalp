@@ -7,7 +7,7 @@ description: "ATK ships Helm charts, Compose blueprints, and managed Console aut
 
 ATK supports three delivery patterns that run the same code and APIs:
 
-- **Self-hosted Kubernetes**: `kit/charts/atk` packages the dApp, ORPC backend, Besu network, Blockscout, Hasura, MinIO, and observability stack with environment-specific values, disruption budgets, and network policies.
+- **Self-hosted Kubernetes**: `kit/charts/atk` packages the dApp, REST API backend, Besu network, Blockscout, Hasura, MinIO, and observability stack with environment-specific values, disruption budgets, and network policies.
 - **Local and dev automation**: `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers and QA teams; the compose stack uses the same artifacts Helm deploys.
 - **Managed SettleMint Console**: SettleMint operates the stack for teams that want a service, while still exposing tenant automation, exports, and access to the Helm assets for later self-hosting.
 
@@ -28,13 +28,13 @@ Procurement sees real controls instead of promises: you can point to the charts,
 ## Security, identity, audit
 
 - Secrets land in Kubernetes or external stores, and charts expose OIDC hooks for services like MinIO while network policies enforce least privilege between pods.
-- The dApp and ORPC backend already model OAuth flows, MFA checks, and granular role validation, so existing identity providers plug straight in.
+- The dApp and REST API backend (documented via OpenAPI and implemented in the `orpc` module) already model OAuth flows, MFA checks, and granular role validation, so existing identity providers plug straight in.
 - Every component emits structured logs and metrics; forwarding them to your observability stack gives compliance the audit trails it expects without extra engineering.
 
 ## Operational readiness
 
 - `bun run ci` packages formatting, contract compilation, code generation, linting, and testing; the same workflow underpins Console deployments and self-managed pipelines.
 - Deployment docs cover backups, disaster recovery, and capacity planning, cutting the time needed to answer RTO/RPO questions.
-- Moving between models is configuration work: Compose for development, Helm for self-managed clusters, and Console for managed service all share contracts, schema, and ORPC procedures.
+- Moving between models is configuration work: Compose for development, Helm for self-managed clusters, and Console for managed service all share contracts, schema, and the same OpenAPI-driven REST endpoints.
 
 **Bottom line:** ATK is deployable market infrastructure. Own the runtime, match your brand, and let every other chapter build on a stack you already control.

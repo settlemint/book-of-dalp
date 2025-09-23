@@ -7,7 +7,7 @@ description: "ATK treats evidence as a product feature: every action emits struc
 
 Financial teams judge platforms by how fast they can answer what happened and why. ATK pairs the shared ledger with operational stores, reporting APIs, and export tooling, so nobody hunts for spreadsheets when regulators call. All heavy lifting—normalization, scheduling, validation—runs inside the platform.
 
-Every interaction lands in two sources: the on-chain event stream and the Postgres-backed operational store. Graph and Hasura views expose instantaneous cap tables, while ORPC routes provide consented slices of PII or workflow metadata. Compliance officers can prove holder positions, permissions, and overrides without shadow systems.
+Every interaction lands in two sources: the on-chain event stream and the Postgres-backed operational store. Graph and Hasura views expose instantaneous cap tables, while OpenAPI-documented REST routes provide consented slices of PII or workflow metadata. Compliance officers can prove holder positions, permissions, and overrides without shadow systems.
 
 <Mermaid
   chart={`
@@ -35,11 +35,11 @@ Localized, white-labeled portals render the same artifacts for investors and iss
 
 ## Reporting that survives review
 
-Scheduled jobs run against typed ORPC routes, so regulatory filings, compliance attestations, and jurisdictional reports pull live data. The reporting module parameterizes audience, format, and sign-off flows; once configured, ATK renders, validates, archives, and hands the package to the right team automatically. A read-only regulatory dashboard surfaces configuration history, policy revisions, escalations, and submission status without granting write access.
+Scheduled jobs run against typed REST routes documented through the OpenAPI catalog, so regulatory filings, compliance attestations, and jurisdictional reports pull live data. The reporting module parameterizes audience, format, and sign-off flows; once configured, ATK renders, validates, archives, and hands the package to the right team automatically. A read-only regulatory dashboard surfaces configuration history, policy revisions, escalations, and submission status without granting write access.
 
 ## Observability for operators
 
-Prometheus, Loki, and OpenTelemetry ship with the Helm charts, feeding Grafana dashboards for latency, error budgets, and service-level trends. The dApp overlays usage analytics (TanStack Query stats, ORPC metadata) so operators spot failing flows quickly. Logs and traces travel through the same pipelines your security team already monitors, making SIEM forwarding a configuration exercise.
+Prometheus, Loki, and OpenTelemetry ship with the Helm charts, feeding Grafana dashboards for latency, error budgets, and service-level trends. The dApp overlays usage analytics (TanStack Query stats, REST metadata) so operators spot failing flows quickly. Logs and traces travel through the same pipelines your security team already monitors, making SIEM forwarding a configuration exercise.
 
 ## Data handling practices
 

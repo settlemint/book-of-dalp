@@ -15,7 +15,7 @@ Voting and governance leverage record-date snapshots and eligibility checks enfo
 
 Corporate events such as splits, mergers, conversions, and rights offerings follow templated workflows with automated validation at each step. Logs, notifications, and final reports are captured automatically so operations, finance, and compliance work from the same source of truth.
 
-Fund administration hooks handle NAV ingestion, periodic issuances/redemptions at current NAV, and yield schedules set once in the ORPC/API Portal (e.g., `token.set-yield-schedule`). Once configured, income distributions ride the same servicing rails as dividends.
+Fund administration hooks handle NAV ingestion, periodic issuances/redemptions at current NAV, and yield schedules set once in the REST API portal (e.g., `token.set-yield-schedule`) with OpenAPI definitions backing every call. Once configured, income distributions ride the same servicing rails as dividends.
 
 ## Compliance never "falls off"
 
@@ -70,7 +70,7 @@ Digital voting surfaces stay available and easy to use, lifting participation we
 
 ## Interfaces that matter
 
-The developer surface stays minimal while handling complex workflows behind the scenes. Yield and distribution schedules are configured via API Portal or ORPC procedures (see `fixed-yield-schedule.*` and `token.set-yield-schedule` in [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index)). Payment instructions can be triggered through the same surface regardless of whether the payout uses stablecoins, domestic ACH, or cross-border SWIFT rails.
+The developer surface stays minimal while handling complex workflows behind the scenes. Yield and distribution schedules are configured via the API Portal's OpenAPI-described REST endpoints (see `fixed-yield-schedule.*` and `token.set-yield-schedule` in [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index)). Payment instructions can be triggered through the same surface regardless of whether the payout uses stablecoins, domestic ACH, or cross-border SWIFT rails.
 
 Back-office teams work out of the Asset Manager dashboards to monitor timelines, approve exceptions, and download ready-to-file reports. Redemptions and tenders follow guided flows that freeze eligible balances, compute payouts, and coordinate settlement atomically to prevent partial execution failures. Receipts and tax records are generated on demand; issuer-level reports provide accuracy proofs and auditor packages without manual compilation.
 

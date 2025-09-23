@@ -9,14 +9,14 @@ No more midnight hunts for CSVs or improvised screenshots; the proof lives where
 
 ## Evidence that stays in your control
 
-Every user interaction, API call, compliance decision, and asset movement lands in two places: the on-chain event stream that smart contracts and subgraphs expose and the operational stores the dApp already uses. Querying the Graph endpoints or Hasura views yields the instantaneous cap table, while Postgres-backed ORPC routes provide consented slices of PII or workflow metadata. That mix lets compliance officers prove holder positions, permissions granted, and overrides executed without round-tripping data through shadow systems.
+Every user interaction, API call, compliance decision, and asset movement lands in two places: the on-chain event stream that smart contracts and subgraphs expose and the operational stores the dApp already uses. Querying the Graph endpoints or Hasura views yields the instantaneous cap table, while Postgres-backed REST endpoints (documented with OpenAPI specs) provide consented slices of PII or workflow metadata. That mix lets compliance officers prove holder positions, permissions granted, and overrides executed without round-tripping data through shadow systems.
 
 <Mermaid
   chart={`
 flowchart LR
   subgraph Sources
     chain["On-chain event stream"]
-    ops["Operational stores (Postgres, ORPC)"]
+    ops["Operational stores (Postgres, REST API)"]
   end
   indexers["GraphQL & Hasura views"]
   exports["Investor & issuer artifacts"]
@@ -39,13 +39,13 @@ When institutions need to speak to banks or payment rails, the ISO 20022 mapping
 
 ## Reporting that withstands supervisory scrutiny
 
-Scheduled jobs run against the same typed ORPC layer the application uses, so regulatory filings, compliance attestations, and jurisdictional position reports are generated from live data, not stale extracts. The regulatory reporting module (detailed in the ATK docs) partitions reports by audience: transaction activity for financial authorities, AML exposure for compliance desks, and on-demand audit packs for auditors. Each is template-driven-institutions configure frequency, delivery format, and sign-off flows once, after which the platform renders, validates, and archives automatically.
+Scheduled jobs run against the same typed REST layer the application uses (with contracts enforced through the OpenAPI catalog), so regulatory filings, compliance attestations, and jurisdictional position reports are generated from live data, not stale extracts. The regulatory reporting module (detailed in the ATK docs) partitions reports by audience: transaction activity for financial authorities, AML exposure for compliance desks, and on-demand audit packs for auditors. Each is template-driven-institutions configure frequency, delivery format, and sign-off flows once, after which the platform renders, validates, and archives automatically.
 
 For oversight teams, the read-only regulatory dashboard surfaces configuration histories, policy revisions, and submission statuses. Blocked transfers, escalation notes, and holder-by-region exports sit alongside the filings themselves, giving regulators a "show me" view without granting write access to production systems.
 
 ## Observability for operators, not just engineers
 
-Operational telemetry ships with the deployment Helm charts: Prometheus, Loki, and OpenTelemetry collectors feed Grafana dashboards for latency, error budgets, and service-level trends. The dApp layers usage analytics on top (TanStack Query statistics, ORPC metadata) so operators know which flows succeed and which error codes spike. When something breaks, structured logs and trace IDs flow through the same pipelines your security teams already monitor, making SIEM forwarding a configuration exercise rather than a custom build.
+Operational telemetry ships with the deployment Helm charts: Prometheus, Loki, and OpenTelemetry collectors feed Grafana dashboards for latency, error budgets, and service-level trends. The dApp layers usage analytics on top (TanStack Query statistics, REST metadata) so operators know which flows succeed and which error codes spike. When something breaks, structured logs and trace IDs flow through the same pipelines your security teams already monitor, making SIEM forwarding a configuration exercise rather than a custom build.
 
 ## Data handling that keeps audits short
 
