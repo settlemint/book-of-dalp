@@ -1,0 +1,240 @@
+---
+title: "Infrastructure"
+description: "The Asset Tokenization Kit (ATK) ships as an umbrella Helm chart that brings the Besu network, data APIs, signing workflows, and observability stack into a single release with Kubernetes and OpenShift friendly defaults."
+---
+
+Deploying the Asset Tokenization Kit (ATK) umbrella chart brings an opinionated slice of blockchain infrastructure into your cluster: the Besu network, the data APIs, the signing edge, and the observability plumbing ship together with defaults that match the sample `values.yaml`. You keep the freedom to point databases and caches at managed services, yet the bundle still carries a fully wired fallback when those are unavailable. Why spend hours reverse-engineering the wiring when the chart already spells it out?
+
+The stack view below shows how traffic moves from the issuer-facing surfaces through the shared services and down to the ledger.
+
+<Mermaid
+  chart={`
+flowchart LR
+  subgraph Clients
+    investor["Issuer portal"]
+    operator["Operator clients"]
+  end
+  subgraph Edge["Ingress & RPC edge"]
+    ingress["Ingress NGINX"]
+    erpc["eRPC proxy"]
+  end
+  subgraph Data["Data & API layer"]
+    portal["Portal GraphQL"]
+    hasura["Hasura GraphQL Engine"]
+    graphnode["Graph Node indexer"]
+  end
+  subgraph Signing["Signing & explorers"]
+    txsigner["TxSigner service"]
+    blockscout["Blockscout UI"]
+    dapp["dApp frontend"]
+  end
+  subgraph Ledger["Besu network"]
+    validators["Validator pods"]
+    rpc["RPC pods"]
+  end
+  subgraph Support["Support services"]
+    postgres["PostgreSQL cluster"]
+    redis["Redis logical DBs"]
+    minio["MinIO object store"]
+  end
+  subgraph Observability["Observability stack"]
+    alloy["Alloy collector"]
+    metrics["VictoriaMetrics"]
+    loki["Loki"]
+    tempo["Tempo"]
+    grafana["Grafana"]
+  end
+
+investor --> dapp
+operator --> hasura
+dapp --> ingress
+ingress --> portal
+ingress --> hasura
+portal --> postgres
+portal --> redis
+portal --> graphnode
+hasura --> postgres
+hasura --> redis
+portal --> txsigner
+hasura --> txsigner
+txsigner --> erpc
+erpc --> rpc
+graphnode --> erpc
+blockscout --> rpc
+blockscout --> postgres
+validators <---> rpc
+alloy --> metrics
+alloy --> loki
+alloy --> tempo
+grafana --> alloy
+grafana --> metrics
+grafana --> loki
+grafana --> tempo
+minio --> portal
+`}
+/>
+
+ATK ships as a root chart named `atk` with subcharts gated by `.enabled` flags. Every component either consumes shared credentials declared in `global.datastores` or offers overrides under its own key, so you can swap to managed warehouses without re-templating manifests.
+
+## Helm layout and toggles
+
+<Mermaid
+  chart={`
+graph TD
+  ATK["atk umbrella"]
+  ATK --> Support["support"]
+  ATK --> Observability["observability"]
+  ATK --> Network["network"]
+  ATK --> ERPC["erpc"]
+  ATK --> Blockscout["blockscout"]
+  ATK --> GraphNode["graph-node"]
+  ATK --> Portal["portal"]
+  ATK --> Hasura["hasura"]
+  ATK --> TxSigner["txsigner"]
+  ATK --> Dapp["dapp"]
+  Support --> Ingress["ingress-nginx"]
+  Support --> Redis["redis"]
+  Support --> Postgres["postgresql"]
+  Support --> Minio["minio"]
+  Support --> Reloader["reloader"]
+  Network --> Bootstrapper["network-bootstrapper"]
+  Network --> Nodes["network-nodes"]
+`}
+/>
+
+Each dependency is declared in `Chart.yaml` with a `condition` referencing `<component>.enabled`, so you disable a layer by setting that flag to `false`. The sample `values.yaml` enables everything for a full-stack demo. When you need OpenShift-friendly defaults, add `values-openshift.yaml` to the install command so security contexts and Routes align with OpenShift admission rules.
+
+- Hostnames, TLS issuers, and ingress classes live under each component’s `ingress` or `openShiftRoute` block; keep them synchronized across environments.
+- Every service that talks to Postgres or Redis uses an init container based on `ghcr.io/settlemint/btp-waitforit`, making dependencies explicit and easier to debug.
+- `global.chainId` and `global.chainName` flow into Besu, TxSigner, and downstream clients, so change them once when you stand up a new network.
+
+## Component walkthrough
+
+### Support foundation
+
+The `support` subchart is the safety net for stateful primitives: Bitnami PostgreSQL, Bitnami Redis with logical DB splits, MinIO for artifact storage, the Ingress NGINX controller, and Stakater Reloader for config refreshes. Each component inherits labels from `global.labels` so monitoring and backup tooling can target the release. If you run managed Postgres or Redis, leave `support.postgresql.enabled` or `support.redis.enabled` set to `false` and point `global.datastores` at your external endpoints instead. MinIO keeps ABI archives and export artifacts when a cloud bucket is unavailable.
+
+### Besu network
+
+The `network` chart combines a `network-bootstrapper` job with `network-nodes`. The bootstrapper generates `genesis.json`, distributes account artifacts, and writes static peer lists into ConfigMaps. The node chart then launches Hyperledger Besu validator pods and RPC pods (tunables: `validatorReplicaCount`, `rpcReplicaCount`) with persistent volumes sized at 20Gi by default. Init containers again rely on the wait-for-it image to hold startup until the bootstrap artifacts, Redis cache, and Postgres storage come online. You can tighten network access with the built-in NetworkPolicy stanzas when the surrounding cluster enforces Calico or Cilium policies.
+
+### Data and API layer
+
+Portal, Hasura, and Graph Node deliver the query surface. Portal’s init containers fetch ABIs through the bootstrapper image, hydrate `/shared-abis`, and expose a GraphQL endpoint backed by the `portal` Postgres schema plus a dedicated Redis logical DB (index 4). Hasura sits on its own Postgres database (`hasura`) and uses Redis databases 2 and 3 for caching and rate limiting; the chart ships health probes and optional autoscaling hooks. Graph Node consumes the Besu RPC endpoint via eRPC, writes subgraph data to the `thegraph` Postgres schema, and exposes multiple ingress paths (HTTP, WebSocket, admin, indexer) that you can toggle or remap. All three components inherit `global.chainName` and `global.datastores.*` for consistency.
+
+### Signing, explorer, and frontends
+
+TxSigner exposes a REST API that queues transactions, derives keys from the configured mnemonic, and talks to Besu through eRPC. By default it runs in “local” signing mode with the mnemonic supplied in `txsigner.config.mnemonic`; swap to an HSM or KMS by filling the `config.signingStrategy` and the provider-specific fields. eRPC itself balances upstreams, fills Redis caches (logical DBs 0 and 1), and emits Prometheus metrics on port 4001. Blockscout ships both the core API and the optional frontend, pointing at the `blockscout` Postgres schema and the Besu RPC endpoint; the chart exposes separate ingress resources for the API and UI. The dApp frontend uses the same ingress class, references Blockscout through `SETTLEMINT_BLOCKSCOUT_UI_ENDPOINT`, and includes a small job image for setup tasks.
+
+### Observability loop
+
+The `observability` chart wires operational telemetry without asking you to stitch the pieces by hand. Alloy functions as the OpenTelemetry collector, forwarding metrics to VictoriaMetrics, logs to Loki, and traces to Tempo. Metrics Server and kube-state-metrics feed cluster-level data, while Prometheus Node Exporter is enabled by default on general Kubernetes but disabled in the OpenShift overlay. Grafana arrives with basic credentials (`settlemint` / `atk`) and uses sidecars to load dashboards. Update the Alloy remote write URLs when you forward data to a central monitoring plane.
+
+## Globals that matter
+
+The `global` block is the shared contract for credentials, hostnames, and network identity. Each service consumes the Redis and Postgres entries that match its logical name, so when you move to managed data stores you override values in one place instead of chasing every subchart.
+
+```yaml
+global:
+  chainId: "53771311147"
+  chainName: "ATK"
+  datastores:
+    default:
+      redis:
+        host: "redis"
+        port: 6379
+        username: "default"
+        password: "atk"
+        db: 0
+      postgresql:
+        host: "postgresql"
+        port: 5432
+        username: "postgres"
+        password: "atk"
+        database: "postgres"
+        sslMode: "disable"
+    portal:
+      postgresql:
+        database: "portal"
+        username: "portal"
+        password: "atk"
+      redis:
+        db: 4
+    txsigner:
+      postgresql:
+        database: "txsigner"
+        username: "txsigner"
+        password: "atk"
+```
+
+Keep ingress hosts (`*.k8s.orb.local` by default) lined up with your DNS zone; the same keys exist in `values-openshift.yaml` to generate Routes instead of Ingress resources. When you point at external Postgres or Redis instances, remember to swap the related Secrets or provide existing secret names so passwords never live in plain text.
+
+## Transaction path reference
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  participant User as Issuer user
+  participant Web as dApp frontend
+  participant Portal as Portal GraphQL
+  participant Hasura as Hasura API
+  participant Signer as TxSigner
+  participant RPC as eRPC
+  participant Besu as Besu validators/RPC
+  participant DB as PostgreSQL
+  participant Index as Graph Node
+  participant Explorer as Blockscout
+
+User->>Web: Submit issuance form
+Web->>Portal: Mutation with asset details
+Portal->>DB: Persist draft record
+Portal->>Hasura: Publish workflow event
+Hasura->>Signer: Request transaction package
+Signer->>RPC: Forward signed payload
+RPC->>Besu: Relay JSON-RPC call
+Besu-->>Signer: Return transaction hash
+Signer-->>Hasura: Send hash and status
+Hasura-->>Portal: Update lifecycle state
+Portal-->>Web: Confirm minted asset
+Besu-->>Index: Emit chain events
+Index-->>Explorer: Surface block and tx data
+`}
+/>
+
+In live environments, Better Auth (referenced by the dApp) handles the human session, while the same workflow can run headless through Hasura when you hook in enterprise systems. Graph Node and Blockscout trail the happy path by a few blocks while they ingest and index events.
+
+## Troubleshooting quick map
+
+<Mermaid
+  chart={`
+graph TD
+  Symptom["Symptom"] --> Gauge["Which gauge moved?"]
+  Gauge -->|Failed writes| Postgres["Check Postgres endpoints"]
+  Gauge -->|Slow RPC| ERPCStep["Inspect eRPC cache hit ratio"]
+  Gauge -->|Indexer lag| GraphStep["Review Graph Node sync"]
+  Postgres --> Creds["Validate global.datastores secrets"]
+  ERPCStep --> Upstreams["Cycle upstream list, watch rate limits"]
+  GraphStep --> Artifacts["Re-run bootstrapper artifacts if ABIs changed"]
+  Creds --> Confirm["Reapply secret or update values"]
+  Upstreams --> Confirm
+  Artifacts --> Confirm
+`}
+/>
+
+Most incidents show up as wait-for-it timeouts or liveness probe flaps. When that happens, confirm the dependency section in `values.yaml`, double-check the associated Secrets, and keep an eye on the Grafana dashboards shipped in the observability chart.
+
+## Glossary that keeps teams aligned
+
+- **ATK umbrella** The parent chart that synchronizes every subchart and surfaces the shared globals.
+- **Support chart** Optional bundle providing Redis, Postgres, MinIO, Ingress NGINX, and Reloader when managed services are absent.
+- **Network bootstrapper** Job that builds Besu genesis files, static peers, and ABI archives consumed by downstream services.
+- **Portal** GraphQL service that blends on-chain data with metadata stored in Postgres and Redis.
+- **TxSigner** API that manages private keys (mnemonic by default), queues transactions, and pushes signed payloads through eRPC.
+
+## Guardrails in daily ops
+
+- Keep the mnemonic and any external key material in externally managed secret stores; rotate the Secret and run `helm upgrade` when you replace keys.
+- When you disable the support chart, set `global.datastores.*` to the managed endpoints and remove the unused passwords from the values file.
+- Monitor eRPC metrics (`erpc_cache_hits_total`, `erpc_upstream_failures_total`) so you know when upstream rate limits are approaching.
+- Track Grafana admin password overrides through your secret manager; the default credentials are for local demo use only.
+- Persist Besu volumes on storage classes with automatic snapshots so validator state survives node scheduling changes.

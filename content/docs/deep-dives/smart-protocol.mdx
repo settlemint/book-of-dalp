@@ -1,0 +1,134 @@
+---
+title: "SMART Protocol"
+description: "The SMART Protocol sits at the base of SettleMint’s Asset Tokenization Kit (ATK), pairing ERC-20 fungibility with ERC-3643 compliance, OnChainID identities, and the system, asset, and addon layers that production deployments rely on."
+---
+
+SettleMint draws a clean line between the SMART Protocol and the Asset Tokenization Kit (ATK). SMART is the protocol playbook—an ERC-20 and ERC-3643 compatible spec with modular compliance, identity hooks, and extension points. ATK is a production implementation that applies that playbook with centralized registries, factories, and operational tooling. Keeping those roles distinct matters: the protocol stays portable, while the implementation can adapt to an organization’s governance, security, and infrastructure expectations.
+
+### How the layers stack
+
+The contract tree in `kit/contracts` is arranged from protocol foundation up to operational tooling. Each layer depends on the one below it, so rolling out a new asset means wiring the SMART modules first, then pointing ATK system services at them, and finally exposing asset- or addon-specific flows.
+
+<Mermaid
+  chart={`
+flowchart TB
+    Addons["ADDONS\nOperational Tools"] --> Assets["ASSETS\nFinancial Instruments"]
+    Assets --> System["SYSTEM\nInfrastructure"]
+    System --> Smart["SMART\nProtocol Foundation"]
+
+    classDef smart fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef system fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    classDef assets fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef addons fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+
+    class Smart smart
+    class System system
+    class Assets assets
+    class Addons addons
+`}
+/>
+
+Working bottom-up, SMART defines token behavior, compliance orchestration, and identity integration. The ATK system layer introduces central registries, access control, and upgrade coordination. Asset implementations plug into that system to represent bonds, equity, funds, deposits, and stable value instruments. Addons extend operations with airdrops, vaults, settlements, token sales, and scheduled yield distribution.
+
+### SMART protocol foundation
+
+Inside `contracts/smart` you get the full SMART specification: ERC-20 compatibility, ERC-165 interface discovery, ERC-2771 meta-transaction support, and the ERC-3643-style transfer gate that calls into an orchestrated compliance engine. Tokens can run as fixed deployments or behind proxies, and issuers choose whether to enforce KYC by simply wiring (or skipping) identity verification modules. Logical expressions describe verification rules, so a token can accept either a contract claim or a combination of KYC and AML topics. Because compliance modules and identity registries are reusable, multiple SMART tokens can share the same infrastructure without duplicating state or logic.
+
+SMART’s extension catalog keeps tokens configurable. Mix in `SMARTPausable` for emergency stops, `SMARTBurnable` and `SMARTRedeemable` for supply adjustments, `SMARTYield` for scheduled distributions, `SMARTCustodian` for freezes and forced transfers, `SMARTVoting` for ERC20Votes integration, `SMARTHistoricalBalances` for snapshot data, `SMARTCapped` for supply ceilings, and `SMARTCollateral` when circulating supply must track off-chain backing. Every extension implements ERC-165 so downstream systems can discover capabilities at runtime. None of the extensions hardwire authorization; they rely on whatever role system the deployment prefers, including OpenZeppelin `AccessControl` or the ATK system access manager.
+
+### Compliance modules as building blocks
+
+The README in `contracts/smart/modules` lays out the compliance module framework. A single compliance contract orchestrates reusable modules, each with global defaults and token-level parameters. Country modules maintain allow lists or block lists keyed by ISO3166 codes. Identity modules work with OnChainID to enforce claim-based logic, block disallowed wallets, or check that an address matches an approved list. Transfer and supply modules cap investor counts, enforce aggregate supply limits, require explicit approvals, or impose time locks with optional exemptions. Every module exposes lifecycle hooks so tokens can log events or track state transitions after a transfer. Because configuration data sits alongside the token, you can deploy one module once, then feed it different parameters for each asset.
+
+<Mermaid
+  chart={`
+graph LR
+  Base["AbstractComplianceModule"] --> CountryAllow["Country Allow List"]
+  Base --> CountryBlock["Country Block List"]
+  Base --> IdentityAllow["Identity Allow List"]
+  Base --> IdentityBlock["Identity Block List"]
+  Base --> IdentityVerify["Identity Verification"]
+  Base --> AddressBlock["Address Block List"]
+  Base --> InvestorCount["Investor Count"]
+  Base --> SupplyLimit["Token Supply Limit"]
+  Base --> TransferApproval["Transfer Approval"]
+  Base --> TimeLock["Time Lock"]
+`}
+/>
+
+Developers can add new modules by inheriting from `AbstractComplianceModule`, validating parameters, and implementing `canTransfer`, `transferred`, and other hooks. Those modules register with the compliance contract, which the system layer later exposes through registries.
+
+### ATK system layer
+
+The `contracts/system` directory shows how ATK operationalizes SMART. `ATKSystemFactory` deploys a new system instance, spins up a shared `ATKSystemAccessManager`, and bootstraps identity, compliance, and registry contracts. The `ATKSystem` contract tracks implementation addresses, governs upgrades, and serves as the discovery hub for all component registries. Identity management is split across an identity factory (issuing user and contract OnChainIDs), an identity registry (mapping addresses to identities with recovery support), and storage contracts that keep data separate from logic. Compliance components include the main compliance contract and the module registry. Additional registries catalogue token factories and system addons so operators can query what implementations are available before rolling out new instruments or tools.
+
+<Mermaid
+  chart={`
+flowchart TB
+  ATKSystem["ATK System"] --> Infrastructure["Identity Registry | Compliance | Trusted Issuers | Topic Scheme | Identity Registry Storage"]
+  ATKSystem --> Registries["Token Factory Registry | Compliance Module Registry | System Addon Registry"]
+  ATKSystem --> Access["ATKSystemAccessManager"]
+  IdentityFactory["Identity Factory"] --> Infrastructure
+  complianceModules["Compliance Modules"] --> Infrastructure
+  TokenFactories["Asset Factories"] --> Registries
+  AddonFactories["Addon Factories"] --> Registries
+`}
+/>
+
+Everything routes through a central access manager, so administrators grant, revoke, or batch-assign roles in one place. Suggested operational practices from the README—multi-signature admin accounts, time-locked upgrades, and full event monitoring—help production teams keep change management predictable. When the system registers a new factory or module, it becomes immediately available across the environment, which keeps rollouts uniform.
+
+### Asset implementations
+
+ATK’s asset suite lives in `contracts/assets`. Each instrument ships with a proxy, a factory implementation, and the token logic tailored to its asset class while still leaning on SMART extensions and the shared compliance engine. Bond tokens track maturity, face value, and denomination assets; they combine pausable, burnable, custodian, redeemable, yield, historical balance, and capped extensions so operators can schedule coupon payments and redeem principal at maturity. Equity tokens integrate ERC20Votes for governance, support delegation, and reuse custodial controls for freezes or forced transfers. Deposit tokens rely on the collateral extension to guarantee backing and can enforce topic-based collateral claims. Fund tokens balance cash flow features—management fees, optional voting, and custodian oversight—while stablecoins expose collateral management and redemption logic for fiat-pegged issuance.
+
+Role definitions in `ATKAssetRoles.sol` split responsibilities. Governance roles handle identity and compliance wiring, yield schedules, and bond maturation. Supply management roles mint and burn when issuance programs change. Custodian roles freeze, unfreeze, execute forced transfers, and recover tokens. Emergency roles pause contracts or recover stray ERC-20 balances. Token holders remain in control of day-to-day transfers, redemptions, voting, or yield claims, depending on the asset. Because factories sit in the system registry, deploying a new asset type is a matter of selecting the factory, feeding initialization data, and letting the registry propagate addresses to the rest of the stack.
+
+### Operational addons
+
+Operational tooling in `contracts/addons` enhances how assets run once they are live. The airdrop framework supports bitmap and amount-based claim trackers for Merkle proofs, plus three distribution styles: time-bound releases with start and end windows, vesting schedules with linear unlocks, and push distributions where administrators deliver tokens directly. Vault contracts implement multisignature treasury controls with configurable confirmation thresholds and emergency pauses. XvP settlements execute atomic cross-value propositions—valuable when two parties need to exchange different instruments without settlement risk. Yield schedulers manage fixed distribution timetables so finance teams can plan coupon or dividend runs.
+
+`contracts/addons/token-sale` adds a configurable sale module. It checks identity eligibility through the ATK registry, lets operators accept native currency or multiple ERC-20s with individual price ratios, and supports linear vesting with cliffs so unsold tokens stay locked until they can be released. Sale administrators can pause activity, cap totals, configure per-buyer limits, and withdraw funds or unsold tokens depending on status. Everything runs behind an upgradeable proxy, and factories deploy sale instances with deterministic addresses via CREATE2, which keeps orchestration scripts simple.
+
+<Mermaid
+  chart={`
+flowchart TB
+  subgraph Distribution["Airdrop"]
+    TimeBound["Time-Bound"]
+    Vesting["Vesting"]
+    Push["Push"]
+    ClaimTrackers["Claim Trackers\nBitmap | Amount"]
+  end
+  subgraph Treasury["Vault"]
+    MultiSig["Multi-signature Treasury"]
+  end
+  subgraph Settlement["XvP"]
+    Atomic["Atomic Settlement"]
+  end
+  subgraph Yield["Yield"]
+    Scheduler["Fixed Yield Schedule"]
+  end
+  TokenSale["Token Sale"]
+  Assets["ATK Assets"]
+
+  Distribution --> Assets
+  Treasury --> Assets
+  Settlement --> Assets
+  Yield --> Assets
+  TokenSale --> Assets
+
+  classDef block fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+  class Distribution,Treasury,Settlement,Yield,TokenSale,Assets block
+`}
+/>
+
+All addons share familiar security patterns: role-based access, ERC-2771 trusted forwarders for meta-transactions, and reentrancy guards. Airdrop modules allow owners to withdraw unclaimed tokens after expirations, while the vault keeps a detailed audit trail of approvals and executions.
+
+### Identity building blocks
+
+Identity support in `contracts/onchainid` rounds out the stack. The directory bundles constants for key purposes, key types, and claim schemes along with modular extensions like `OnChainIdentity`, `OnChainContractIdentity`, and `OnChainIdentityWithRevocation`. Developers compose identity contracts by combining ERC-734 key management and ERC-735 claim management extensions, optional claim authorization logic, and interfaces for contract identities. Claim authorization systems let trusted issuers add or revoke claims programmatically, with topic-specific permissions and revocation paths. Because contract identities can issue claims directly via `issueClaimTo`, the system accommodates both automated workflows and registry-mediated flows. These primitives underpin the identity registry in the system layer and enable the logical expressions that SMART compliance modules evaluate.
+
+### Putting it together
+
+When an issuer deploys a new asset, the rollout follows the hierarchy. The ATK system factory creates or reuses an environment with shared registries and access management. Identity factory contracts mint OnChainIDs for investors and trusted issuers, while compliance modules load the logical expressions that match the jurisdiction. Asset factories deploy proxies for bonds, equity, deposits, funds, or stablecoins and wire them to the system addresses. Addons like airdrops or vaults register through the addon registry whenever distribution, treasury, or settlement workflows are needed. Token sales can run ahead of launch, using the same identity registry to screen buyers and capture vesting schedules. Throughout, every contract maintains upgrade hooks managed centrally by `ATKSystem`, so change requests flow through one control plane.
+
+The READMEs in `kit/contracts` are deliberate about one promise: compliance logic lives close to the token, but management stays centralized. SMART gives you the modular, identity-aware token. ATK layers on production-grade governance, registries, and operational tooling. Together they turn regulated asset tokenization from a code snippet into an infrastructure stack that development, legal, and operations teams can share.

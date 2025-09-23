@@ -1,0 +1,6 @@
+{
+  "title": "Deep Dives",
+  "description": "Details of the SettleMint ATK and DALP.",
+  "icon": "RectangleGoggles",
+  "pages": ["smart-protocol", "infrastructure"]
+}
