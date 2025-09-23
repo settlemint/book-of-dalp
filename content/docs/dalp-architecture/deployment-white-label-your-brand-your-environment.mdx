@@ -5,13 +5,15 @@ description: "Control over infrastructure is the gating item for regulated deplo
 
 Enterprises do not clear shared clusters or cosmetic branding exercises. Compliance teams need to see where workloads run, how identities are governed, how evidence is captured, and how easily they can take the keys. This chapter distills the deployment and white-label options that already exist in the codebase and high-level documentation, keeping the focus on what matters to decision-makers rather than deep implementation detail.
 
+Procurement sees real controls, not another slide deck, and that changes the tone of every diligence meeting.
+
 ## Deployment choices that pass review
 
 ATK supports three delivery patterns that all run the same code and APIs:
 
-- **Self-hosted Kubernetes** – The `kit/charts/atk` Helm stack packages the entire platform (dApp, ORPC backend, Hyperledger Besu network, Blockscout, Hasura, MinIO, observability) with environment-specific `values*.yaml` files, pod disruption budgets, and network policies. You install it into your cluster and keep full control over nodes, keys, and change management.
-- **Local and dev automation** – `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers, QA teams, and sandbox demos. The Compose stack uses the same artifacts that Helm deploys, so what passes in dev mirrors what you later promote.
-- **Managed SettleMint Console** – SettleMint’s hosted option runs the identical stack for teams that want the platform operated for them. Console still exposes tenant automation, exports, and access to the Helm assets so institutions can keep hard tenancy or move on-prem when procurement demands it.
+- **Self-hosted Kubernetes**: The `kit/charts/atk` Helm stack packages the entire platform (dApp, ORPC backend, Hyperledger Besu network, Blockscout, Hasura, MinIO, observability) with environment-specific `values*.yaml` files, pod disruption budgets, and network policies. You install it into your cluster and keep full control over nodes, keys, and change management.
+- **Local and dev automation**: `docker-compose.yml` plus `bun run dev:up` reproduce the full platform for developers, QA teams, and sandbox demos. The Compose stack uses the same artifacts that Helm deploys, so what passes in dev mirrors what you later promote.
+- **Managed SettleMint Console**: SettleMint's hosted option runs the identical stack for teams that want the platform operated for them. Console still exposes tenant automation, exports, and access to the Helm assets so institutions can keep hard tenancy or move on-prem when procurement demands it.
 
 ## White-label and UX control without rework
 
@@ -33,8 +35,8 @@ ATK supports three delivery patterns that all run the same code and APIs:
 
 ## Operational readiness and migration paths
 
-- The CI command `bun run ci` packages formatting, contract compilation, code generation, linting, and testing. That same workflow underpins Console deployments and your own pipelines, creating a single definition of “ready for release.”
+- The CI command `bun run ci` packages formatting, contract compilation, code generation, linting, and testing. That same workflow underpins Console deployments and your own pipelines, creating a single definition of "ready for release."
 - Automated backups, disaster-recovery playbooks, and capacity guidance in the deployment documentation shorten the time from procurement to production because the answers to RTO/RPO and scaling questions are already documented.
 - Moving between models is a configuration exercise: Compose for development, Helm for self-managed clusters, and Console for managed service all rely on the same contracts, database schema, and ORPC procedures. That portability is what lets institutions start in the cloud and bring the stack in-house when mandated.
 
-**Bottom line:** The Asset Tokenization Kit is deployable market infrastructure. Own the runtime, brand the experience, and every subsequent chapter—user experience, regulatory coverage, liquidity—builds on a platform you already control.
+**Bottom line:** The Asset Tokenization Kit is deployable market infrastructure. Own the runtime, brand the experience, and every subsequent chapter (user experience, regulatory coverage, liquidity) builds on a platform you already control.

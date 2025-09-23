@@ -1,31 +1,33 @@
 ---
 title: "Issuance Lifecycle"
-description: "Issuance must be fast, programmable, and compliant by default. Anything else recreates the old capital‑markets backlog. Our Issuance & Lifecycle layer takes teams from term sheet to live, RWA‑ready assets in days instead of months, combining a real‑time cap table, jurisdiction‑aware templates, and full API control to keep delivery predictable."
+description: "Issuance must be fast, programmable, and compliant by default. Anything else recreates the old capital-markets backlog. Our Issuance & Lifecycle layer takes teams from term sheet to live, RWA-ready assets in days instead of months, combining a real-time cap table, jurisdiction-aware templates, and full API control to keep delivery predictable."
 ---
 
 ## What the Issuance layer does
 
-The Issuance layer handles multi‑asset creation across the entire spectrum of tokenizable securities. Whether you're issuing equity, bonds, funds, or stable deposit tokens, the system ships with jurisdiction‑specific templates (Reg D, Reg S, MiCA, MAS, and more) that remove guesswork from compliance structures.
+The Issuance layer handles multi-asset creation across the entire spectrum of tokenizable securities. Whether you're issuing equity, bonds, funds, or stable deposit tokens, the system ships with jurisdiction-specific templates (Reg D, Reg S, MiCA, MAS, and more) that remove guesswork from compliance structures.
 
-The no‑code Asset Designer lets issuers configure every parameter that matters—supply limits, divisibility rules, transfer restrictions, freeze periods, corporate rights—without touching Solidity. Business users keep pace with market demands while engineering teams stay focused on differentiated work.
+It means the first workshop with legal and product teams ends with real configuration, not a parking lot of follow-up tickets.
 
-Multi‑chain deployment support means you can launch on Ethereum, Polygon, Hyperledger Besu, Quorum, or your preferred EVM network from a single playbook. Assets can be promoted from sandbox to production networks as policies evolve, keeping platform rollout aligned with regulatory staging.
+The no-code Asset Designer lets issuers configure every parameter that matters: supply limits, divisibility rules, transfer restrictions, freeze periods, corporate rights without touching Solidity. Business users keep pace with market demands while engineering teams stay focused on differentiated work.
 
-A real‑time cap table and dashboards in the Asset Manager aggregate ledger events into an always‑current registry. Issuers gain instant visibility into holdings, investor eligibility, and lifecycle actions so reconciliation never becomes the long pole in the tent.
+Multi-chain deployment support means you can launch on Ethereum, Polygon, Hyperledger Besu, Quorum, or your preferred EVM network from a single playbook. Assets can be promoted from sandbox to production networks as policies evolve, keeping platform rollout aligned with regulatory staging.
 
-Lifecycle primitives give issuers programmatic control over their assets after issuance. Controlled minting and burning, redemptions, buybacks, and follow‑on issuance all operate through contract‑level conditions. These aren't manual processes that depend on human operators; they're enforced automatically by the smart contracts themselves.
+A real-time cap table and dashboards in the Asset Manager aggregate ledger events into an always-current registry. Issuers gain instant visibility into holdings, investor eligibility, and lifecycle actions, so reconciliation never becomes the long pole in the tent.
 
-The allocation and distribution engine handles everything from pro‑rata lists to Dutch auctions to bulk airdrops. The system batches transactions for efficiency and automatically hashes legal documents like prospectuses and offering memoranda directly to the asset's metadata. This creates an immutable link between the token and its legal documentation.
+Lifecycle primitives give issuers programmatic control over their assets after issuance. Controlled minting and burning, redemptions, buybacks, and follow-on issuance all operate through contract-level conditions. These aren't manual processes that depend on human operators; they're enforced automatically by the smart contracts themselves.
 
-Every operation exposes through APIs, enabling white‑label integration. Banks can embed complete issuance workflows into their existing client portals under their own branding. The technology disappears behind familiar interfaces.
+The allocation and distribution engine handles everything from pro-rata lists to Dutch auctions to bulk airdrops. The system batches transactions for efficiency and automatically hashes legal documents like prospectuses and offering memoranda directly to the asset's metadata. This creates an immutable link between the token and its legal documentation.
 
-**Why it matters:** You get speed **and** legal certainty. Issuers stop copy‑pasting spreadsheets; investors stop guessing who owns what; dev teams stop rebuilding plumbing.
+Every operation exposes through APIs, enabling white-label integration. Banks can embed complete issuance workflows into their existing client portals under their own branding. The technology disappears behind familiar interfaces.
+
+**Why it matters:** You get speed **and** legal certainty. Issuers stop copy-pasting spreadsheets; investors stop guessing who owns what; dev teams stop rebuilding plumbing.
 
 ## Compliance controls in the primary market
 
-Issuance gates distribution through KYC/KYB, accreditation, and on‑chain whitelisting. Only verified wallets are eligible; jurisdictional caps, lockups, and geo rules are enforced before distribution or transfer. This is ERC‑3643‑style control in the asset path, not a sidecar. Custodial, retail, and institutional flows all exercise the same rule engine, so every allocation inherits the correct eligibility profile by construction. None of this runs after the fact; the legality decision sits in the state‑transition path.
+Issuance gates distribution through KYC/KYB, accreditation, and on-chain whitelisting. Only verified wallets are eligible; jurisdictional caps, lockups, and geo rules are enforced before distribution or transfer. This is ERC-3643-style control in the asset path, not a sidecar. Custodial, retail, and institutional flows all exercise the same rule engine, so every allocation inherits the correct eligibility profile by construction. None of this runs after the fact; the legality decision sits in the state-transition path.
 
-**Result:** zero non‑compliant allocations and a clean audit trail out of the box.
+**Result:** zero non-compliant allocations and a clean audit trail out of the box.
 
 ## How it works (architecture)
 
@@ -43,29 +45,29 @@ flowchart LR
 `}
 />
 
-A subgraph-backed indexer continuously subscribes to Transfer, Mint, and Burn events across all deployed assets. It reconciles positions instantly and exposes query endpoints—surfaced in the Asset Manager UI and via GraphQL—that give issuers real-time visibility into ownership, eligibility, and lifecycle status. This eliminates the weeks-long reconciliation cycles that plague traditional capital markets.
+A subgraph-backed indexer continuously subscribes to Transfer, Mint, and Burn events across all deployed assets. It reconciles positions instantly and exposes query endpoints-surfaced in the Asset Manager UI and via GraphQL-that give issuers real-time visibility into ownership, eligibility, and lifecycle status. This eliminates the weeks-long reconciliation cycles that plague traditional capital markets.
 
-Document hashes, prospectus references, and base‑price claims live alongside the asset’s on‑chain identity, so legal artefacts and pricing attestations remain auditable from launch through redemption.
+Document hashes, prospectus references, and base price claims live alongside the asset's on-chain identity, so legal artifacts and pricing attestations remain auditable from launch through redemption.
 
-The distribution engine orchestrates everything from initial allocations to ongoing corporate actions. It powers pro‑rata lists, vesting schedules, and staged releases through the Addon framework (airdrop, token sale, yield). Every step is logged immutably for audit trails.
+The distribution engine orchestrates everything from initial allocations to ongoing corporate actions. It powers pro-rata lists, vesting schedules, and staged releases through the Addon framework (airdrop, token sale, yield). Every step is logged immutably for audit trails.
 
 ## Developer surface
 
-Issuance and lifecycle functions are available through on‑chain contracts, the Asset Tokenization Kit API Portal (REST and GraphQL), and typed ORPC procedures. ORPC routes cover token creation across asset types, supply operations (mint/burn), holder transfers (including forced transfers where enabled), compliance configuration, role management, and reads for tokens, holders, actions, events, and statistics. See [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index) for the full route map.
+Issuance and lifecycle functions are available through on-chain contracts, the Asset Tokenization Kit API Portal (REST and GraphQL), and typed ORPC procedures. ORPC routes cover token creation across asset types, supply operations (mint/burn), holder transfers (including forced transfers where enabled), compliance configuration, role management, and reads for tokens, holders, actions, events, and statistics. See [Appendix C - API Surface & Webhooks Index](Appendix%20C%20-%20API%20Surface%20%26%20Webhooks%20Index) for the full route map.
 
 ## Operational guardrails
 
-The system enforces deterministic state changes that eliminate reconciliation nightmares. Pre‑transfer checks either succeed completely or revert entirely; there's no middle state where assets get stuck in limbo. This eliminates the "fix it later" mentality that creates operational debt in traditional systems.
+The system enforces deterministic state changes that eliminate reconciliation nightmares. Pre-transfer checks either succeed completely or revert entirely; there's no middle state where assets get stuck in limbo. This eliminates the "fix it later" mentality that creates operational debt in traditional systems.
 
-Jurisdictional profiles provide battle‑tested templates for major markets including the United States, European Union, United Kingdom, Singapore, and Japan. The legal knobs are exposed through configuration interfaces rather than buried in smart contract code, so compliance teams can adjust parameters without developer involvement when regulations evolve.
+Jurisdictional profiles provide battle-tested templates for major markets including the United States, European Union, United Kingdom, Singapore, and Japan. The legal knobs are exposed through configuration interfaces rather than buried in smart contract code, so compliance teams can adjust parameters without developer involvement when regulations evolve.
 
-A governed Asset Manager console and API deliver on‑demand audit artefacts: allocation receipts, holder‑by‑jurisdiction breakdowns, blocked‑transfer ledgers, and lifecycle actions. Auditors get the data they need when they need it, not weeks later after manual compilation.
+A governed Asset Manager console and API deliver on-demand audit artifacts: allocation receipts, holder-by-jurisdiction breakdowns, blocked-transfer ledgers, and lifecycle actions. Auditors get the data they need when they need it, not weeks later after manual compilation.
 
-Law‑in‑the‑loop issuance means the legal template drives the parameters the contracts enforce. Stablecoin and deposit products can attach base‑price claims, and supply‑limit modules convert minted amounts against that reference currency to uphold lifetime or rolling caps. Prospectus or exemption thresholds are measured in real time, raising alerts before a limit is crossed and pausing the action until a filing is acknowledged.
+Law-in-the-loop issuance means the legal template drives the parameters the contracts enforce. Stablecoin and deposit products can attach base-price claims, and supply-limit modules convert minted amounts against that reference currency to uphold lifetime or rolling caps. Prospectus or exemption thresholds are measured in real time, raising alerts before a limit is crossed and pausing the action until a filing is acknowledged.
 
 ## Proof the layer works (targets)
 
-Delivery teams routinely move from term sheet to production pilots in a matter of days, compressing typical timelines by more than **4×** thanks to templated compliance, pre‑built integrations, and automated deployment pipelines. Complex structured products still require bespoke review, but the baseline expectation is speed without shortcuts.
+Delivery teams routinely move from term sheet to production pilots in a matter of days, compressing typical timelines by more than **4×** thanks to templated compliance, pre-built integrations, and automated deployment pipelines. Complex structured products still require bespoke review, but the baseline expectation is speed without shortcuts.
 
 Automation keeps the canonical cap table, eligibility checks, and lifecycle actions in sync across the stack. Every transfer, mint, burn, or distribution automatically updates the registry and downstream analytics, with human intervention reserved for exceptional approvals.
 
@@ -73,8 +75,8 @@ Scale metrics track healthy issuance volume across at least five different asset
 
 ## Why this beats point tools
 
-Issuance wizards without cap‑table truth or embedded compliance create rework and legal risk. DALP issuance ships **templated legality, cap‑table truth, and programmable lifecycle** in one system—while layering on:
+Issuance wizards without cap-table truth or embedded compliance create rework and legal risk. DALP issuance ships **templated legality, cap-table truth, and programmable lifecycle** in one system-while layering on:
 
-- A no‑code Asset Designer that business teams can own without trading safety for speed.
+- A no-code Asset Designer that business teams can own without trading safety for speed.
 - An Addon ecosystem (airdrop, yield, XvP, vault) that packages complex distribution and settlement workflows.
-- An API Portal and Asset Manager that expose every action through secure REST/GraphQL endpoints plus real‑time dashboards, so partners can embed issuance flows into existing channels without rebuilding the core.
+- An API Portal and Asset Manager that expose every action through secure REST/GraphQL endpoints plus real-time dashboards, so partners can embed issuance flows into existing channels without rebuilding the core.

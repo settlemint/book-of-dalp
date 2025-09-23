@@ -1,43 +1,45 @@
 ---
 title: "Custody Operations"
-description: "Without custody that passes a bank risk committee, nothing scales. The DALP Custody layer combines institutional multi‑sig/HSM controls, policy automation, recovery runbooks, and custodian APIs with omnibus look‑through so compliance and cap‑table truth survive real custody setups—backed by 99.9%+ availability targets and zero‑incident ambitions."
+description: "Without custody that passes a bank risk committee, nothing scales. The DALP Custody layer combines institutional multi-sig/HSM controls, policy automation, recovery runbooks, and custodian APIs with omnibus look-through so compliance and cap-table truth survive real custody setups-backed by 99.9%+ availability targets and zero-incident ambitions."
 ---
 
 ## What this layer guarantees
 
-The Custody layer supports multiple custody modes running in parallel: self‑custody, institutional sub‑custody, and third‑party vaults can coexist under the same policy umbrella. Wallet‑agnostic support spans hardware devices, MPC vaults, exchange custodians, and institutional platforms so banks don’t need to rip and replace existing vendors.
+The Custody layer supports multiple custody modes running in parallel: self-custody, institutional sub-custody, and third-party vaults can coexist under the same policy umbrella. Wallet-agnostic support spans hardware devices, MPC vaults, exchange custodians, and institutional platforms so banks don't need to rip and replace existing vendors.
 
-Security architecture eliminates single points of compromise through multi‑signature schemes, hardware security modules, and MPC deployments. Critical actions require threshold approvals, with policy‑bound workflows that prevent unauthorized transactions while keeping routine flows fast.
+That flexibility keeps banks from re-architecting their stack just to participate, which risk committees appreciate more than any slideware promise.
 
-The policy engine enforces institutional controls—limits, destination allowlists, segregation of duties—and escalates out‑of‑policy transactions to governed approval queues. Operations teams see exceptions in dashboards instead of inboxes.
+Security architecture eliminates single points of compromise through multi-signature schemes, hardware security modules, and MPC deployments. Critical actions require threshold approvals, with policy-bound workflows that prevent unauthorized transactions while keeping routine flows fast.
 
-Under the hood, the custody signer is a Bun service that exposes a single JSON‑RPC 2.0 surface (and a REST/OpenAPI mirror generated from the same oRPC contract) for every operation—admin, key management, and transaction signing. A capability registry loads storage and signing providers at runtime, so the same binary can operate in Base (pgsodium), Hybrid (pgsodium with external KEK), or Full HSM (SoftHSM, Luna, CloudHSM, customer PKCS#11) modes without code changes. Memory hygiene is enforced throughout: HD derivation happens in locked memory, buffers are zeroized, and approvals wrap every high‑risk workflow.
+The policy engine enforces institutional controls: limits, destination allowlists, segregation of duties, and it escalates out-of-policy transactions to governed approval queues. Operations teams see exceptions in dashboards instead of inboxes.
+
+Under the hood, the custody signer is a Bun service that exposes a single JSON-RPC 2.0 surface (and a REST/OpenAPI mirror generated from the same oRPC contract) for every operation-admin, key management, and transaction signing. A capability registry loads storage and signing providers at runtime, so the same binary can operate in Base (pgsodium), Hybrid (pgsodium with external KEK), or Full HSM (SoftHSM, Luna, CloudHSM, customer PKCS#11) modes without code changes. Memory hygiene is enforced throughout: HD derivation happens in locked memory, buffers are zeroized, and approvals wrap every high-risk workflow.
 
 Key storage levels are explicit and policy-driven:
 
-- **Base** — private keys live in Postgres, encrypted with pgsodium using a server key injected from Kubernetes Secrets, Compose secrets, or the management console.
-- **Hybrid** — the same Postgres store, but the server key (or per-key DEK) is wrapped by an external KMS/HSM such as Vault Transit, Conjur, AWS/GCP/Azure KMS, or a Luna device, giving separation of duties without changing code paths.
-- **Full HSM** — private keys are created or imported as non-extractable PKCS#11 objects in SoftHSM, Luna Cloud HSM, customer-supplied Luna devices, AWS CloudHSM, or other supported modules; signing happens inside the hardware whenever the vendor supports secp256k1, with software fallback disabled by policy.
+- **Base**: private keys live in Postgres, encrypted with pgsodium using a server key injected from Kubernetes Secrets, Compose secrets, or the management console.
+- **Hybrid**: the same Postgres store, but the server key (or per-key DEK) is wrapped by an external KMS/HSM such as Vault Transit, Conjur, AWS/GCP/Azure KMS, or a Luna device, giving separation of duties without changing code paths.
+- **Full HSM**: private keys are created or imported as non-extractable PKCS#11 objects in SoftHSM, Luna Cloud HSM, customer-supplied Luna devices, AWS CloudHSM, or other supported modules; signing happens inside the hardware whenever the vendor supports secp256k1, with software fallback disabled by policy.
 
-The platform standardises on a Bun-only toolchain—Biome v2 for lint/format, Drizzle ORM with the Bun SQL connector for Postgres, viem plus Noble crypto for EVM operations, and TanStack Start/Router/Query with shadcn/ui for the management console. All operations are packaged into a Docker image that carries vendor PKCS#11 libraries under `/opt/pkcs11`, runs read-only as a non-root user, and can be dropped into cloud Kubernetes, client-managed clusters, or air-gapped OpenShift without external dependencies.
+The platform standardizes on a Bun-only toolchain-Biome v2 for lint/format, Drizzle ORM with the Bun SQL connector for Postgres, viem plus Noble crypto for EVM operations, and TanStack Start/Router/Query with shadcn/ui for the management console. All operations are packaged into a Docker image that carries vendor PKCS#11 libraries under `/opt/pkcs11`, runs read-only as a non-root user, and can be dropped into cloud Kubernetes, client-managed clusters, or air-gapped OpenShift without external dependencies.
 
-Standardized custodian APIs connect to platforms such as Fireblocks, Metaco, and other bank‑grade vaults, aligning with the Payment Rails architecture to coordinate on‑chain and ACH/SWIFT/RTGS settlements without losing policy coverage.
+Standardized custodian APIs connect to platforms such as Fireblocks, Metaco, and other bank-grade vaults, aligning with the Payment Rails architecture to coordinate on-chain and ACH/SWIFT/RTGS settlements without losing policy coverage.
 
-Look‑through omnibus tooling solves the transparency problem in pooled custody: custodians attest to sub‑account balances while the cap‑table indexer keeps compliance eligibility current at the beneficial owner level.
+Look-through omnibus tooling solves the transparency problem in pooled custody: custodians attest to sub-account balances while the cap-table indexer keeps compliance eligibility current at the beneficial owner level.
 
-Recovery and disaster scenarios lean on documented runbooks—backup key material, multi‑site DR, and governed re‑verification flows—so lost access and custody outages don’t cascade into missed settlements.
+Recovery and disaster scenarios lean on documented runbooks: backup key material, multi-site DR, and governed re-verification flows, so lost access and custody outages don't cascade into missed settlements.
 
-Operational visibility comes through Asset Manager dashboards that surface wallet distributions, cold‑storage posture, policy exceptions, and real‑time notifications, giving risk managers oversight without exposing secret material.
+Operational visibility comes through Asset Manager dashboards that surface wallet distributions, cold-storage posture, policy exceptions, and real-time notifications, giving risk managers oversight without exposing secret material.
 
 ## How it ties back to compliance and settlement
 
-- **Compliance continuity.** Custody enforces the same whitelists, eligibility claims, and policy engine as the transfer layer. RBAC and ABAC rules are evaluated on every method call, maker–checker approvals are required for sensitive actions, and blocked wallets simply cannot move irrespective of which vault they sit in.
+- **Compliance continuity.** Custody enforces the same whitelists, eligibility claims, and policy engine as the transfer layer. RBAC and ABAC rules are evaluated on every method call, maker-checker approvals are required for sensitive actions, and blocked wallets simply cannot move irrespective of which vault they sit in.
 
-- **DvP‑ready.** Custody plugs into the payment and settlement rails—ACH, SEPA, SWIFT, RTGS, and on‑chain DvP—so assets and cash can close simultaneously without custody creating a bottleneck.
+- **DvP-ready.** Custody plugs into the payment and settlement rails: ACH, SEPA, SWIFT, RTGS, and on-chain DvP-so assets and cash can close simultaneously without custody creating a bottleneck.
 
 ## Interfaces & flows
 
-Custody integrations start with a provider handshake—connecting Fireblocks, Metaco, Luna HSMs, or internal vaults via secure credential exchange—and mapping accounts to issuers. Once a provider is registered, the orchestrator can trigger notarised movements without bypassing the custodian’s own policy stack.
+Custody integrations start with a provider handshake, connecting Fireblocks, Metaco, Luna HSMs, or internal vaults via secure credential exchange-and mapping accounts to issuers. Once a provider is registered, the orchestrator can trigger notarized movements without bypassing the custodian's own policy stack.
 
 <Mermaid
   chart={`
@@ -67,11 +69,11 @@ flowchart LR
 
 Policy management lives in the Asset Manager dashboards and oRPC routes: teams configure spending limits, approval thresholds, velocity caps, and destination allowlists per account type. Routine movements clear automatically; outliers route to multi-sig approval queues so nothing slips past segregation of duties.
 
-Transaction execution follows a proposal → validation → approval → broadcast loop. Proposals enter the queue, the policy engine and multi‑sig validators review them, and only then are transactions dispatched to the blockchain or payment rail.
+Transaction execution follows a proposal -> validation -> approval -> broadcast loop. Proposals enter the queue, the policy engine and multi-sig validators review them, and only then are transactions dispatched to the blockchain or payment rail.
 
-Omnibus attestations arrive as structured payloads from custodians. The cap‑table indexer consumes them to refresh beneficial ownership while the compliance engine keeps eligibility current at the individual level—even when the tokens sit in pooled addresses.
+Omnibus attestations arrive as structured payloads from custodians. The cap-table indexer consumes them to refresh beneficial ownership while the compliance engine keeps eligibility current at the individual level-even when the tokens sit in pooled addresses.
 
-Developer surfaces mirror the oRPC contract: `eth_createKey`, `eth_createUser`, and `eth_sendTransaction` are exposed over JSON‑RPC and REST with identical semantics, support idempotency keys, and honour network hints via path, header, or `chainId`. Generated SDKs and viem extensions handle client code, while the TanStack Start console offers the operator GUI. Additional domain procedures—approvals, policies, backups, audit exports—reuse the same contract so automation, console, and integration code stay in sync.
+Developer surfaces mirror the oRPC contract: `eth_createKey`, `eth_createUser`, and `eth_sendTransaction` are exposed over JSON-RPC and REST with identical semantics, support idempotency keys, and honour network hints via path, header, or `chainId`. Generated SDKs and viem extensions handle client code, while the TanStack Start console offers the operator GUI. Additional domain procedures-approvals, policies, backups, audit exports-reuse the same contract so automation, console, and integration code stay in sync.
 
 Multi-network support is first-class: a single signer instance can service several EVM networks at once, routing requests by `chainId`, URL prefix, or header, while nonce management, approvals, and metrics stay scoped per network alias.
 
@@ -79,26 +81,26 @@ Multi-network support is first-class: a single signer instance can service sever
 
 ## Security posture & SRE targets
 
-The custody layer tracks 99.9%+ availability with redundant vault infrastructure, failover procedures, and recovery times measured in hours—not days—so custody never becomes the settlement bottleneck. Integration latency targets stay under a second versus direct wallet operations, keeping policies invisible to end users while still enforcing institutional controls.
+The custody layer tracks 99.9%+ availability with redundant vault infrastructure, failover procedures, and recovery times measured in hours-not days-so custody never becomes the settlement bottleneck. Integration latency targets stay under a second versus direct wallet operations, keeping policies invisible to end users while still enforcing institutional controls.
 
-Security targets aim for zero key‑loss or unauthorized access incidents. Continuous monitoring, tamper‑evident audit trails, SOC‑aligned controls, and maker–checker approvals underpin that goal.
+Security targets aim for zero key-loss or unauthorized access incidents. Continuous monitoring, tamper-evident audit trails, SOC-aligned controls, and maker-checker approvals underpin that goal.
 
-Packaging and deployment mirror those ambitions: the signer ships as a hardened Bun Docker image with vendor PKCS#11 libraries preloaded, runs read-only as a non-root user, supports zero‑egress modes, and can operate in our SaaS footprint (AWS, GCP, Azure), customer-managed cloud clusters (with optional KMS/HSM integrations), or fully air-gapped OpenShift environments without external dependencies.
+Packaging and deployment mirror those ambitions: the signer ships as a hardened Bun Docker image with vendor PKCS#11 libraries preloaded, runs read-only as a non-root user, supports zero-egress modes, and can operate in our SaaS footprint (AWS, GCP, Azure), customer-managed cloud clusters (with optional KMS/HSM integrations), or fully air-gapped OpenShift environments without external dependencies.
 
 ## Runbooks that actually work
 
 When key compromise gets detected, the response follows an automated sequence: immediate pause of all affected operations, freezing of compromised addresses through admin hooks, key rotation through secure channels, and automatic generation of regulator and auditor reports. This prevents further damage while ensuring proper notification of authorities.
 
-Lost access situations in self‑custody arrangements trigger identity re‑verification processes followed by governed recovery flows. When legally required, the system can execute on‑chain force transfers to restore access to legitimate owners. These recovery mechanisms balance security with practical access restoration needs.
+Lost access situations in self-custody arrangements trigger identity re-verification processes followed by governed recovery flows. When legally required, the system can execute on-chain force transfers to restore access to legitimate owners. These recovery mechanisms balance security with practical access restoration needs.
 
-Custodian outages get handled through failover routes that maintain transaction capabilities while primary systems recover. The system implements transaction queueing and re‑submission with idempotency controls to prevent duplicate transactions. All SLA compliance gets tracked in audit logs, providing evidence for service level discussions with custody providers.
+Custodian outages get handled through failover routes that maintain transaction capabilities while primary systems recover. The system implements transaction queueing and re-submission with idempotency controls to prevent duplicate transactions. All SLA compliance gets tracked in audit logs, providing evidence for service level discussions with custody providers.
 
 ## KPIs that matter
 
 Success gets measured through custodian participation (number of integrated platforms, AUM on the platform) and operational KPIs like policy compliance above 99%, exception rates below 1%, and availability hitting the 99.9% SLA.
 
-Wallet distribution analysis tracks the mix of self‑custody versus custodial holdings across issuers and regions. Balanced distribution signals the platform can meet different risk appetites without forcing a single custody model.
+Wallet distribution analysis tracks the mix of self-custody versus custodial holdings across issuers and regions. Balanced distribution signals the platform can meet different risk appetites without forcing a single custody model.
 
 ## Why this is different
 
-Crypto wallets weren’t built for regulated markets. DALP custody is **built for banks**: MPC/HSM, audits, policies, omnibus look‑through, and DvP integration, the boring, hard parts others skip. That’s why it scales.
+Crypto wallets weren't built for regulated markets. DALP custody is **built for banks**: MPC/HSM, audits, policies, omnibus look-through, and DvP integration, the boring, hard parts others skip. That's why it scales.

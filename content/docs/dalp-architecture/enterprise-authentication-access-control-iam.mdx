@@ -5,6 +5,8 @@ description: "Effective identity control is what earns institutional trust. The 
 
 Security breaches in financial technology often trace back to authentication failures. Weak passwords, inadequate access controls, and missing audit trails create the attack vectors that destroy institutional trust and trigger regulatory sanctions. The stakes are particularly high in tokenization, where authentication controls directly protect regulated assets and sensitive investor information.
 
+That distinction between paperwork and protection is why we treat identity as product infrastructure, not a late-stage add-on.
+
 ## What this layer guarantees
 
 Enterprise authentication in the DALP is built on two pillars: Better Auth secures every web session, while OnchainID binds those users to the identities that the compliance engine enforces on-chain. That pairing means staff sign in with familiar web UX, yet every action still maps to verifiable claims when assets move.
@@ -13,7 +15,7 @@ Sign-in methods cover email/password, passkeys (WebAuthn), and recovery-driven f
 
 Sessions are short-lived by default, refresh every 24 hours, and cache securely in HTTP-only cookies; rate limiting at the auth layer absorbs brute-force and credential-stuffing attempts before they reach business APIs. Because the auth server is part of the kit, institutions can extend these defaults instead of replacing them.
 
-Role management is handled through Better Auth’s access-control plugin. The starter configuration ships with `admin` and `user` personas, but the statements are extensible so operators can add domain-specific permissions (for example, limiting who can sync exchange rates or amend compliance settings) without redefining the entire stack.
+Role management is handled through Better Auth's access-control plugin. The starter configuration ships with `admin` and `user` personas, but the statements are extensible so operators can add domain-specific permissions (for example, limiting who can sync exchange rates or amend compliance settings) without redefining the entire stack.
 
 Automation flows live alongside human access. API keys are minted through the same service, inherit the platform prefix (`sm_atk_`), respect per-minute rate limits, and can be revoked without touching user credentials. That makes it practical to onboard treasury bots, reporting pipelines, or downstream portals with the same audit trail as staff logins.
 
@@ -21,7 +23,7 @@ Each authenticated user can be mapped to an OnchainID identity via the bundled r
 
 ## Access model (how permissions actually work)
 
-The platform recognises three operational personas. Human users sign in through the dApp, complete onboarding, and receive the permissions assigned to their role. Automation uses API keys that inherit explicit scopes and rate limits, so background jobs or treasury bots have just enough access to do their work. Smart-contract compliance modules act as the third guardrail: even if a session is valid, a transfer still fails unless the holder’s OnchainID claims satisfy the token’s rules.
+The platform recognizes three operational personas. Human users sign in through the dApp, complete onboarding, and receive the permissions assigned to their role. Automation uses API keys that inherit explicit scopes and rate limits, so background jobs or treasury bots have just enough access to do their work. Smart-contract compliance modules act as the third guardrail: even if a session is valid, a transfer still fails unless the holder's OnchainID claims satisfy the token's rules.
 
 <Mermaid
   chart={`
@@ -48,7 +50,7 @@ sequenceDiagram
 `}
 />
 
-Roles are managed through Better Auth’s access-control statements. The starter roles look like this:
+Roles are managed through Better Auth's access-control statements. The starter roles look like this:
 
 ```
 role "admin" {
@@ -64,11 +66,11 @@ role "user" {
 }
 ```
 
-Because the statements sit in code, banks can introduce additional resources—think `compliancePolicies` or `reports`—without forking the auth system. Changes roll out through normal configuration management, providing traceability auditors appreciate.
+Because the statements sit in code, banks can introduce additional resources-think `compliancePolicies` or `reports`-without forking the auth system. Changes roll out through normal configuration management, providing traceability auditors appreciate.
 
 Onchain controls add attribute-style checks without overloading the web tier. Country allowlists, investor accreditation, or transfer approvals are enforced by dedicated compliance modules such as `CountryAllowListComplianceModule` and `TransferApprovalComplianceModule`. A user may have the `admin` role, but a secondary sale still needs their approved claim or a designated approver before the smart contract executes. This layered approach keeps policy decisions declarative while preserving least privilege in practice.
 
-## Threat model → controls
+## Threat model -> controls
 
 Most external attacks start with credential replay or phishing. Passkeys and TOTP by default for administrators remove shared secrets, while pincode and secret-code plugins add offline recovery that still records who accessed what. Login attempts funnel through global rate limits, so password spraying burns out before it reaches the business APIs.
 
@@ -76,7 +78,7 @@ If a device is compromised, sessions can be revoked centrally and expire quickly
 
 Automation brings its own risks, so API keys are namespaced, can be rotated without downtime, and emit separate audit events. Teams can disable a single integration without touching staff credentials, and rate limits prevent runaway scripts from overwhelming transaction services.
 
-Onchain compliance modules close the loop. Transfer approvals force a named approver’s OnchainID to sign off before high-value movements, while country or identity blocklists stop disallowed investors even if someone copied an authorised session cookie. Because these modules execute on-chain, they can’t be bypassed by manipulating the web app alone.
+Onchain compliance modules close the loop. Transfer approvals force a named approver's OnchainID to sign off before high-value movements, while country or identity blocklists stop disallowed investors even if someone copied an authorized session cookie. Because these modules execute on-chain, they can't be bypassed by manipulating the web app alone.
 
 Observability is wired into the deployment stack (Prometheus, Loki, and OpenTelemetry are included in the charts), so authentication events, role changes, and compliance rejections all surface in the same metrics and log pipelines that security teams already monitor. That makes it straightforward to forward into an existing SIEM without inventing new plumbing.
 
@@ -89,6 +91,6 @@ Metrics stay lightweight but concrete:
 - API key hygiene: track key rotation cadence, unused keys, and the percentage carrying custom scopes instead of defaults.
 - Identity linkage: measure how many active users have an OnchainID identity with valid KYC, accreditation, or jurisdiction claims.
 - Access anomalies: watch failed logins, rate-limit triggers, and manual session revocations for spikes that indicate phishing or automation issues.
-- Compliance guardrails: report how often compliance modules such as transfer approvals or allowlists block actions—steady, explainable numbers reassure auditors that the rules fire as intended.
+- Compliance guardrails: report how often compliance modules such as transfer approvals or allowlists block actions-steady, explainable numbers reassure auditors that the rules fire as intended.
 
 These indicators keep security, compliance, and product teams aligned on whether controls are being used, not just configured.

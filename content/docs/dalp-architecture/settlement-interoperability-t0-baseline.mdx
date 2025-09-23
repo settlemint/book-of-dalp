@@ -5,6 +5,8 @@ description: "Settlement risk is optional. We remove it. The Asset Tokenization 
 
 The tokenization industry has a fundamental problem with settlement. Traditional systems create windows of counterparty risk where one party delivers their asset while waiting for the other party to fulfill their obligation. This gap, however brief, represents real financial exposure that risk committees won't tolerate in institutional markets.
 
+Risk teams appreciate hearing that we close that window by design, not with promises to reconcile it later.
+
 ## Atomic DvP (how we actually do it)
 
 The XvP Settlement addon ships the escrow, validation, and atomic swap engines needed to remove settlement gaps. Whether you are exchanging tokens for fiat (DvP), token-for-token, or coordinating a multi-party hand-off, the workflow is the same: both sides meet their obligations or the trade unwinds automatically. Escrow contracts hold assets, settlement validators check approvals, limits, and payment confirmations, and the atomic engine releases everything in one committed step.
@@ -38,30 +40,30 @@ sequenceDiagram
 `}
 />
 
-When both legs live on-chain, finality is truly T+0. When cash remains on bank rails, the platform coordinates near-simultaneous settlement by submitting ISO 20022-aligned payment instructions through the Payment Rails architecture and watching for confirmation before releasing the token leg. The goal is always the same: no partial deliveries, no manual reconciliation queues, and a clear audit trail for every matched instruction.
+When both legs live on-chain, finality is truly T+0. When cash remains on bank rails, the platform coordinates near-simultaneous settlement by submitting ISO 20022-aligned payment instructions through the Payment Rails architecture and watching for confirmation before releasing the token leg. The goal is always the same: no partial deliveries, no manual reconciliation queues, and a clear audit trail for every matched instruction.
 
-## Payment networks and ISO 20022 alignment
+## Payment networks and ISO 20022 alignment
 
-Settlement rarely stops at the chain boundary, so the docs include architecture playbooks and addon guidance for SWIFT, ACH, SEPA, RTGS, and other payment hubs. Token events map to ISO 20022 and legacy MT/MX messages so you can orchestrate correspondent banking, real-time gross settlement, or domestic batch processing from the same control plane. Teams decide which rails to activate, but the patterns are there to keep confirmation handling, retries, and compliance hooks consistent once those integrations go live.
+Settlement rarely stops at the chain boundary, so the docs include architecture playbooks and addon guidance for SWIFT, ACH, SEPA, RTGS, and other payment hubs. Token events map to ISO 20022 and legacy MT/MX messages so you can orchestrate correspondent banking, real-time gross settlement, or domestic batch processing from the same control plane. Teams decide which rails to activate, but the patterns are there to keep confirmation handling, retries, and compliance hooks consistent once those integrations go live.
 
 ## Interoperability outlook
 
-Today the focus is firmly on same-network atomicity. Cross-network movement remains a roadmap track, covered in conceptual playbooks but not shipped as a product feature yet. The guiding principle is already defined—no asset goes anywhere without the right policy controls—but the current release concentrates on getting T+0 right where both legs share the same settlement environment.
+Today the focus is firmly on same-network atomicity. Cross-network movement remains a roadmap track, covered in conceptual playbooks but not shipped as a product feature yet. The guiding principle is already defined-no asset goes anywhere without the right policy controls-but the current release concentrates on getting T+0 right where both legs share the same settlement environment.
 
 ## Developer surface
 
-Everything runs through the same contract-first interfaces that power the rest of the platform. XvP settlement contracts, the Hasura GraphQL layer, subgraphs, and the Portal expose event data and helper APIs, while oRPC procedures let teams compose, monitor, and reconcile settlements without wiring bespoke plumbing. If you need to integrate with banks or downstream systems, the ISO 20022 and MT/MX message builders described in the Payment Rails architecture are available from the same surface.
+Everything runs through the same contract-first interfaces that power the rest of the platform. XvP settlement contracts, the Hasura GraphQL layer, subgraphs, and the Portal expose event data and helper APIs, while oRPC procedures let teams compose, monitor, and reconcile settlements without wiring bespoke plumbing. If you need to integrate with banks or downstream systems, the ISO 20022 and MT/MX message builders described in the Payment Rails architecture are available from the same surface.
 
 ## KPIs that matter
 
-Current programmes track atomic settlement success rates, average time-to-finality per settlement type (on-chain DvP, fiat-linked DvP, token-to-token), and reconciliation exceptions raised by policy checks. As payment-rail connectors move from playbooks into live deployments, teams add bank confirmation latency, ISO 20022 acknowledgement rates, and cross-network availability to their dashboards.
+Current programmes track atomic settlement success rates, average time-to-finality per settlement type (on-chain DvP, fiat-linked DvP, token-to-token), and reconciliation exceptions raised by policy checks. As payment-rail connectors move from playbooks into live deployments, teams add bank confirmation latency, ISO 20022 acknowledgement rates, and cross-network availability to their dashboards.
 
 ## Failure modes and defenses
 
-Settlement systems must be designed to fail gracefully when—inevitably—someone misses a step. If bank confirmation stalls, the escrow contract times out and reverts, notifying every party with context they can act on. Bridges refuse to mint on chains that don’t meet policy, even if it means denying the transfer. And when discrepancies arise between on-chain events and bank ledgers, the ISO 20022 message flow becomes the authoritative source for booking and reconciliation so there is never any ambiguity about the state of a transfer.
+Settlement systems must be designed to fail gracefully when, inevitably, someone misses a step. If bank confirmation stalls, the escrow contract times out and reverts, notifying every party with context they can act on. Bridges refuse to mint on chains that don't meet policy, even if it means denying the transfer. And when discrepancies arise between on-chain events and bank ledgers, the ISO 20022 message flow becomes the authoritative source for booking and reconciliation so there is never any ambiguity about the state of a transfer.
 
 ## Why this is different
 
 The tokenization industry is full of solutions that promise instant settlement but deliver it through accounting tricks layered on top of traditional T+2 rails. Digital IOUs with settlement guarantees that depend on traditional clearing houses aren't genuine innovation; they're cosmetic improvements to fundamentally unchanged processes.
 
-That's not what we've built. Our settlement infrastructure provides genuine delivery-versus-payment with real bank integrations and actual atomic transactions. Assets either settle atomically or they don't settle at all; there's no middle ground, no IOUs, no settlement risk hiding behind digital facades. When we say T+0 settlement, we mean that tokens and cash clear together, backed by the same governance, policy, and reporting stack that runs the rest of the platform.
+That's not what we've built. Our settlement infrastructure provides genuine delivery versus payment with real bank integrations and actual atomic transactions. Assets either settle atomically or they don't settle at all; there's no middle ground, no IOUs, no settlement risk hiding behind digital facades. When we say T+0 settlement, we mean that tokens and cash clear together, backed by the same governance, policy, and reporting stack that runs the rest of the platform.
