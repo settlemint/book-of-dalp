@@ -1,4 +1,6 @@
 import "@/app/global.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { RootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
@@ -13,6 +15,8 @@ export default function Layout({ children }: LayoutProps<"/">) {
     <html className={geistMono.className} lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <RootProvider>{children}</RootProvider>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
