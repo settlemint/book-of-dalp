@@ -3,6 +3,8 @@ title: "Custody & Settlement"
 description: "Custody and settlement define whether institutions can trust tokenized assets. The DALP treats them as a single control surface: keys, policies, liquidity, and payments run on the same runtime that enforces compliance, so cash and tokens never drift apart."
 ---
 
+import { Accordion, Accordions } from "@/components/accordion";
+
 ## Why custody and settlement break under fragmentation
 
 Retail-style custody and legacy settlement workflows fail institutional review, and everyone around the table knows it. Single keys, omnibus ledgers, and ad hoc approval chains leave regulators staring at operational risk. Meanwhile, token legs clear on-chain while cash crawls through ACH or SWIFT batches, forcing reconciliation teams to chase exposure. Without a shared runtime, eligibility updates, policy changes, and cash instructions diverge, driving cap-table drift, settlement risk, and painful audits that never seem to close.
@@ -40,10 +42,28 @@ Automation levels already reach 80-95% across servicing categories, freeing oper
 
 The DALP standardizes signature tiers so governance is predictable:
 
-- **Daily operations**: 2-of-3 approvals from custody ops cover routine transfers (\<30 min collection time).
-- **Large transactions**: 3-of-5 signatures across senior management enforce segregation of duties.
-- **Emergency access**: 4-of-7 board-level approvals unlock break-glass flows with automatic incident logging.
-- **Administration**: 3-of-4 IT + compliance sign-offs guard system changes.
+<Accordions type="single" defaultValue="daily">
+  <Accordion title="Daily operations" value="daily">
+    <p>
+      2-of-3 approvals from custody operations handle routine transfers in under 30 minutes, with every signature logged against the workflow record.
+    </p>
+  </Accordion>
+  <Accordion title="Large transactions" value="large">
+    <p>
+      3-of-5 senior signatories enforce segregation of duties on high-value movements, keeping treasury, compliance, and risk aligned.
+    </p>
+  </Accordion>
+  <Accordion title="Emergency access" value="emergency">
+    <p>
+      4-of-7 board-level approvals unlock break-glass flows, automatically triggering incident timelines and evidence bundles for later review.
+    </p>
+  </Accordion>
+  <Accordion title="Administration" value="admin">
+    <p>
+      3-of-4 IT and compliance reviewers sign off on system changes so policy updates, wallet tier shifts, and integrations never bypass control.
+    </p>
+  </Accordion>
+</Accordions>
 
 Signature collection, transaction execution, and audit packaging are instrumented (typical execution \<3 min, audit documentation ~45s), keeping both regulators and internal risk satisfied.
 

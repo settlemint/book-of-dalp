@@ -3,13 +3,31 @@ title: "Ops & Instrumentation"
 description: "Developer and operator instrumentation is how the DALP keeps lifecycle operations, especially corporate actions and reporting, deterministic. When servicing, custody, and settlement share the same telemetry and automation, institutions see one coherent platform instead of a black box."
 ---
 
+import { Step, Steps } from "@/components/steps";
+
 ## Why tooling and servicing depth matter
 
 Tokenization programs collapse when servicing lives in spreadsheets or when engineers fly blind, and that pattern has played out often enough to sting. Without typed APIs, reproducible environments, and actionable telemetry, integration teams stall, operations improvise, and regulators assume the worst. Instrumentation ties lifecycle accuracy to hard evidence so the DALP can scale safely, which is exactly what risk committees expect to hear.
 
+<Callout type="info">
+  Instrumentation is less about dashboards and more about making every workflow explainable on the spot; risk teams want receipts faster than they want rhetoric.
+</Callout>
+
 ## Asset servicing inside the DALP
 
 Corporate actions, distributions, and reporting run as first-class workflows. Record dates, entitlement logic, approvals, and notifications are encoded alongside token logic and identity data. Workflow engines trigger servicing events, collect authorization, and generate receipts. Access control, audit logging, and compliance checks mirror transfer and settlement flows, ensuring eligibility rules fire before any action executes. Reporting engines compile position, transaction, and performance views from shared PostgreSQL and Subgraph stores, producing regulator-ready exports without manual reformatting.
+
+<Steps>
+  <Step>
+    <strong>Encode the rules.</strong> Asset terms, eligibility claims, and notification deadlines are stored as versioned policies, so servicing automation never leans on tribal memory.
+  </Step>
+  <Step>
+    <strong>Run the workflow.</strong> The servicing engine collects sign-offs, triggers payments, and blocks out-of-policy actions before anything touches custody or cash rails.
+  </Step>
+  <Step>
+    <strong>Emit the evidence.</strong> Receipts, reconciliation artifacts, and audit notes attach to the investor record automatically, keeping compliance conversations grounded in data.
+  </Step>
+</Steps>
 
 ## Operator control room: observability and automation
 
