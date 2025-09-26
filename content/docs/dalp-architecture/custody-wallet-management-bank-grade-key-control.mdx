@@ -1,15 +1,17 @@
 ---
 title: "Custody Operations"
-description: "Without custody that passes a bank risk committee, nothing scales. The DALP Custody layer combines institutional multi-sig/HSM controls, policy automation, recovery runbooks, and custodian APIs with omnibus look-through so compliance and cap-table truth survive real custody setups-backed by 99.9%+ availability targets and zero-incident ambitions."
+description: "Without custody that passes a bank risk committee, nothing scales. The DALP Custody layer combines institutional multi-sig/HSM controls, policy automation, recovery runbooks, and custodian APIs with omnibus look-through so compliance and ownership registry truth survive real custody setups-backed by 99.9%+ availability targets and zero-incident ambitions."
 ---
 
 ## What this layer guarantees
 
-The Custody layer supports multiple custody modes running in parallel: self-custody, institutional sub-custody, and third-party vaults can coexist under the same policy umbrella. Wallet-agnostic support spans hardware devices, MPC vaults, exchange custodians, and institutional platforms so banks don't need to rip and replace existing vendors.
+The Custody layer supports multiple custody modes running in parallel: self-custody, institutional sub-custody, and third-party vaults can coexist under the same policy umbrella. Wallet-agnostic support spans hardware devices, HSM-backed vaults, exchange custodians, and institutional platforms so banks don't need to rip and replace existing vendors.
+
+That reach extends to networks. The custody plane speaks the same policy language across public chains, consortium deployments, and private EVM networks, so institutions choose the venue that fits compliance without rewriting control logic.
 
 That flexibility keeps banks from re-architecting their stack just to participate, which risk committees appreciate more than any slideware promise.
 
-Security architecture eliminates single points of compromise through multi-signature schemes, hardware security modules, and MPC deployments. Critical actions require threshold approvals, with policy-bound workflows that prevent unauthorized transactions while keeping routine flows fast.
+Security architecture eliminates single points of compromise through multi-signature schemes, hardware security modules, and dedicated HSM deployments. Critical actions require threshold approvals, with policy-bound workflows that prevent unauthorized transactions while keeping routine flows fast.
 
 The policy engine enforces institutional controls: limits, destination allowlists, segregation of duties, and it escalates out-of-policy transactions to governed approval queues. Operations teams see exceptions in dashboards instead of inboxes.
 
@@ -25,7 +27,7 @@ The platform standardizes on a Bun-only toolchain-Biome v2 for lint/format, Driz
 
 Standardized custodian APIs connect to platforms such as Fireblocks, Metaco, and other bank-grade vaults, aligning with the Payment Rails architecture to coordinate on-chain and ACH/SWIFT/RTGS settlements without losing policy coverage.
 
-Look-through omnibus tooling solves the transparency problem in pooled custody: custodians attest to sub-account balances while the cap-table indexer keeps compliance eligibility current at the beneficial owner level.
+Look-through omnibus tooling solves the transparency problem in pooled custody: custodians attest to sub-account balances while the registry indexer keeps compliance eligibility current at the beneficial owner level.
 
 Recovery and disaster scenarios lean on documented runbooks: backup key material, multi-site DR, and governed re-verification flows, so lost access and custody outages don't cascade into missed settlements.
 
@@ -71,7 +73,7 @@ Policy management lives in the Asset Manager dashboards and oRPC routes: teams c
 
 Transaction execution follows a proposal -> validation -> approval -> broadcast loop. Proposals enter the queue, the policy engine and multi-sig validators review them, and only then are transactions dispatched to the blockchain or payment rail.
 
-Omnibus attestations arrive as structured payloads from custodians. The cap-table indexer consumes them to refresh beneficial ownership while the compliance engine keeps eligibility current at the individual level-even when the tokens sit in pooled addresses.
+Omnibus attestations arrive as structured payloads from custodians. The registry indexer consumes them to refresh beneficial ownership while the compliance engine keeps eligibility current at the individual level-even when the tokens sit in pooled addresses.
 
 Developer surfaces mirror the oRPC contract: `eth_createKey`, `eth_createUser`, and `eth_sendTransaction` are exposed over JSON-RPC and REST with identical semantics, support idempotency keys, and honour network hints via path, header, or `chainId`. Generated SDKs and viem extensions handle client code, while the TanStack Start console offers the operator GUI. Additional domain procedures-approvals, policies, backups, audit exports-reuse the same contract so automation, console, and integration code stay in sync.
 
@@ -103,4 +105,4 @@ Wallet distribution analysis tracks the mix of self-custody versus custodial hol
 
 ## Why this is different
 
-Crypto wallets weren't built for regulated markets. DALP custody is **built for banks**: MPC/HSM, audits, policies, omnibus look-through, and DvP integration, the boring, hard parts others skip. That's why it scales.
+Crypto wallets weren't built for regulated markets. DALP custody is **built for banks**: HSM safeguards, audits, policies, omnibus look-through, and DvP integration, the boring, hard parts others skip. That's why it scales.

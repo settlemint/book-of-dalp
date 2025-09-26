@@ -1,6 +1,6 @@
 ---
 title: "Issuance Lifecycle"
-description: "ATK moves assets from term sheet to production with templated compliance, real-time cap tables, and programmable lifecycle controls."
+description: "ATK moves assets from term sheet to production with templated compliance, real-time ownership registries, and programmable lifecycle controls."
 ---
 
 ## What the issuance layer covers
@@ -11,7 +11,7 @@ The no-code Asset Designer exposes supply limits, divisibility, transfer rules, 
 
 Multi-chain deployment support launches assets on Ethereum, Polygon, Besu, Quorum, or another EVM network from one playbook. Sandbox assets promote to production networks as policy evolves, keeping rollout aligned with regulatory staging.
 
-A real-time cap table in the Asset Manager aggregates ledger events into a current registry. Issuers see holdings, eligibility, and lifecycle actions immediately, so reconciliation never becomes the long pole.
+A real-time ownership registry in the Asset Manager aggregates ledger events into a current registry. Issuers see holdings, eligibility, and lifecycle actions immediately, so reconciliation never becomes the long pole.
 
 Lifecycle primitives let issuers manage supply after launch: minting, burning, redemptions, buybacks, and follow-on issuance all enforce contract-level conditions automatically.
 
@@ -31,7 +31,7 @@ Issuance gates distribution with KYC/KYB, accreditation, and on-chain whitelisti
   chart={`
 flowchart LR
   designer["Asset Designer"] --> factory["Token factory + controllers"]
-  factory --> indexer["Subgraph + cap table"]
+  factory --> indexer["Subgraph + ownership registry"]
   factory --> docs["Document & claim store"]
   indexer --> engine["Distribution engine"]
   docs --> surfaces["Asset Manager & APIs"]
@@ -51,13 +51,13 @@ Law-in-the-loop issuance means legal templates drive the parameters contracts en
 
 ## Proof the layer works
 
-Teams routinely move from term sheet to pilot in days, compressing timelines by more than 4x thanks to templated compliance, pre-built integrations, and automated pipelines. Automation keeps the cap table, eligibility checks, and lifecycle actions synchronized; human intervention is reserved for authorized exceptions.
+Teams routinely move from term sheet to pilot in days, compressing timelines by more than 4x thanks to templated compliance, pre-built integrations, and automated pipelines. Automation keeps the ownership registry, eligibility checks, and lifecycle actions synchronized; human intervention is reserved for authorized exceptions.
 
 Scale metrics track healthy issuance volume across multiple asset types per region and the throughput of lifecycle events processed by the addon framework. Strong numbers signal the platform is operating as a single system rather than a bundle of point tools.
 
 ## Why ATK beats point solutions
 
-Issuance wizards without cap-table truth or embedded compliance create rework and legal risk. ATK ships templated legality, cap-table truth, and programmable lifecycle in one system, plus:
+Issuance wizards without registry truth or embedded compliance create rework and legal risk. ATK ships templated legality, registry truth, and programmable lifecycle in one system, plus:
 
 - A no-code designer business teams can own without trading safety for speed.
 - An addon ecosystem (airdrop, yield, XvP, vault) packaging complex distribution and settlement workflows.

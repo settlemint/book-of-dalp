@@ -24,6 +24,12 @@ The impact hits every stakeholder differently. Institutions face multi-vendor pr
 
 Even fast-moving platforms acknowledge that the landscape is fragmented and lacks a comprehensive, integrated offering from issuance through settlement and white-label deployment. They say it quietly because everyone has felt the pain.
 
+## Public-only chains stall enterprise adoption
+
+Most tokenization stacks anchor themselves to public networks only. That keeps marketing decks tidy, yet it leaves banks without permissioned routing, regulator-controlled validators, or data residency assurances. How is a risk committee supposed to bless a process that broadcasts sensitive flows to the entire world?
+
+Even platforms that promise "multi-chain" usually mean a handful of public mainnets plus their testnets. The minute someone asks about consortium governance, sovereign infrastructure, or running the same workflows inside a private EVM, the plan collapses. Enterprises need public reach and permissioned control in the same runtime, not a forked backlog.
+
 ## Compliance as a bolt‑on (not in the asset path)
 
 Current systems "check compliance" in middleware after the fact. Whitelists live in databases the token doesn't see. Jurisdictional limits, holding periods, and geo-fences are enforced by business process, not code. Edge transfers slip through while compliant transfers get blocked by false positives. Regulators spot that contradiction instantly, right?
@@ -38,13 +44,13 @@ Regulatory frameworks like MiCA reward platforms that can demonstrate identity, 
 
 ## Custody isn’t bank‑grade
 
-The symptoms are everywhere: single-sig hot wallets, no segregation of duties, no policy engine. Key loss equals asset loss. Omnibus custody without look-through breaks cap-table truth. Would you park a pension there?
+The symptoms are everywhere: single-sig hot wallets, no segregation of duties, no policy engine. Key loss equals asset loss. Omnibus custody without look-through breaks the ownership registry. Would you park a pension there?
 
 Crypto-native custody practices don't pass financial-institution risk committees. This isn't a technical problem; it's a business reality. The slides may sparkle, yet the controls never make it past the first diligence call.
 
-Institutions won't onboard when security and audit gaps are showstoppers. Investors won't trust venues when headlines have trained them to ask about governance and recovery. Developers can't integrate MPC/HSM and approval policies cleanly with existing solutions. The trust deficit is loud even when the room stays polite.
+Institutions won't onboard when security and audit gaps are showstoppers. Investors won't trust venues when headlines have trained them to ask about governance and recovery. Developers can't integrate HSM controls and approval policies cleanly with existing solutions. The trust deficit is loud even when the room stays polite.
 
-Bank-grade custody requires MPC/HSM key management, multi-sig governance, policy controls, recovery flows, and custodian APIs, all integrated with compliance and cap-table truth. That's the difference between hope and policy.
+Bank-grade custody requires HSM key management, multi-sig governance, policy controls, recovery flows, and custodian APIs, all integrated with compliance and the ownership registry. That's the difference between hope and policy.
 
 ## Cash and tokens don’t settle together
 
@@ -92,7 +98,7 @@ If a platform misses any of these, it will not scale. Simple truth, no theatrics
 
 2. Compliance has to be designed into the asset. KYC/KYB, accreditation flows, jurisdiction rules, on-chain whitelisting, and audit logs must execute before every state change, providing regulators with proof rather than after-the-fact reports.
 
-3. Custody must satisfy bank-level risk committees. That includes MPC or HSM-backed key management, policy-controlled approvals, recovery workflows, transparent omnibus accounting, and direct ties to the cap table so truth never drifts.
+3. Custody must satisfy bank-level risk committees. That includes HSM-backed key management, policy-controlled approvals, recovery workflows, transparent omnibus accounting, and direct ties to the ownership registry so truth never drifts.
 
 4. Delivery-versus-payment must be atomic. Tokens and cash have to move together on-chain when possible or near-simultaneously through RTGS, SEPA, or SWIFT rails with ISO 20022 translation and 24/7 finality, even when bridging chains.
 

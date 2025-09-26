@@ -63,6 +63,8 @@ flowchart LR
 
 Each component has explicit performance targets (e.g., \<2s UI loads, \<200ms API calls, \<5s indexing latency, 99.9% data uptime), so operations teams can measure the health of the control plane instead of inferring it from downstream breakage.
 
+Network strategy follows the same pattern. The Asset Tokenization Kit drives public chains, consortium validators, and private EVM builds from the same configuration bundle, so lifecycle policies stay identical even when infrastructure teams demand a permissioned footprint.
+
 ## How one control plane interacts with the outside world
 
 The integration architecture binds the DALP to identity networks, compliance partners, banking rails, custody providers, and monitoring stacks without diluting control. OnchainID and third-party KYC services plug into the identity registry while respecting the DALP's rule engine. Core banking and payment systems connect through mediation services that translate ISO 20022 and SWIFT messaging, yet settlement logic remains inside the platform. Custodian APIs surface into the same business services that govern transfers. Observability hooks feed internal and client SIEM/SOC tooling so every external dependency is monitored from the DALP's cockpit.
@@ -85,7 +87,7 @@ Consider a launch that issues a bond, a feeder fund, and a deposit note simultan
 1. Product leads model each instrument in the web console, generating ERC-3643 token blueprints that inherit the appropriate extension sets (yield, voting, collateral) from the control plane.
 2. Compliance officers configure country, investor-limit, and lock-up modules once; those policies apply to every asset because the rule engine runs centrally.
 3. Identity teams onboard investors through the shared OpenAPI-documented REST APIs. Claims flow into the identity registry and synchronize across offerings with no duplicate KYC.
-4. Custody operations pre-stage MPC wallet tiers and policy thresholds directly in the DALP's custody services.
+4. Custody operations pre-stage HSM-backed wallet tiers and policy thresholds directly in the DALP's custody services.
 5. Settlement ops wire cash legs via the payment gateway adapters (SWIFT for deposits, RTGS for bonds) using the same workflow state machine that drives token transfers, so cash and tokens stay in lockstep.
 6. Corporate action timelines, notifications, and evidence packs are scheduled through the servicing workflow engine, providing investors and auditors the same data without manual exports.
 

@@ -1,6 +1,6 @@
 ---
 title: "Issuance Lifecycle"
-description: "Issuance must be fast, programmable, and compliant by default. Anything else recreates the old capital-markets backlog. Our Issuance & Lifecycle layer takes teams from term sheet to live, RWA-ready assets in days instead of months, combining a real-time cap table, jurisdiction-aware templates, and full API control to keep delivery predictable."
+description: "Issuance must be fast, programmable, and compliant by default. Anything else recreates the old capital-markets backlog. Our Issuance & Lifecycle layer takes teams from term sheet to live, RWA-ready assets in days instead of months, combining a real-time ownership registry, jurisdiction-aware templates, and full API control to keep delivery predictable."
 ---
 
 ## What the Issuance layer does
@@ -13,7 +13,7 @@ The no-code Asset Designer lets issuers configure every parameter that matters: 
 
 Multi-chain deployment support means you can launch on Ethereum, Polygon, Hyperledger Besu, Quorum, or your preferred EVM network from a single playbook. Assets can be promoted from sandbox to production networks as policies evolve, keeping platform rollout aligned with regulatory staging.
 
-A real-time cap table and dashboards in the Asset Manager aggregate ledger events into an always-current registry. Issuers gain instant visibility into holdings, investor eligibility, and lifecycle actions, so reconciliation never becomes the long pole in the tent.
+A real-time ownership registry and dashboards in the Asset Manager aggregate ledger events into an always-current registry. Issuers gain instant visibility into holdings, investor eligibility, and lifecycle actions, so reconciliation never becomes the long pole in the tent.
 
 Lifecycle primitives give issuers programmatic control over their assets after issuance. Controlled minting and burning, redemptions, buybacks, and follow-on issuance all operate through contract-level conditions. These aren't manual processes that depend on human operators; they're enforced automatically by the smart contracts themselves.
 
@@ -37,7 +37,7 @@ The architecture centers around four core components that work together to elimi
   chart={`
 flowchart LR
   designer["Asset Designer wizard"] --> factory["Token factory + compliance controllers"]
-  factory --> indexer["Subgraph + cap table indexer"]
+  factory --> indexer["Subgraph + ownership registry indexer"]
   factory --> docs["Document & claim store"]
   indexer --> engine["Distribution engine"]
   docs --> surfaces["Asset Manager UI & API surfaces"]
@@ -69,13 +69,13 @@ Law-in-the-loop issuance means the legal template drives the parameters the cont
 
 Delivery teams routinely move from term sheet to production pilots in a matter of days, compressing typical timelines by more than **4×** thanks to templated compliance, pre-built integrations, and automated deployment pipelines. Complex structured products still require bespoke review, but the baseline expectation is speed without shortcuts.
 
-Automation keeps the canonical cap table, eligibility checks, and lifecycle actions in sync across the stack. Every transfer, mint, burn, or distribution automatically updates the registry and downstream analytics, with human intervention reserved for exceptional approvals.
+Automation keeps the canonical ownership registry, eligibility checks, and lifecycle actions in sync across the stack. Every transfer, mint, burn, or distribution automatically updates the registry and downstream analytics, with human intervention reserved for exceptional approvals.
 
 Scale metrics track healthy issuance volume across at least five different asset types per region (equity, debt, funds, stablecoins, deposits) and the throughput of lifecycle events processed by the Addon framework. When those numbers look good, it signals the platform is operating as a single, composable system rather than a set of point solutions.
 
 ## Why this beats point tools
 
-Issuance wizards without cap-table truth or embedded compliance create rework and legal risk. DALP issuance ships **templated legality, cap-table truth, and programmable lifecycle** in one system-while layering on:
+Issuance wizards without registry truth or embedded compliance create rework and legal risk. DALP issuance ships **templated legality, registry truth, and programmable lifecycle** in one system-while layering on:
 
 - A no-code Asset Designer that business teams can own without trading safety for speed.
 - An Addon ecosystem (airdrop, yield, XvP, vault) that packages complex distribution and settlement workflows.

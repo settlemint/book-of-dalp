@@ -7,23 +7,24 @@ import { Accordion, Accordions } from "@/components/accordion";
 
 ## Why custody and settlement break under fragmentation
 
-Retail-style custody and legacy settlement workflows fail institutional review, and everyone around the table knows it. Single keys, omnibus ledgers, and ad hoc approval chains leave regulators staring at operational risk. Meanwhile, token legs clear on-chain while cash crawls through ACH or SWIFT batches, forcing reconciliation teams to chase exposure. Without a shared runtime, eligibility updates, policy changes, and cash instructions diverge, driving cap-table drift, settlement risk, and painful audits that never seem to close.
+Retail-style custody and legacy settlement workflows fail institutional review, and everyone around the table knows it. Single keys, omnibus ledgers, and ad hoc approval chains leave regulators staring at operational risk. Meanwhile, token legs clear on-chain while cash crawls through ACH or SWIFT batches, forcing reconciliation teams to chase exposure. Without a shared runtime, eligibility updates, policy changes, and cash instructions diverge, driving registry drift, settlement risk, and painful audits that never seem to close.
 
 ## Custody architecture inside the DALP
 
 SettleMint's custody blueprint gives the DALP bank-grade depth:
 
-- **Key management**: HSM- or MPC-backed key generation, storage, and recovery across hot, warm, and cold tiers with geographic distribution.
+- **Key management**: HSM-backed key generation, storage, and recovery across hot, warm, and cold tiers with geographic distribution.
 - **Policy engine**: multi-party approvals, role-specific signing policies, and emergency overrides instrumented as code with full logging.
-- **Operational workflows**: automated transaction validation, reconciliation, and reporting services that keep custody state aligned with the cap table.
+- **Operational workflows**: automated transaction validation, reconciliation, and reporting services that keep custody state aligned with the ownership registry.
 - **Servicing coverage**: corporate actions, income collection, proxy voting, and tax automation run from the same service layer; current automation levels already hit 70-95% depending on the event type.
+- **Network flexibility**: public chains, consortium validators, and private EVM networks share the same custody services, so governance and audit evidence match regardless of venue.
 
 ### Custody performance snapshot
 
 | Capability | Target | Current | Notes |
 | --- | --- | --- | --- |
 | Transaction settlement | T+0 to T+1 | T+0 | No manual fallback |
-| Asset safekeeping | 100% | 99.99% | MPC/HSM enforced |
+| Asset safekeeping | 100% | 99.99% | HSM enforced |
 | Reporting accuracy | 100% | 99.98% | Automated reconciliation |
 | System availability | >99.9% | 99.95% | Multi-zone deployments |
 

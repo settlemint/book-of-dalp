@@ -19,13 +19,13 @@ const pressurePoints = [
   {
     title: "Five vendors, one stalled launch",
     description:
-      "Issuers stitch issuance, compliance, custody, trading, settlement, and reporting across brittle APIs. Every handoff multiplies risk and delays go-live dates.",
+      "Issuers stitch issuance, compliance, custody, trading, settlement, and reporting across brittle APIs. Every handoff is a risk-multiplier. Every additional integration is a launch-delayer.",
     icon: <CircuitBoard className="size-6 text-fd-foreground" />,
   },
   {
     title: "Compliance runs outside the asset",
     description:
-      "Jurisdiction rules sit in spreadsheets while tokens move unchecked. False positives block clients while edge transfers sneak through and invite regulator questions.",
+      "Jurisdiction rules sit in spreadsheets while tokens move unchecked. False positives block clients while edge transfers sneak through and draw regulatory scrutiny.",
     icon: <ShieldCheck className="size-6 text-fd-foreground" />,
   },
   {
@@ -37,7 +37,7 @@ const pressurePoints = [
   {
     title: "DvP still hides a T+2 spreadsheet",
     description:
-      "Cash legs trail tokens across banks, so settlement teams reconcile by hand and investors lose trust in the timeline.",
+      "Cash legs trail tokens across banks, requiring back office teams to manually reconcile, issuers pay the cost and investors lose time.",
     icon: <TimerReset className="size-6 text-fd-foreground" />,
   },
 ];
@@ -46,7 +46,7 @@ const dalpLaws = [
   {
     title: "Unified lifecycle core",
     description:
-      "Issuance, servicing, secondary trading, settlement, and reporting share one control plane so cap-table truth never drifts.",
+      "Issuance, servicing, secondary trading, settlement, and reporting share one control plane so the ownership registry never drifts.",
   },
   {
     title: "Compliance before state change",
@@ -56,7 +56,7 @@ const dalpLaws = [
   {
     title: "Bank-grade custody + settlement",
     description:
-      "MPC or HSM controls, multi-sig policies, recovery workflows, and atomic or near-atomic DvP across tokenized cash and fiat rails.",
+      "HSM controls across public chains, consortium validators, and private EVM rails, multi-sig policies, recovery workflows, and atomic or near-atomic DvP across tokenized cash and fiat rails.",
   },
   {
     title: "Enterprise control over deployment",
@@ -124,19 +124,20 @@ export default function HomePage() {
                 "linear-gradient(to bottom left, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.35) 35%, rgba(0,0,0,0.75) 75%, rgba(0,0,0,1) 100%)",
             }}
           />
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm dark:bg-background/70" />
         </div>
         <div className="relative z-[1] flex flex-col">
-          <p className="font-semibold text-fd-muted-foreground text-sm uppercase tracking-wider">
+          <p className="font-semibold text-fd-foreground text-sm uppercase tracking-wider">
             Digital Asset Lifecycle Platform
           </p>
           <h1 className="mt-4 max-w-3xl text-left font-semibold text-4xl leading-tight sm:text-5xl">
             Ground-truth infrastructure for tokenized assets
           </h1>
-          <p className="mt-6 max-w-2xl text-left text-fd-muted-foreground text-lg">
+          <p className="mt-6 max-w-2xl text-left text-fd-foreground text-lg">
             SettleMint&rsquo;s DALP collapses issuance, compliance, custody,
             settlement, and servicing into one programmable system. Regulators
-            get ex-ante proof, operations drop the spreadsheets, and investors
-            experience predictable settlement windows.
+            get ex-ante proof, operations are liberated from spreadsheets, and
+            investors experience predictable settlement windows.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
@@ -263,9 +264,9 @@ export default function HomePage() {
               </div>
               <p className="text-fd-muted-foreground">
                 Issuer, investor, admin, and developer portals share the same
-                cap-table truth. Eligibility calls surface in real time,
-                documents settle into anchored storage, and corporate actions
-                trigger without hallway triage.
+                registry source of truth. Eligibility calls surface in real
+                time, documents settle into anchored storage, and corporate
+                actions trigger without hallway triage.
               </p>
             </div>
           </Step>
@@ -279,7 +280,7 @@ export default function HomePage() {
               </div>
               <p className="text-fd-muted-foreground">
                 Identity registry, jurisdiction rules, ERC-3643 token factory,
-                MPC/HSM key control, and multi-sig policies run before transfers
+                HSM key control, and multi-sig policies run before transfers
                 execute. Emergency hooks and audit trails are ready for the
                 boardroom.
               </p>
@@ -294,10 +295,11 @@ export default function HomePage() {
                 </h3>
               </div>
               <p className="text-fd-muted-foreground">
-                Atomic DvP when rails match, near-simultaneous settlement when
-                they do not, ISO 20022 adapters for core banking, cross-chain
-                continuity, and deployment choice across on-prem, BYOC, or
-                hardened SaaS.
+                Atomic DvP works when both cash and tokens are on-chain.
+                Near-simultaneous settlement runs via direct connections to
+                conventional bank rails when they are not, with ISO 20022
+                adapters for core banking, cross-chain continuity, and
+                deployment choice across on-prem, BYOC, or hardened SaaS.
               </p>
             </div>
           </Step>
@@ -310,8 +312,8 @@ export default function HomePage() {
             Scoreboard executives actually quote
           </h2>
           <p className="max-w-3xl text-fd-muted-foreground text-lg">
-            Delivering on the DALP laws means every steering committee sees hard
-            evidence instead of hope. These are the targets teams run with
+            Delivering on the DALP laws means management, issuers, and investors
+            see facts instead of hope. These are the targets teams run with
             SettleMint today.
           </p>
         </div>

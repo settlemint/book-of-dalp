@@ -7,9 +7,11 @@ import { Accordion, Accordions } from "@/components/accordion";
 
 ## What the custody layer delivers
 
-ATK supports self-custody, institutional sub-custody, and third-party vaults under one policy model. Hardware wallets, MPC platforms, and bank custodians plug into the same control plane, so institutions keep their preferred vendors without losing governance.
+ATK supports self-custody, institutional sub-custody, and third-party vaults under one policy model. Hardware wallets, HSM-backed platforms, and bank custodians plug into the same control plane, so institutions keep their preferred vendors without losing governance.
 
-Threshold signatures, HSM support, and MPC deployments remove single points of failure. Critical actions require approvals bound to policy statements, keeping routine flows fast while stopping unauthorized transfers at the signer.
+The stack was designed for network choice too. The same policy engine and signer services run across public chains, consortium rollouts, and private EVM networks, so teams match jurisdictional needs without splintering their build.
+
+Threshold signatures, HSM support, and dedicated HSM deployments remove single points of failure. Critical actions require approvals bound to policy statements, keeping routine flows fast while stopping unauthorized transfers at the signer.
 
 A single Bun-based signer exposes JSON-RPC and OpenAPI surfaces for key management and transaction orchestration. Storage providers load at runtime, letting the same binary run in Postgres-backed, KMS-wrapped, or full HSM mode without code changes. Memory stays locked, buffers zeroize, and every sensitive workflow demands explicit approval.
 
