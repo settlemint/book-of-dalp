@@ -1,6 +1,6 @@
 ---
 theme: seriph
-title: Digital Asset Lifecycle Platform (DALP) & Asset Tokenization Kit Pitch
+title: Digital Asset Lifecycle Platform
 info: |
   Field-ready overview of market blockers, DALP principles, SettleMint's Asset Tokenization Kit, and the near-term launch path.
 transition: slide-left
@@ -11,7 +11,7 @@ mdc: true
 class: text-left
 ---
 
-# Digital Asset Lifecycle Platform (DALP) & Asset Tokenization Kit
+# Digital Asset Lifecycle Platform (DALP)
 
 ### From fragmented pilots to dependable market infrastructure
 
@@ -19,7 +19,7 @@ A quick pass through the friction, the category answer, our kit, and what's next
 
 ---
 
-# Problem: Fragmented & Inefficient Tokenization
+# System Breakdown
 
 - Issuers juggle five or more vendors across issuance, KYC, custody, trading, settlement, and reporting, and every integration degrades reliability.
 - Compliance logic runs off-ledger in spreadsheets and middleware, so tokens can move unchecked while false positives slow legitimate investors.
@@ -41,14 +41,13 @@ Enterprise requirements are ignored. Banks want on-prem or dedicated deployments
 
 ---
 
-# Solution Category: Digital Asset Lifecycle Platform (DALP)
+# Digital Asset Lifecycle Platform
 
 - Unified lifecycle core: issuance, onboarding, compliance, custody, secondary trading, settlement, and reporting operate on one shared source of truth.
 - Compliance by design: KYC, KYB, accreditation, and jurisdictional policies are embedded in code and enforced before a transfer executes.
 - Bank-grade custody and settlement: HSM-secured key management, multi-signature governance, recovery playbooks, and atomic delivery-versus-payment keep tokens and cash synchronized.
 - Enterprise control: deploy on-prem, in a client cloud, or as dedicated SaaS with SSO, MFA, SAML/OIDC, SIEM hooks, and data residency guarantees.
-- Developer and operator tooling: modern APIs, SDKs, webhooks, sandbox environments, dashboards, and alerts keep teams building rather than rewiring plumbing.
-- Proof through metrics: targets include ~99% T+0 settlement, zero compliance breaches, sub-24-hour KYC processing, and 99.9% uptime for end-user services.
+- Developer and operator tooling: modern APIs, SDKs, webhooks, sandbox environments, and dashboards, keep teams building rather than rewiring plumbing.
 
 <!--
 Speaker notes:
@@ -64,7 +63,7 @@ Proof through metrics matters because clients want measurable outcomes: near-tot
 
 ---
 
-# Our Solution: SettleMint Asset Tokenization Kit (ATK)
+# SettleMint Asset Tokenization Kit
 
 - Full-stack DALP implementation that collapses issuance, compliance, custody, settlement, and servicing into one integrated system.
 - Compliance embedded in code via on-chain identity registries and a policy engine so every transaction enforces eligibility before it finalizes.
@@ -104,7 +103,11 @@ Engineering has two parallel priorities: stabilize the beta into a 2.0.0 GA rele
 
 # Thank You
 
-Kudos to the Product Strategy and Engineering teams for turning the Asset Tokenization Kit vision into something tangible. We are ready for questions on the platform, roadmap, or how this momentum fuels the business. You can read it all in detail afterwards on https://book-of-dalp.settlemint.com
+Kudos to the Product Strategy and Engineering teams for turning the Asset Tokenization Kit vision into something tangible.
+
+You can read it all in detail on https://book-of-dalp.settlemint.com
+
+Questoions?
 
 <!--
 Speaker notes:
