@@ -4,6 +4,10 @@ title: Book of DALP Pitch
 info: |
   Internal share-out on where DALP stands and why the Asset Tokenization Kit matters.
 transition: slide-left
+css: ./styles/theme.css
+fonts:
+  sans: Geist Mono
+  mono: Geist Mono
 mdc: true
 class: text-left
 ---

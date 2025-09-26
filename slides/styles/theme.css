@@ -1,0 +1,182 @@
+/* Mirror the Next.js light theme tokens inside Slidev */
+:root {
+  color-scheme: light;
+  --dalp-background: oklch(1 0 0);
+  --dalp-foreground: oklch(0.1448 0 0);
+  --dalp-surface: oklch(1 0 0);
+  --dalp-surface-muted: oklch(0.9702 0 0);
+  --dalp-border: oklch(0.9219 0 0);
+  --dalp-ring: oklch(0.709 0 0);
+  --dalp-primary: oklch(0.5555 0 0);
+  --dalp-primary-foreground: oklch(0.9851 0 0);
+  --dalp-accent: oklch(0.2046 0 0);
+  --dalp-muted-foreground: oklch(0.5486 0 0);
+  --dalp-shadow-color: hsl(0 0% 0% / 0.05);
+  --dalp-radius: 0.5rem;
+  --dalp-spacing: 0.25rem;
+  --slidev-theme-primary: var(--dalp-primary);
+  --slidev-theme-primary-foreground: var(--dalp-primary-foreground);
+  --slidev-theme-secondary: var(--dalp-surface-muted);
+  --slidev-theme-text: var(--dalp-foreground);
+  --slidev-theme-code: var(--dalp-accent);
+  --slidev-theme-code-bg: oklch(0.9851 0 0);
+  --slidev-theme-border: var(--dalp-border);
+  --slidev-theme-shadow: 0 8px 24px var(--dalp-shadow-color);
+  --slidev-code-font-family:
+    "Geist Mono", "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+}
+
+html,
+body,
+.slidev-page {
+  background: var(--dalp-background);
+  color: var(--dalp-foreground);
+  font-family:
+    "Geist Mono", "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+  letter-spacing: 0;
+}
+
+.slidev-layout {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: calc(var(--dalp-spacing) * 12);
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3 {
+  color: var(--dalp-foreground);
+  font-weight: 600;
+}
+
+.slidev-layout h1 {
+  font-size: 3rem;
+  letter-spacing: -0.02em;
+}
+
+.slidev-layout h2 {
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+
+.slidev-layout h3 {
+  font-size: 1.5rem;
+}
+
+.slidev-layout p {
+  line-height: 1.6;
+  color: var(--dalp-foreground);
+}
+
+.slidev-layout a {
+  color: var(--dalp-primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.slidev-layout blockquote {
+  border-left: 4px solid var(--dalp-primary);
+  background: var(--dalp-surface-muted);
+  padding: calc(var(--dalp-spacing) * 10);
+  border-radius: var(--dalp-radius);
+  color: var(--dalp-foreground);
+}
+
+.slidev-layout ul,
+.slidev-layout ol {
+  padding-left: calc(var(--dalp-spacing) * 12);
+  gap: calc(var(--dalp-spacing) * 4);
+}
+
+.slidev-layout li {
+  margin-bottom: calc(var(--dalp-spacing) * 4);
+}
+
+.slidev-layout code {
+  background: var(--slidev-theme-code-bg);
+  color: var(--dalp-accent);
+  padding: calc(var(--dalp-spacing) * 2) calc(var(--dalp-spacing) * 3);
+  border-radius: calc(var(--dalp-radius) / 2);
+  font-family: var(--slidev-code-font-family);
+}
+
+.slidev-layout pre code {
+  display: block;
+  padding: calc(var(--dalp-spacing) * 8);
+  border-radius: var(--dalp-radius);
+  box-shadow: var(--slidev-theme-shadow);
+  background: var(--slidev-theme-code-bg);
+  border: 1px solid var(--slidev-theme-border);
+}
+
+.slidev-layout table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: var(--dalp-radius);
+  overflow: hidden;
+  box-shadow: var(--slidev-theme-shadow);
+}
+
+.slidev-layout th,
+.slidev-layout td {
+  border: 1px solid var(--slidev-theme-border);
+  padding: calc(var(--dalp-spacing) * 6);
+  text-align: left;
+}
+
+.slidev-layout th {
+  background: var(--dalp-surface-muted);
+  color: var(--dalp-accent);
+  font-weight: 600;
+}
+
+.slidev-layout hr {
+  border: none;
+  border-top: 1px solid var(--slidev-theme-border);
+  margin: calc(var(--dalp-spacing) * 12) 0;
+}
+
+.slidev-layout .footnote {
+  color: var(--dalp-muted-foreground);
+  font-size: 0.85rem;
+}
+
+.slidev-layout .slidev-title {
+  font-size: 4rem;
+  letter-spacing: -0.03em;
+  color: var(--dalp-foreground);
+}
+
+.slidev-layout .slidev-subtitle {
+  color: var(--dalp-muted-foreground);
+  font-size: 1.4rem;
+}
+
+.slidev-layout .slidev-presenter {
+  background: var(--dalp-surface);
+  border: 1px solid var(--slidev-theme-border);
+  border-radius: var(--dalp-radius);
+}
+
+.slidev-navbar,
+.slidev-pagination {
+  color: var(--dalp-muted-foreground);
+}
+
+.slidev-navbar a {
+  color: var(--dalp-muted-foreground);
+}
+
+.slidev-pagination .page {
+  background: var(--dalp-surface);
+  border: 1px solid var(--slidev-theme-border);
+  border-radius: var(--dalp-radius);
+  color: var(--dalp-foreground);
+}
+
+.slidev-layout mark {
+  background: oklch(0.92 0.05 100.17);
+  color: var(--dalp-foreground);
+  padding: calc(var(--dalp-spacing) * 1) calc(var(--dalp-spacing) * 2);
+  border-radius: calc(var(--dalp-radius) / 2);
+}
