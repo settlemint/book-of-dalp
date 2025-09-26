@@ -1,10 +1,9 @@
 ---
 theme: seriph
-title: Book of DALP Pitch
+title: Digital Asset Lifecycle Platform (DALP) & Asset Tokenization Kit Pitch
 info: |
-  Internal share-out on where DALP stands and why the Asset Tokenization Kit matters.
+  Field-ready overview mapped to Book of DALP chapter titles: name the failures, show the DALP laws, and land on SettleMint's Asset Tokenization Kit launch path.
 transition: slide-left
-css: ./styles/theme.css
 fonts:
   sans: Geist Mono
   mono: Geist Mono
@@ -13,96 +12,191 @@ class: text-left
 ---
 
 # Book of DALP Pitch
-### From fragmented pilots to dependable market infrastructure
+### Borrowing chapter titles to keep the story consistent
 
-A short walk through the pain, the category answer, our kit, and what comes next. Bring questions; this deck is meant to spark the next wave.
-
----
-
-# Problem: Tokenization Feels Stalled
-
-Real-world assets have crossed $50B on-chain, yet every institutional pilot still strings together issuance, KYC, custody, bulletin boards, and settlement gateways from five separate vendors. Each handoff invites latency, reconciliation churn, and a round of finger pointing. It looks like progress, yet the outcome tells a different story.
-
-Compliance lives off-ledger, so tokens never see the rules meant to govern them. Transfers slip through or block legitimate holders, leaving risk teams uneasy. Public-only stacks leak sensitive data and fail sovereign requirements. Custody often means single keys or shadow spreadsheets. How would a regulator ever sign off on that picture?
+System Breakdown, DALP Overview, Proof Through Metrics, and the rest--this deck mirrors the book so teams can move between formats without translation friction.
 
 ---
 
-# Problem: Daily Friction We Hear About
+# System Breakdown
+### The system is broken
 
-- Issuers burn quarters integrating issuance wizards with external registries, re-keying holder data after every audit.
-- Compliance leads repeat KYC for the same wallet across jurisdictions because no platform owns a single identity view.
-- Custody heads lack HSM governance or structured recovery plans, so they treat pilots as toys rather than programs.
-- Operations teams reconcile cash legs by hand and discover mismatches days later, exactly when investors expect finality.
+Institutional pilots still depend on brittle integrations, off-ledger compliance, single-key wallets, and manual settlement. That mashup slows every launch and makes regulators uneasy.
 
-You know what? That is the soundtrack of every diligence call we joined this year.
+<!--
+Speaker notes:
+Real-world assets have crossed $50B on-chain and are heading toward $500B+, yet that's tiny against the $230T base. Intent is high, regulatory clarity is improving, but the stack keeps projects stuck. The problem is fragmentation, bolt-on compliance, weak custody, non-atomic settlement, and manual servicing. Institutions need proof the lifecycle is controlled before they scale.
+-->
 
 ---
 
-# Category Answer: Digital Asset Lifecycle Platform
+# Fragmentation: Five Vendors for One Lifecycle
 
-The DALP blueprint collapses issuance, compliance, custody, settlement, and operations into one programmable system. Instead of stitching point tools, teams coordinate through a unified registry, embedded rule engine, deterministic cash pairing, and enterprise controls for deployment and identity. The result is boring in the best way: lifecycle events run on rails, and evidence is always within reach.
+- Issuers juggle issuance portals, KYC/KYB, custody, trading venues, settlement workarounds, and reporting spreadsheets.
+- Every handoff adds latency, reconciliation debt, and vendor finger pointing.
+- Procurement drags, governance dilutes, and developers spend cycles wiring plumbing instead of features.
 
-Isn't that what every institution has been asking for since MiCA set the bar?
+<!--
+Speaker notes:
+A typical tokenization project strings together disparate tools. Each integration is brittle. Institutions face multi-vendor procurement and governance headaches, while investors see inconsistent onboarding. Developers burn time recreating pipelines rather than building product.
+-->
+
+---
+
+# Compliance as a Bolt-On (Not in the Asset Path)
+
+- Compliance lives in middleware or spreadsheets the token never sees.
+- Edge transfers slip through while legitimate ones get blocked by false positives.
+- Regulators hesitate because firms cannot prove ex-ante enforcement.
+
+<!--
+Speaker notes:
+Compliance gets checked after transfers are queued. Whitelists sit off-chain, jurisdiction rules run manually, so the token doesn't enforce anything. Regulators and risk teams want proof that rules execute before state changes.
+-->
+
+---
+
+# Custody Isn't Bank-Grade
+
+- Many platforms still operate single-key hot wallets with no multi-sig or policy engine.
+- No HSM-backed governance, segregation of duties, or recovery workflows.
+- Risk committees will never approve institutional scale under those conditions.
+
+<!--
+Speaker notes:
+Crypto-native custody approaches fail bank diligence. Without HSMs, multi-sig approvals, and recovery plans, one compromise can vaporize assets. Serious investors walk away when custody feels improvised.
+-->
+
+---
+
+# Cash and Tokens Don't Settle Together
+
+- Token legs may update instantly, but cash often trails on T+2 rails.
+- Behind "instant" UIs sit escrow accounts, emails, and reconciliation spreadsheets.
+- Counterparty risk lingers until both legs match, keeping capital idle.
+
+<!--
+Speaker notes:
+Without atomic delivery-versus-payment, settlement becomes a prayer. Operations scramble to reconcile, delaying access to funds and undermining trust.
+-->
+
+---
+
+# Corporate Actions Stay Manual
+
+- Dividends, coupons, votes, and tax handling still run through emails and cron jobs.
+- Ledgers capture ownership, yet servicing relies on parallel records.
+- Errors, missed record dates, and audit gaps follow.
+
+<!--
+Speaker notes:
+Post-issuance servicing is a labor-heavy scramble. Automation is absent, so every lifecycle event spawns coordination across operations, legal, and engineering with spreadsheets as the glue.
+-->
+
+---
+
+# Enterprise Requirements Are Ignored
+
+- Public-only stacks lack permissioned deployment, data residency, or on-prem options.
+- No native SSO, MFA, audit logging, or SIEM feeds--deal breakers for banks.
+- Risk committees halt projects when environments cannot be controlled.
+
+<!--
+Speaker notes:
+Most tokenization platforms evolved from crypto startups. They assume shared SaaS on public chains is acceptable. Enterprises need deployment choice, IAM integration, and audit transparency. Without that, procurement blocks progress.
+-->
+
+---
+
+# DALP Overview
+### The fix the book describes
+
+A Digital Asset Lifecycle Platform collapses issuance, compliance, custody, settlement, and servicing into one programmable control plane where the ownership registry, business rules, and records stay in sync.
+
+<!--
+Speaker notes:
+A DALP is lifecycle infrastructure, not another point tool. It gives institutions a single control surface where identities, transfers, and cash legs are wired together. That is the promise clients keep repeating.
+-->
 
 ---
 
 # DALP Laws (Non-Negotiables)
 
-1. **Unified lifecycle core:** Issuance, servicing, and reporting share one ownership registry, so every state change is authoritative.
-2. **Compliance by design:** Identity, KYC or KYB, accreditation, and jurisdictional logic execute before transfers, creating auditable ex-ante control.
-3. **Custody plus settlement clarity:** HSM policies, multi-sig governance, recovery workflows, and atomic delivery versus payment keep assets and cash synchronized.
-4. **Enterprise control:** Deploy on-prem, in customer cloud, or hardened SaaS with full IAM, logging, and white-label surface.
-5. **Developer and operator instrumentation:** Typed APIs, SDKs, sandboxes, event streams, and diagnostics let teams compose products rather than file backlog requests.
-6. **Proof through metrics:** T+0 settlement on 99 percent of transactions, zero compliance breaches, sub-day KYC turnaround, and 99.9 percent UX uptime.
+1. Unified lifecycle core keeps issuance, servicing, and reporting on one registry.
+2. Compliance-by-design enforces KYC/KYB and jurisdiction rules before state changes.
+3. Custody plus settlement clarity pairs HSM key control with atomic DvP.
+4. Enterprise control covers deployment choice, IAM, logs, and residency guarantees.
+5. Developer and operator instrumentation delivers APIs, SDKs, sandboxes, and alerts.
+6. Proof through metrics targets ~99% T+0 settlement, zero compliance breaches, <24h KYC, and 99.9% uptime.
 
-Miss one of these and you are back to a fragile integration project.
-
----
-
-# How the DALP Changes the Field
-
-Institutions gain a control plane where procurement covers one vendor instead of five and audits walk through live evidence. Developers inherit primitives for issuance, rules, settlement, and observability, so they spend cycles on product experiences instead of plumbing. Investors get consistent onboarding with rights managed in the asset path, not in email threads. That shift is why the category matters.
+<!--
+Speaker notes:
+Missing any law means you're back to an integration project. These principles define what makes DALP credible to risk teams and regulators.
+-->
 
 ---
 
-# Our Solution: Asset Tokenization Kit Snapshot
+# Asset Tokenization Kit
+### Our DALP implementation
 
-The Asset Tokenization Kit (ATK) operationalizes every DALP law. It ships templated issuance across equity, debt, fund, and deposit products with a no-code designer that still enforces supply limits, transfer rules, and corporate rights. A real-time registry tracks holders and eligibility, while lifecycle primitives cover minting, burning, redemptions, and follow-ons with policy baked in.
+SettleMint's Asset Tokenization Kit (ATK) operationalizes every DALP law: unified registry, compliance in code, bank-grade custody, atomic settlement, enterprise deployment control, and tooling for builders and operators.
 
-ATK runs across Ethereum, Polygon, Besu, Quorum, and private EVM networks using one playbook. Documents hash into token metadata so legal artifacts stay linked to the asset. Gravity for everything lives in APIs that mirror the UI, allowing banks to embed flows inside existing portals with their own branding.
-
----
-
-# ATK Modules in Motion
-
-- **Issuance Designer:** Jurisdiction templates for Reg D, Reg S, MiCA, MAS, and more allow legal teams to configure rules during the first workshop.
-- **Compliance Engine:** KYC, KYB, accreditation, and geo policies run before state changes with on-chain whitelists and audit receipts.
-- **Custody Workbench:** HSM-backed policies, multi-sig governance, recovery playbooks, and custodial integrations keep key control bank ready.
-- **Settlement Plane:** Atomic delivery versus payment connects tokenized cash, stablecoins, and RTGS rails while translating to ISO 20022.
-- **Operations Room:** Dashboards expose eligibility, settlement status, and corporate actions in real time with exception handling built in.
-- **IAM and Experience Layer:** SSO, MFA, SAML, OIDC, RBAC or ABAC, SIEM export, localized UX, and typed SDKs give enterprise teams confidence.
-
-Each module is already in production pilots, proving DALP principles hold under scrutiny.
+<!--
+Speaker notes:
+ATK is a production-ready DALP. Issuers no longer need five vendors. Compliance, custody, settlement, and servicing ship together with governance baked in.
+-->
 
 ---
 
-# Proof Points & Field Feedback
+# Asset Tokenization Kit Modules
 
-Teams move from term sheet to pilot in days rather than months thanks to templated compliance and automated registry truth. Distribution engines handle pro-rata allocations, auctions, and bulk moves without breaking rule enforcement. Monitoring shows first-attempt settlement success at or above 99 percent in controlled cohorts. Operations report that reconciliation effort drops by nearly ninety percent once cash and tokens settle together. Slight contradictions surface, yet post-mortems show the platform recovers gracefully.
+- Issuance designer with jurisdiction templates and policy-aware lifecycle primitives.
+- Compliance engine using ERC-3643 identity registries and pre-transfer rule checks.
+- Custody workbench with HSMs, multi-sig governance, recovery flows, and custodian connectors.
+- Settlement plane for atomic DvP across tokenized cash, stablecoins, and bank rails (ISO 20022 adapters included).
+- Operations room with dashboards, alerts, and exception handling.
+- IAM and developer layer supporting SSO/MFA/SAML/OIDC, SDKs, APIs, webhooks, and sandbox environments.
+
+<!--
+Speaker notes:
+Each module is in production pilots. Developers build faster--roughly four times faster on smart contracts and eight times faster on front-end flows--because primitives already exist. Operators monitor eligibility, settlement, and corporate actions in real time.
+-->
 
 ---
 
-# What's Next
+# Proof Through Metrics
 
-- This week we release ATK v2.0.0-beta.1.
-- The beta lacks full feature parity with v1, yet asset management and compliance are complete and suited for client workshops.
-- The build is sales ready, so technical explainers, sales collateral, and marketing narratives can start now.
-- Demos run in controlled sessions, ideally with an engineer guiding the story for accuracy.
-- In parallel we stabilize toward the 2.0.0 general availability cut.
-- We continue iterative work that reaches and then stretches past v1 functionality.
+- ~99% of transactions target T+0 settlement with first-attempt success around 99%.
+- Zero compliance breaches thanks to policy enforcement before each transfer.
+- KYC processing inside 24 hours with high auto-approval rates.
+- Platform uptime above 99.9% for end-user channels, keeping trust high.
+
+<!--
+Speaker notes:
+We measure outcomes relentlessly. These metrics prove DALP is not only conceptually sound but materially better on risk, speed, and control.
+-->
 
 ---
 
-# Appreciation & Questions
+# Release Path: ATK v2.0.0-beta.1
 
-Deep thanks to product strategy and engineering for carrying this effort. Let us hear questions, concerns, or stories from the field we should factor into the next sprint.
+- Shipping this week with the new DALP architecture plus asset management and compliance foundations.
+- Beta is sales ready--time to craft collateral, demos, and narratives.
+- Run demos in controlled settings with engineering in the loop.
+- Stabilize toward the 2.0.0 GA release while closing remaining v1 gaps and adding net-new capability.
+
+<!--
+Speaker notes:
+The beta launch marks an inflection point. We'll support sales and marketing immediately, gather field feedback via guided demos, and drive engineering toward GA with iterative feature adds.
+-->
+
+---
+
+# Thank You
+
+Huge credit to Product Strategy and Engineering for making the Asset Tokenization Kit real. Questions on platform details, roadmap, or go-to-market? Let's dig in.
+
+<!--
+Speaker notes:
+Acknowledge the cross-functional effort and open the floor. Invite questions about the platform, roadmap, or how this momentum drives business outcomes.
+-->
