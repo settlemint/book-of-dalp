@@ -104,7 +104,7 @@ Engineering has two parallel priorities: stabilize the beta into a 2.0.0 GA rele
 
 # Thank You
 
-Kudos to the Product Strategy and Engineering teams for turning the Asset Tokenization Kit vision into something tangible. We are ready for questions on the platform, roadmap, or how this momentum fuels the business.
+Kudos to the Product Strategy and Engineering teams for turning the Asset Tokenization Kit vision into something tangible. We are ready for questions on the platform, roadmap, or how this momentum fuels the business. You can read it all in detail afterwards on https://book-of-dalp.settlemint.com
 
 <!--
 Speaker notes:
