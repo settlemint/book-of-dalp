@@ -11,6 +11,7 @@
 /.next/
 /out/
 /build
+public/slides
 *.tsbuildinfo
 
 # misc

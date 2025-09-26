@@ -10,6 +10,10 @@ const config = {
   rewrites() {
     return [
       {
+        source: "/slides",
+        destination: "/slides/index.html",
+      },
+      {
         source: "/docs/:path*.mdx",
         destination: "/llms.mdx/:path*",
       },
