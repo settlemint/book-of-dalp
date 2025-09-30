@@ -19,6 +19,33 @@ A quick pass through the friction, the category answer, our kit, and what's next
 
 ---
 
+# Some announcements
+
+- Jan is launching ATK v2.0.0-beta.1 this week with the new architecture plus asset management and compliance foundations.
+- Positioned as sales ready: we will all start building technical collateral, sales decks, demos, and marketing narratives immediately.
+- Scripted client demos with engineering support to guide the experience and capture feedback.
+- Stabilize the beta toward a 2.0.0 production release while iterating to close remaining v1 feature gaps cfr the commitments from yesterday.
+- Kudos to the team for turning the Asset Tokenization Kit vision into something tangible.
+
+<!--
+Speaker notes:
+We are releasing ATK v2.0.0-beta.1 this week. The new architecture is live with core modules for asset lifecycle management and compliance. It does not yet mirror every v1 feature, but the foundations are solid.
+Because the beta is sales ready, we should equip sales and marketing now--demos, whitepapers, case studies, and slide decks that showcase the platform's value.
+Client demos will run in controlled settings with engineering present to answer technical questions and handle hiccups. These previews let us gather real feedback, generate momentum, and seed pilot engagements.
+Engineering has two parallel priorities: stabilize the beta into a 2.0.0 GA release with rigorous testing and hardening, and continue adding features to reach and exceed v1 parity. The new architecture enables capabilities we could not deliver before, so iteration continues even post-GA.
+-->
+
+---
+
+# What will we do in this session
+
+- I'm doing a general version of my personal positioning of the new and improved ATK. Slides on https://book-of-dalp.settlemint.com/slides
+- There is an AI enabled, in depth write up on https://book-of-dalp.settlemint.com for internal consumption
+- When i'm done, 4 teams (mixed product/growth) will get a usecase/persona and will do the pitch themselves, tailored to the client
+- From tomorrow, we will all work together to finetune this entire story so it is perfect for our prospects
+
+---
+
 # System Breakdown
 
 - Issuers juggle five or more vendors across issuance, KYC, custody, trading, settlement, and reporting, and every integration degrades reliability.
@@ -101,13 +128,11 @@ Engineering has two parallel priorities: stabilize the beta into a 2.0.0 GA rele
 
 ---
 
-# Thank You
+# Over to the experts
 
-Kudos to the Product Strategy and Engineering teams for turning the Asset Tokenization Kit vision into something tangible.
-
-You can read it all in detail on https://book-of-dalp.settlemint.com
-
-Questoions?
+- Questions?
+- Split into 4 teams
+- Pitch!
 
 <!--
 Speaker notes:
