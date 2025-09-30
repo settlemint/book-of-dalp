@@ -110,24 +110,6 @@ Developer and operator tools: We provide complete APIs, SDKs, a customizable web
 
 ---
 
-# What's Next
-
-- Launch ATK v2.0.0-beta.1 this week with the new architecture plus asset management and compliance foundations.
-- Position the beta as sales ready: start building technical collateral, sales decks, demos, and marketing narratives immediately.
-- Run controlled client demos with engineering support to guide the experience and capture feedback.
-- Stabilize the beta toward a 2.0.0 production release while iterating to close remaining v1 feature gaps.
-- Extend beyond v1 capabilities through rapid iterations as we approach general availability.
-
-<!--
-Speaker notes:
-We are releasing ATK v2.0.0-beta.1 this week. The new architecture is live with core modules for asset lifecycle management and compliance. It does not yet mirror every v1 feature, but the foundations are solid.
-Because the beta is sales ready, we should equip sales and marketing now--demos, whitepapers, case studies, and slide decks that showcase the platform's value.
-Client demos will run in controlled settings with engineering present to answer technical questions and handle hiccups. These previews let us gather real feedback, generate momentum, and seed pilot engagements.
-Engineering has two parallel priorities: stabilize the beta into a 2.0.0 GA release with rigorous testing and hardening, and continue adding features to reach and exceed v1 parity. The new architecture enables capabilities we could not deliver before, so iteration continues even post-GA.
--->
-
----
-
 # Over to the experts
 
 - Questions?
