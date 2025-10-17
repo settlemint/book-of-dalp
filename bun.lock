@@ -20,7 +20,7 @@
         "fumadocs-mdx": "12.0.0",
         "fumadocs-ui": "^15.7.13",
         "hast-util-to-jsx-runtime": "^2.3.6",
-        "lucide-react": "^0.544.0",
+        "lucide-react": "^0.546.0",
         "mermaid": "^11.12.0",
         "next": "^15.5.3",
         "next-themes": "^0.4.6",
@@ -52,7 +52,7 @@
       },
     },
     "slides": {
-      "name": "dalp",
+      "name": "slides",
       "dependencies": {
         "@slidev/cli": "^52.2.4",
         "@slidev/theme-default": "latest",
@@ -980,8 +980,6 @@
 
     "dagre-d3-es": ["dagre-d3-es@7.0.11", "", { "dependencies": { "d3": "^7.9.0", "lodash-es": "^4.17.21" } }, "sha512-tvlJLyQf834SylNKax8Wkzco/1ias1OPw8DcUMDE7oUIoSEW25riQVuiu/0OWEFqT0cxHT3Pa9/D82Jr47IONw=="],
 
-    "dalp": ["dalp@workspace:slides"],
-
     "dayjs": ["dayjs@1.11.18", "", {}, "sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA=="],
 
     "de-indent": ["de-indent@1.0.2", "", {}, "sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg=="],
@@ -1364,7 +1362,7 @@
 
     "lru-cache": ["lru-cache@11.2.1", "", {}, "sha512-r8LA6i4LP4EeWOhqBaZZjDWwehd1xUJPCJd9Sv300H0ZmcUER4+JPh7bqqZeqs1o5pgtgvXm+d9UGrB5zZGDiQ=="],
 
-    "lucide-react": ["lucide-react@0.544.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-t5tS44bqd825zAW45UQxpG2CvcC4urOwn2TrwSH8u+MjeE+1NnWl6QqeQ/6NdjMqdOygyiT9p3Ev0p1NJykxjw=="],
+    "lucide-react": ["lucide-react@0.546.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Z94u6fKT43lKeYHiVyvyR8fT7pwCzDu7RyMPpTvh054+xahSgj4HFQ+NmflvzdXsoAjYGdCguGaFKYuvq0ThCQ=="],
 
     "lz-string": ["lz-string@1.5.0", "", { "bin": { "lz-string": "bin/bin.js" } }, "sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ=="],
 
@@ -1731,6 +1729,8 @@
     "sirv": ["sirv@3.0.2", "", { "dependencies": { "@polka/url": "^1.0.0-next.24", "mrmime": "^2.0.0", "totalist": "^3.0.0" } }, "sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g=="],
 
     "sisteransi": ["sisteransi@1.0.5", "", {}, "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg=="],
+
+    "slides": ["slides@workspace:slides"],
 
     "source-map": ["source-map@0.7.6", "", {}, "sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ=="],
 
